@@ -1,0 +1,2475 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/principales/gestion-de-clientes/">
+      
+      
+        <link rel="prev" href="../compras/">
+      
+      
+        <link rel="next" href="../gestion-de-proveedores/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>6.3 Gestión de clientes - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#63-gestion-de-clientes" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6.3 Gestión de clientes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-y-2-buscar-o-crear-la-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 y 2. Buscar o crear la identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-registrar-un-cliente-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Registrar un cliente de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-buscar-y-listar-los-clientes-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Buscar y listar los clientes de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-y-6-consultar-un-cliente-y-su-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 y 6. Consultar un cliente y su identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-y-8-actualizar-un-cliente-y-su-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 y 8. Actualizar un cliente y su identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-inactivar-o-reactivar-un-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Inactivar o reactivar un cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-y-2-buscar-o-crear-la-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 y 2. Buscar o crear la identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-registrar-un-cliente-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Registrar un cliente de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-buscar-y-listar-los-clientes-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Buscar y listar los clientes de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-y-6-consultar-un-cliente-y-su-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 y 6. Consultar un cliente y su identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-y-8-actualizar-un-cliente-y-su-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 y 8. Actualizar un cliente y su identidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-inactivar-o-reactivar-un-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Inactivar o reactivar un cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="63-gestion-de-clientes">6.3 Gestión de clientes<a class="headerlink" href="#63-gestion-de-clientes" title="Permanent link">&para;</a></h1>
+<p><a href="../">← API principales</a> · <a href="../../">← Índice</a></p>
+<p>Registrar, buscar, consultar y actualizar los clientes a los que la empresa vende. Un cliente de SIO se compone de dos partes que viven en servicios distintos:</p>
+<table>
+<thead>
+<tr>
+<th>Parte</th>
+<th>Servicio</th>
+<th>Qué guarda</th>
+<th>Alcance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Identidad</strong> (quién es)</td>
+<td><a href="../../servicios/party-identity/">Party Identity</a></td>
+<td>Persona (<code>person_identity_id</code>: documento, nombres) u organización (<code>organization_identity_id</code>: NIT, razón social), más perfiles de contacto</td>
+<td>Global: una misma identidad puede ser cliente de varias empresas</td>
+</tr>
+<tr>
+<td><strong>Relación comercial</strong> (es mi cliente)</td>
+<td><a href="../../servicios/commercial-relationship/">Commercial Relationship</a></td>
+<td><code>company_customer_id</code>, <code>customer_kind</code>, <code>internal_code</code>, <code>display_name</code>, <code>preferred_contact_person_id</code>, <code>status</code></td>
+<td>Empresa: solo existe dentro de un <code>company_id</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ventas usa <strong>siempre</strong> el <code>company_customer_id</code> (<a href="../../parametros/customer-id/">customer-id</a>); nunca la identidad directamente.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funcionalidad</th>
+<th>Método y ruta</th>
+<th>Permiso</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Buscar o crear la identidad de una persona</td>
+<td><code>GET /api/v1/person-identities</code> · <code>POST /api/v1/person-identities</code> (Party Identity)</td>
+<td><code>perm:party-identity:person_identities:read</code> · <code>…:create</code></td>
+<td><a href="../../servicios/party-identity/#3-get-person-identities">PI 3</a> · <a href="../../servicios/party-identity/#4-post-person-identities">PI 4</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Buscar o crear la identidad de una organización</td>
+<td><code>GET /api/v1/organization-identities</code> · <code>POST /api/v1/organization-identities</code> (Party Identity)</td>
+<td><code>perm:party-identity:organization_identities:read</code> · <code>…:create</code></td>
+<td><a href="../../servicios/party-identity/#9-get-organization-identities">PI 9</a> · <a href="../../servicios/party-identity/#10-post-organization-identities">PI 10</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Registrar un cliente de la empresa</td>
+<td><code>POST /api/v1/companies/{company_id}/company-customers</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:create</code></td>
+<td><a href="../../servicios/commercial-relationship/#14-post-companiescompany_idcompany-customers">CR 14</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Buscar y listar los clientes de la empresa</td>
+<td><code>GET /api/v1/companies/{company_id}/company-customers</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#13-get-companiescompany_idcompany-customers">CR 13</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Consultar un cliente</td>
+<td><code>GET /api/v1/company-customers/{company_customer_id}</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#15-get-company-customerscompany_customer_id">CR 15</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Consultar los datos de identidad del cliente</td>
+<td><code>GET /api/v1/person-identities/{person_identity_id}</code> · <code>GET /api/v1/organization-identities/{organization_identity_id}</code> (Party Identity)</td>
+<td><code>perm:party-identity:person_identities:read</code> · <code>…organization_identities:read</code></td>
+<td><a href="../../servicios/party-identity/#5-get-person-identitiesperson_identity_id">PI 5</a> · <a href="../../servicios/party-identity/#11-get-organization-identitiesorganization_identity_id">PI 11</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Actualizar un cliente</td>
+<td><code>PUT /api/v1/company-customers/{company_customer_id}</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#16-put-company-customerscompany_customer_id">CR 16</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actualizar la identidad</td>
+<td><code>PUT /api/v1/person-identities/{person_identity_id}</code> · <code>PUT /api/v1/organization-identities/{organization_identity_id}</code> (Party Identity)</td>
+<td><code>perm:party-identity:person_identities:update</code> · <code>…organization_identities:update</code></td>
+<td><a href="../../servicios/party-identity/#6-put-person-identitiesperson_identity_id">PI 6</a> · <a href="../../servicios/party-identity/#12-put-organization-identitiesorganization_identity_id">PI 12</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Inactivar o reactivar un cliente</td>
+<td><code>POST /api/v1/company-customers/{company_customer_id}/deactivate</code> · <code>…/reactivate</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:delete</code> · <code>…:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#17-post-company-customerscompany_customer_iddeactivate">CR 17</a> · <a href="../../servicios/commercial-relationship/#18-post-company-customerscompany_customer_idreactivate">CR 18</a></td>
+</tr>
+</tbody>
+</table>
+<p>Bases: Party Identity <code>https://sio-party-identity-dev.onrender.com/api/v1</code>; Commercial Relationship <code>https://sio-commercial-relationship-dev.onrender.com/api/v1</code>.</p>
+<hr />
+<h2 id="1-y-2-buscar-o-crear-la-identidad">1 y 2. Buscar o crear la identidad<a class="headerlink" href="#1-y-2-buscar-o-crear-la-identidad" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Antes de registrar un cliente, comprobar si la persona u organización ya existe en SIO (porque otra empresa la registró o porque ya es proveedor o usuario) y, si no, crearla.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Buscar</th>
+<th>Crear</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Persona natural</td>
+<td><code>GET https://sio-party-identity-dev.onrender.com/api/v1/person-identities?search=&lt;documento o nombre&gt;</code> (también <code>identification_country_id</code>, <code>identification_type</code>, <code>verification_status</code>, <code>status</code>)</td>
+<td><code>POST https://sio-party-identity-dev.onrender.com/api/v1/person-identities</code> con <code>identification_country_id</code>, <code>identification_type</code>, <code>identification_number</code>, <code>first_name</code>, <code>last_name</code> (+ <code>middle_name</code>, <code>second_last_name</code>, <code>birth_date</code>, <code>verification_status</code>)</td>
+</tr>
+<tr>
+<td>Persona jurídica</td>
+<td><code>GET https://sio-party-identity-dev.onrender.com/api/v1/organization-identities?search=&lt;NIT o nombre&gt;</code> (también <code>country_id</code>, <code>identification_type</code>, <code>registration_status</code>, <code>status</code>)</td>
+<td><code>POST https://sio-party-identity-dev.onrender.com/api/v1/organization-identities</code> con <code>country_id</code>, <code>identification_type</code>, <code>identification_number</code>, <code>legal_name</code> (+ <code>trade_name</code>, <code>organization_type</code>, <code>registration_status</code>, <code>website</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>¿Qué necesita antes?</strong> El <a href="../../parametros/country-id/"><code>country_id</code></a> del documento y un <code>identification_type</code> admitido por las reglas del país (<code>GET https://sio-party-identity-dev.onrender.com/api/v1/identification-type-rules?country_id=…</code>, PI 15): Party Identity valida formato y dígito de verificación según esas reglas.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> Búsqueda: <code>200</code> con <code>items[]</code>; el identificador es <code>items[].id</code>. Creación: <code>201</code> con <code>PersonIdentityResponse</code> u <code>OrganizationIdentityResponse</code> (<code>id</code>, <code>status: "ACTIVE"</code>, <code>version: 1</code>). Errores: <code>409</code> si ya existe una identidad con el mismo país, tipo y número (reutiliza la existente), <code>422</code> si el número no cumple la regla del tipo. Detalle en <a href="../../parametros/person-identity-id/">person_identity_id</a> y <a href="../../parametros/organization-identity-id/">organization_identity_id</a>.</p>
+<h2 id="3-registrar-un-cliente-de-la-empresa">3. Registrar un cliente de la empresa<a class="headerlink" href="#3-registrar-un-cliente-de-la-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Convertir una identidad en cliente de su empresa, con el código interno y el nombre con que la empresa lo reconoce.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers</code>. Permiso <code>perm:commercial-relationship:company_customers:create</code>. Cuerpo <code>CompanyCustomerCreate</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Obligatorio</th>
+<th>Regla verificada (<code>company_customer_service.py</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_kind</code></td>
+<td>Sí</td>
+<td><code>PERSON</code> u <code>ORGANIZATION</code></td>
+</tr>
+<tr>
+<td><code>person_identity_id</code></td>
+<td>Con <code>PERSON</code></td>
+<td>Debe existir y estar <code>ACTIVE</code> en Party Identity</td>
+</tr>
+<tr>
+<td><code>organization_identity_id</code></td>
+<td>Con <code>ORGANIZATION</code></td>
+<td>Debe existir y estar <code>ACTIVE</code>; no puede ser la organización de la propia empresa (<code>409 SELF_RELATIONSHIP_NOT_ALLOWED</code>)</td>
+</tr>
+<tr>
+<td><code>internal_code</code></td>
+<td>Sí</td>
+<td>1–60, único en la empresa (<code>409 DUPLICATE_INTERNAL_CODE</code>)</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>Sí</td>
+<td>1–200</td>
+</tr>
+<tr>
+<td><code>preferred_contact_person_id</code></td>
+<td>No</td>
+<td>Solo con <code>ORGANIZATION</code>; persona de contacto activa de esa organización (<code>422 CONTACT_PERSON_INVALID</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"customer_kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PERSON"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"person_identity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a0e1d2c3-b4a5-4968-8776-655443322110"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CLI-0001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ana Pérez"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> con membresía activa y la identidad de la funcionalidad 1 o 2.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>CompanyCustomerResponse</code>: <code>id</code> (el <a href="../../parametros/customer-id/">company_customer_id</a> que usará Ventas), <code>company_id</code>, <code>customer_kind</code>, identidades, <code>internal_code</code>, <code>display_name</code>, <code>status: "ACTIVE"</code>, <code>version: 1</code>. Errores: <code>409 DUPLICATE_CUSTOMER</code> (la misma identidad ya es cliente de la empresa), <code>422 PERSON_IDENTITY_NOT_FOUND</code> / <code>ORGANIZATION_IDENTITY_NOT_FOUND</code> / <code>…_INACTIVE</code>, <code>422 VALIDATION_ERROR</code> si falta la identidad que exige el <code>customer_kind</code>, <code>503 DEPENDENCY_UNAVAILABLE</code> si Party Identity no responde. Nada se guarda ante un rechazo.</p>
+<h2 id="4-buscar-y-listar-los-clientes-de-la-empresa">4. Buscar y listar los clientes de la empresa<a class="headerlink" href="#4-buscar-y-listar-los-clientes-de-la-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Encontrar un cliente por código o nombre al iniciar una venta, o administrar la cartera de clientes.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers</code>. Permiso <code>perm:commercial-relationship:company_customers:read</code>. Consulta: <code>page</code>, <code>page_size</code> (1–100), <code>search</code> (≤ 100; <code>internal_code</code> y <code>display_name</code>), <code>status</code> (<code>ACTIVE</code>, <code>INACTIVE</code>, <code>ALL</code>), <code>customer_kind</code>, <code>person_identity_id</code>, <code>organization_identity_id</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/company-customers?search=perez&amp;status=ACTIVE'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[CompanyCustomerResponse]</code>. La búsqueda es sobre los datos de la relación (código y nombre de la empresa), <strong>no</strong> sobre el documento de identidad: para buscar por documento usa la funcionalidad 1 o 2 y luego filtra aquí por <code>person_identity_id</code> u <code>organization_identity_id</code>.</p>
+<h2 id="5-y-6-consultar-un-cliente-y-su-identidad">5 y 6. Consultar un cliente y su identidad<a class="headerlink" href="#5-y-6-consultar-un-cliente-y-su-identidad" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}</code> (permiso <code>perm:commercial-relationship:company_customers:read</code>) devuelve la relación en cualquier estado. Para mostrar documento, nombres completos o razón social, encadena <code>GET https://sio-party-identity-dev.onrender.com/api/v1/person-identities/{person_identity_id}</code> u <code>…/organization-identities/{organization_identity_id}</code>; los perfiles de contacto vigentes (correo, teléfono, dirección) están en <code>GET …/person-identities/{id}/contact-profile</code> (PI 21) y <code>GET …/organization-identities/{id}/contact-profile</code> (PI 26).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> en cada llamada. <code>404 NOT_FOUND</code> en Commercial Relationship si el cliente es de otra empresa.</p>
+<h2 id="7-y-8-actualizar-un-cliente-y-su-identidad">7 y 8. Actualizar un cliente y su identidad<a class="headerlink" href="#7-y-8-actualizar-un-cliente-y-su-identidad" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Cambiar el código interno, el nombre comercial o la persona de contacto preferida; corregir los datos legales de la identidad.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>PUT https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}</code> (permiso <code>perm:commercial-relationship:company_customers:update</code>) con <code>version</code>, <code>internal_code</code>, <code>display_name</code>, <code>preferred_contact_person_id</code>. Los campos <code>customer_kind</code>, <code>person_identity_id</code>, <code>organization_identity_id</code> y <code>status</code> son <strong>inmutables</strong>: para cambiar de identidad hay que inactivar el cliente y crear otro. Los datos legales se corrigen en Party Identity con <code>PUT …/person-identities/{id}</code> o <code>PUT …/organization-identities/{id}</code> (con <code>version</code>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con el recurso y <code>version</code> incrementada. Errores: <code>409 VERSION_CONFLICT</code>, <code>409 DUPLICATE_INTERNAL_CODE</code>, <code>422 IMMUTABLE_FIELD</code>.</p>
+<h2 id="9-inactivar-o-reactivar-un-cliente">9. Inactivar o reactivar un cliente<a class="headerlink" href="#9-inactivar-o-reactivar-un-cliente" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}/deactivate</code> (permiso <code>perm:commercial-relationship:company_customers:delete</code>, <code>HIGH_RISK</code>) y <code>…/reactivate</code> (<code>…:update</code>), ambos con <code>{"version": n}</code>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>status</code> <code>INACTIVE</code> o <code>ACTIVE</code>. Efecto: Sales rechaza nuevas ventas a un cliente inactivo con <code>409 REFERENCES_NOT_ELIGIBLE</code>; las ventas ya confirmadas no cambian.</p>
+<h2 id="dependencias-con-otros-modulos">Dependencias con otros módulos<a class="headerlink" href="#dependencias-con-otros-modulos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../ventas/">Ventas</a> exige un <code>company_customer_id</code> <code>ACTIVE</code> al crear el borrador. Las ventas son de contado: las condiciones de pago a crédito por cliente no están implementadas en Sales (funcionalidad futura).</li>
+<li><a href="../administracion-empresarial/">Administración empresarial</a> y <a href="../gestion-de-proveedores/">Gestión de proveedores</a> comparten las identidades de Party Identity: una organización puede ser a la vez empresa, proveedor y cliente de distintas empresas.</li>
+<li><a href="../reportes/">Reportes</a> agrupa ventas por sucursal y producto; no por cliente (no hay reporte por cliente en las 411 operaciones).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

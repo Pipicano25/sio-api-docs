@@ -1,0 +1,3731 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/servicios/product-inventory-query/">
+      
+      
+        <link rel="prev" href="../product-catalog/">
+      
+      
+        <link rel="next" href="../purchase/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Product Inventory Query API - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#product-inventory-query-api" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Product Inventory Query API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autenticación y permisos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#permiso-funcional-de-cada-consulta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permiso funcional de cada consulta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloques-opcionales-de-la-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bloques opcionales de la respuesta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paginacion-por-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paginación por cursor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filtros-comunes-de-los-listados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtros comunes de los listados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-companiescompany_idproduct-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /companies/{company_id}/product-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-get-companiescompany_idbranchesbranch_idproduct-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GET /companies/{company_id}/branches/{branch_id}/product-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idinventory-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/inventory-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idbranchesbranch_idinventory-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/branches/{branch_id}/inventory-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_idlow-stock-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/low-stock-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-companiescompany_idbranchesbranch_idlow-stock-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /companies/{company_id}/branches/{branch_id}/low-stock-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-companiescompany_idinventory-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /companies/{company_id}/inventory-summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-companiescompany_idbranchesbranch_idinventory-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /companies/{company_id}/branches/{branch_id}/inventory-summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autenticación y permisos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#permiso-funcional-de-cada-consulta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permiso funcional de cada consulta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloques-opcionales-de-la-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bloques opcionales de la respuesta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paginacion-por-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paginación por cursor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filtros-comunes-de-los-listados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtros comunes de los listados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-companiescompany_idproduct-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /companies/{company_id}/product-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-get-companiescompany_idbranchesbranch_idproduct-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GET /companies/{company_id}/branches/{branch_id}/product-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idinventory-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/inventory-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idbranchesbranch_idinventory-overviews" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/branches/{branch_id}/inventory-overviews
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_idlow-stock-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/low-stock-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-companiescompany_idbranchesbranch_idlow-stock-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /companies/{company_id}/branches/{branch_id}/low-stock-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-companiescompany_idinventory-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /companies/{company_id}/inventory-summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-companiescompany_idbranchesbranch_idinventory-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /companies/{company_id}/branches/{branch_id}/inventory-summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="product-inventory-query-api">Product Inventory Query API<a class="headerlink" href="#product-inventory-query-api" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Índice</a> · <a href="../../guias/autenticacion/">Autenticación</a> · <a href="../../guias/permisos/">Permisos</a> · <a href="../../guias/errores/">Errores</a> · <a href="../../parametros/">Parámetros</a></p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">&para;</a></h2>
+<p>Product Inventory Query es el servicio de <strong>consulta consolidada</strong> para las pantallas de productos y existencias. En una sola llamada devuelve el producto empresarial con su catálogo, imagen, presentaciones, precio por presentación y existencias por sucursal, combinando Commercial Relationship, Product Catalog e Inventory. Es la forma recomendada de construir buscadores de productos, puntos de venta y tableros de inventario sin encadenar llamadas desde el navegador.</p>
+<h2 id="responsabilidad">Responsabilidad<a class="headerlink" href="#responsabilidad" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Autorizar primero el alcance con Operational Context (membresía <code>ACTIVE</code> y sucursales de la empresa) y después consultar los servicios propietarios.</li>
+<li>Devolver solo los <strong>bloques</strong> que el token permite ver: precios, existencias y mínimos se omiten (o se devuelven <code>null</code>) cuando falta el permiso correspondiente, sin fallar la consulta.</li>
+<li>Paginar por cursor, con límite de trabajo por solicitud, y nunca devolver resultados parciales sin avisarlo.</li>
+<li>Solo lectura: no tiene base de datos propia ni operaciones de escritura.</li>
+</ul>
+<h2 id="datos-del-servicio">Datos del servicio<a class="headerlink" href="#datos-del-servicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL base</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1</code></td>
+</tr>
+<tr>
+<td>Salud</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/health/live</code>, <code>/health/ready</code></td>
+</tr>
+<tr>
+<td>Swagger / OpenAPI</td>
+<td><a href="https://sio-product-inventory-query-dev.onrender.com/docs">/docs</a> · <a href="https://sio-product-inventory-query-dev.onrender.com/openapi.json">/openapi.json</a></td>
+</tr>
+<tr>
+<td>Formato de error</td>
+<td>Problem Details con <code>code</code> <code>PRODUCT_INVENTORY_QUERY.*</code> y <code>trace_id</code></td>
+</tr>
+<tr>
+<td>Operaciones en el contrato desplegado</td>
+<td>10 (8 consultas + 2 de salud)</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>OpenAPI de Render del 2026-10-19 cruzado con <code>services/product-inventory-query-service</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="autenticacion-y-permisos">Autenticación y permisos<a class="headerlink" href="#autenticacion-y-permisos" title="Permanent link">&para;</a></h2>
+<p>Todas las rutas salvo <code>/health/*</code> exigen <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code>.</p>
+<h3 id="permiso-funcional-de-cada-consulta">Permiso funcional de cada consulta<a class="headerlink" href="#permiso-funcional-de-cada-consulta" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Consulta</th>
+<th>Permiso</th>
+<th>Grupos de la plantilla que lo tienen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Productos (<code>product-overviews</code>)</td>
+<td><code>perm:product-inventory-query:product_overviews:read</code></td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>ventas</code>, <code>inventario</code></td>
+</tr>
+<tr>
+<td>Existencias (<code>inventory-overviews</code>)</td>
+<td><code>perm:product-inventory-query:inventory_overviews:read</code></td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>ventas</code>, <code>inventario</code></td>
+</tr>
+<tr>
+<td>Bajo mínimo (<code>low-stock-products</code>)</td>
+<td><code>perm:product-inventory-query:low_stock_products:read</code> <strong>más</strong> <code>perm:product-inventory-query:stock:read</code> y <code>perm:inventory:product-policies:read</code></td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>inventario</code></td>
+</tr>
+<tr>
+<td>Resumen (<code>inventory-summary</code>)</td>
+<td><code>perm:product-inventory-query:inventory_summary:read</code></td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>inventario</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="bloques-opcionales-de-la-respuesta">Bloques opcionales de la respuesta<a class="headerlink" href="#bloques-opcionales-de-la-respuesta" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Bloque</th>
+<th>Permiso que lo habilita</th>
+<th>Qué aparece</th>
+<th>Filtros que lo exigen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Precios</td>
+<td><code>perm:commercial-relationship:price_list_items:read</code></td>
+<td><code>presentations[].price</code></td>
+<td><code>price_list_id</code> no produce <code>403</code>, pero sin el permiso no se devuelve precio</td>
+</tr>
+<tr>
+<td>Existencias</td>
+<td><code>perm:product-inventory-query:stock:read</code></td>
+<td><code>stock</code> (total, por sucursal y equivalencias)</td>
+<td><code>stock_state</code></td>
+</tr>
+<tr>
+<td>Mínimos</td>
+<td><code>perm:inventory:product-policies:read</code></td>
+<td><code>stock.branches[].minimum_stock</code> y <code>minimum_state</code></td>
+<td><code>minimum_state</code></td>
+</tr>
+</tbody>
+</table>
+<p>Sin el permiso de un bloque, el campo se omite o es <code>null</code> y la consulta responde <code>200</code>. Usar un <strong>filtro</strong> de un bloque no autorizado produce <code>403 PRODUCT_INVENTORY_QUERY.FORBIDDEN</code>. El grupo <code>ventas</code> ve precios y existencias pero no mínimos; <code>inventario</code> ve existencias y mínimos pero no precios (según la plantilla del realm).</p>
+<h2 id="alcance-de-datos">Alcance de datos<a class="headerlink" href="#alcance-de-datos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Regla</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empresa</td>
+<td>Membresía <code>ACTIVE</code> del usuario en <code>company_id</code>; si no, o si la empresa no existe, <code>404 PRODUCT_INVENTORY_QUERY.NOT_FOUND</code></td>
+</tr>
+<tr>
+<td>Sucursales</td>
+<td>Con membresía, <strong>cualquier sucursal de la empresa</strong> es consultable (no se exige asignación). En rutas de empresa: <code>scope=COMPANY</code> (por defecto, todas las sucursales activas) o <code>branch_id</code> repetible (máx. 100), excluyentes entre sí. En rutas por sucursal: <code>branch_id</code> en la ruta; si es de otra empresa, <code>404</code>; <code>branch_id</code> o <code>scope</code> por consulta producen <code>422</code></td>
+</tr>
+<tr>
+<td>Datos globales</td>
+<td>Nombres canónicos, marcas, categorías, identificadores e imagen provienen del catálogo global (Product Catalog)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="paginacion-por-cursor">Paginación por cursor<a class="headerlink" href="#paginacion-por-cursor" title="Permanent link">&para;</a></h2>
+<p>Las seis consultas de listado (productos, existencias y bajo mínimo, por empresa y por sucursal) paginan por cursor, <strong>sin totales</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Campo de la respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items[]</code></td>
+<td>Hasta <code>page_size</code> elementos (1 a 20; por defecto 20)</td>
+</tr>
+<tr>
+<td><code>has_next</code></td>
+<td>Hay más resultados</td>
+</tr>
+<tr>
+<td><code>next_cursor</code></td>
+<td>Cursor opaco (máx. 2048 caracteres) para la página siguiente; enviar como <code>cursor=</code> <strong>con los mismos filtros, orden y <code>page_size</code></strong></td>
+</tr>
+<tr>
+<td><code>pagination_reset</code></td>
+<td><code>true</code> si el servicio ignoró el cursor y reinició desde la primera página</td>
+</tr>
+<tr>
+<td><code>pagination_reset_reason</code></td>
+<td><code>FILTERS_CHANGED</code>, <code>SORT_CHANGED</code>, <code>PAGE_SIZE_CHANGED</code> o <code>CURSOR_EXPIRED</code> (los cursores caducan a los 900 s)</td>
+</tr>
+<tr>
+<td><code>partial</code></td>
+<td><code>true</code> si la página se cortó por el límite de trabajo del servidor (5 s) antes de llenarse; <strong>no es el final</strong>: continúe con <code>next_cursor</code></td>
+</tr>
+<tr>
+<td><code>partial_reason</code></td>
+<td><code>WORK_LIMIT_REACHED</code></td>
+</tr>
+<tr>
+<td><code>sort_applied</code></td>
+<td>Orden efectivamente aplicado, por ejemplo <code>display_name:asc</code></td>
+</tr>
+<tr>
+<td><code>resolved_at</code></td>
+<td>Instante de resolución de la consulta</td>
+</tr>
+</tbody>
+</table>
+<p>Un cursor manipulado o ilegible produce <code>422 PRODUCT_INVENTORY_QUERY.INVALID_CURSOR</code> («El cursor no es válido. Repita la consulta…»).</p>
+<p>Orden predeterminado en productos y existencias: <code>display_name:asc</code> sin filtros o con <code>search</code>, <code>internal_code</code> o <code>sku</code>; <code>canonical_name:asc</code> con <code>barcode</code>, <code>identifier</code> o filtros de catálogo (<code>brand_id</code>, <code>category_id</code>, <code>product_type</code>); <code>company_product_id:asc</code> con solo <code>stock_state=IN_STOCK</code> o <code>minimum_state</code>. En bajo mínimo: <code>shortfall:desc</code>. Un <code>sort</code> explícito (<code>display_name</code>, <code>internal_code</code> o <code>created_at</code>, con <code>:asc</code> o <code>:desc</code>) se aplica tal cual.</p>
+<h2 id="filtros-comunes-de-los-listados">Filtros comunes de los listados<a class="headerlink" href="#filtros-comunes-de-los-listados" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Tipo</th>
+<th>Validación</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>search</code></td>
+<td>string</td>
+<td>máx. 200</td>
+<td>Texto en el nombre, <code>internal_code</code>, <code>reference_code</code> o SKU de presentación</td>
+</tr>
+<tr>
+<td><code>internal_code</code></td>
+<td>string</td>
+<td>máx. 60</td>
+<td>Código interno exacto, sin distinguir mayúsculas</td>
+</tr>
+<tr>
+<td><code>sku</code></td>
+<td>string</td>
+<td>máx. 80</td>
+<td>SKU de presentación exacto</td>
+</tr>
+<tr>
+<td><code>barcode</code></td>
+<td>string</td>
+<td>máx. 120</td>
+<td>Código de barras exacto (Product Catalog)</td>
+</tr>
+<tr>
+<td><code>identifier</code></td>
+<td>string</td>
+<td>máx. 120</td>
+<td>Identificador global exacto (Product Catalog)</td>
+</tr>
+<tr>
+<td><code>brand_id</code></td>
+<td>UUID, repetible</td>
+<td>máx. 100</td>
+<td>Marca (varias con O)</td>
+</tr>
+<tr>
+<td><code>category_id</code></td>
+<td>UUID, repetible</td>
+<td>máx. 100</td>
+<td>Categoría (varias con O); con <code>include_descendants=true</code> incluye subcategorías</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code> | <code>ALL</code></td>
+<td>por defecto <code>ACTIVE</code></td>
+<td>Estado del producto empresarial</td>
+</tr>
+<tr>
+<td><code>product_type</code></td>
+<td>string</td>
+<td>máx. 20</td>
+<td>Tipo de producto de Product Catalog</td>
+</tr>
+<tr>
+<td><code>has_image</code></td>
+<td>boolean</td>
+<td>—</td>
+<td>Con o sin imagen principal apta</td>
+</tr>
+<tr>
+<td><code>stock_state</code></td>
+<td><code>IN_STOCK</code> | <code>OUT_OF_STOCK</code></td>
+<td>exige bloque existencias</td>
+<td>No disponible en bajo mínimo</td>
+</tr>
+<tr>
+<td><code>minimum_state</code></td>
+<td><code>NO_POLICY</code> | <code>BELOW_MINIMUM</code> | <code>AT_MINIMUM</code> | <code>ABOVE_MINIMUM</code></td>
+<td>exige bloque mínimos</td>
+<td>Solo en existencias</td>
+</tr>
+<tr>
+<td><code>price_list_id</code></td>
+<td>UUID</td>
+<td>—</td>
+<td>Solo en productos: lista de precios; sin ella, la predeterminada que aplique Commercial Relationship</td>
+</tr>
+<tr>
+<td><code>sort</code>, <code>page_size</code>, <code>cursor</code></td>
+<td>—</td>
+<td>ver arriba</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Un parámetro desconocido produce <code>422 VALIDATION_ERROR</code>.</p>
+<h2 id="tabla-de-endpoints">Tabla de endpoints<a class="headerlink" href="#tabla-de-endpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Método</th>
+<th>Ruta relativa</th>
+<th>Descripción</th>
+<th>Permiso</th>
+<th>Clase</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>GET</code></td>
+<td><code>/health/live</code> (sin prefijo)</td>
+<td>Proceso vivo</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#1-get-healthlive">Ver</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GET</code></td>
+<td><code>/health/ready</code> (sin prefijo)</td>
+<td>Preparado</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#2-get-healthready">Ver</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/product-overviews</code></td>
+<td>Productos con presentaciones, precios, imagen y existencias</td>
+<td><code>perm:product-inventory-query:product_overviews:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#3-get-companiescompany_idproduct-overviews">Ver</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/product-overviews</code></td>
+<td>Ídem, existencias de una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#4-get-companiescompany_idbranchesbranch_idproduct-overviews">Ver</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/inventory-overviews</code></td>
+<td>Existencias por producto, sucursal y empresa</td>
+<td><code>perm:product-inventory-query:inventory_overviews:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#5-get-companiescompany_idinventory-overviews">Ver</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/inventory-overviews</code></td>
+<td>Ídem, una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#6-get-companiescompany_idbranchesbranch_idinventory-overviews">Ver</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/low-stock-products</code></td>
+<td>Pares producto–sucursal bajo el mínimo</td>
+<td><code>perm:product-inventory-query:low_stock_products:read</code> (+ stock y mínimos)</td>
+<td><code>READ</code></td>
+<td><a href="#7-get-companiescompany_idlow-stock-products">Ver</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/low-stock-products</code></td>
+<td>Ídem, una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#8-get-companiescompany_idbranchesbranch_idlow-stock-products">Ver</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/inventory-summary</code></td>
+<td>Indicadores operativos por sucursal y consolidados</td>
+<td><code>perm:product-inventory-query:inventory_summary:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#9-get-companiescompany_idinventory-summary">Ver</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/inventory-summary</code></td>
+<td>Ídem, una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#10-get-companiescompany_idbranchesbranch_idinventory-summary">Ver</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="operaciones">Operaciones<a class="headerlink" href="#operaciones" title="Permanent link">&para;</a></h2>
+<h3 id="1-get-healthlive">1. <code>GET /health/live</code><a class="headerlink" href="#1-get-healthlive" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-product-inventory-query-dev.onrender.com/health/live</code> → <code>200</code> <code>{"status": "ok"}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/health/live'</span>
+</code></pre></div>
+<h3 id="2-get-healthready">2. <code>GET /health/ready</code><a class="headerlink" href="#2-get-healthready" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-product-inventory-query-dev.onrender.com/health/ready</code> → <code>200</code> <code>{"status": "ok"}</code>; <code>503</code> si la configuración o el JWKS no están disponibles. No tiene base de datos.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/health/ready'</span>
+</code></pre></div>
+<h3 id="3-get-companiescompany_idproduct-overviews">3. <code>GET /companies/{company_id}/product-overviews</code><a class="headerlink" href="#3-get-companiescompany_idproduct-overviews" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/product-overviews</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:product-inventory-query:product_overviews:read</code> (+ bloques según permisos)</td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; <code>scope=COMPANY</code> (por defecto) o <code>branch_id</code> repetible</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros: <code>company_id</code> (ruta, <a href="../../parametros/company-id/">cómo obtenerlo</a>); <code>branch_id</code> (query, repetible, <a href="../../parametros/branch-id/">cómo obtenerlo</a>) o <code>scope=COMPANY</code>; los filtros comunes, <code>price_list_id</code>, <code>sort</code>, <code>page_size</code>, <code>cursor</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/product-overviews?search=acetaminofen&amp;status=ACTIVE&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>CursorPage[ProductOverview]</code>; valores ilustrativos; token con los tres bloques):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"canonical_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GOOD"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"brand"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GEN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Genérico"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANALG"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Analgésicos"</span><span class="p">,</span><span class="w"> </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EAN13"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7701234567890"</span><span class="p">,</span><span class="w"> </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c6c7d8e9-f0a1-4b2c-9d3e-4f5a6b7c8d94"</span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://sio-product-catalog-dev.onrender.com/public/product-images/firma-ilustrativa"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c6c7d8e9-f0a1-4b2c-9d3e-4f5a6b7c8d94"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7701234567890"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001-U"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_sellable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"base_quantity_factor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0000"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"price_list_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"price_list_item_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6f7a8b9c-0d1e-4f2a-9b3c-4d5e6f7a8b9c"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"unit_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800.00"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"resolution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRICE_LIST_ITEM"</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">        </span><span class="nt">"total_base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800.0000"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"branches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800.0000"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"balance_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REGISTERED"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"minimum_stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100.0000"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"minimum_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ABOVE_MINIMUM"</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">"equivalences"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span><span class="w"> </span><span class="nt">"whole_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="nt">"remainder_base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"has_next"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"next_cursor"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sort_applied"</span><span class="p">:</span><span class="w"> </span><span class="s2">"display_name:asc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:40:00Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Campos destacados de <code>ProductOverview</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_product_id</code>, <code>global_product_id</code></td>
+<td>Identificadores para <a href="../../parametros/company-product-id/">ventas y compras</a> y para el catálogo global</td>
+</tr>
+<tr>
+<td><code>status</code> / <code>global_status</code></td>
+<td>Estado del producto empresarial y del global</td>
+</tr>
+<tr>
+<td><code>identifiers[]</code></td>
+<td>Códigos de barras u otros identificadores globales (<code>type</code>, <code>value</code>, <code>is_primary</code>, presentación asociada)</td>
+</tr>
+<tr>
+<td><code>image_url</code></td>
+<td>URL de la imagen principal construida por Product Catalog (referencia firmada; se copia tal cual). <code>null</code> si <code>has_image</code> es <code>false</code>. El ejemplo es ilustrativo</td>
+</tr>
+<tr>
+<td><code>presentations[].base_quantity_factor</code></td>
+<td>Unidades base por presentación, 4 decimales</td>
+</tr>
+<tr>
+<td><code>presentations[].price.resolution</code></td>
+<td><code>PRICE_LIST_ITEM</code> (precio encontrado), <code>NO_PRICE_IN_LIST</code>, <code>NO_APPLICABLE_PRICE_LIST</code> o <code>PRICE_LIST_NOT_APPLICABLE</code>, tal como los informa Commercial Relationship; <code>unit_price</code> es <code>null</code> salvo en el primero</td>
+</tr>
+<tr>
+<td><code>stock.branches[].balance_state</code></td>
+<td><code>REGISTERED</code> (hay saldo registrado, aunque sea cero) o <code>NOT_REGISTERED</code></td>
+</tr>
+<tr>
+<td><code>stock.branches[].minimum_state</code></td>
+<td><code>NO_POLICY</code>, <code>BELOW_MINIMUM</code>, <code>AT_MINIMUM</code>, <code>ABOVE_MINIMUM</code></td>
+</tr>
+<tr>
+<td><code>stock.equivalences[]</code></td>
+<td>Cuántas unidades enteras de cada presentación caben en el total y el resto en unidad base</td>
+</tr>
+</tbody>
+</table>
+<p>Errores: <code>403 FORBIDDEN</code> (sin permiso funcional o filtro de bloque no autorizado), <code>404 NOT_FOUND</code> (empresa sin membresía o <code>branch_id</code> de otra empresa), <code>422 VALIDATION_ERROR</code> / <code>INVALID_CURSOR</code>, <code>503 DEPENDENCY_UNAVAILABLE</code> (una dependencia no respondió en 3 s por llamada u 8 s en total, o respondió algo inválido; nunca hay resultados parciales sin <code>partial: true</code>).</p>
+<p>Dependencias: Operational Context (autorización), Commercial Relationship (productos, presentaciones, precios), Product Catalog (catálogo, identificadores, imagen), Inventory (existencias y mínimos). Las llamadas a los propietarios usan la identidad técnica del servicio, por lo que los bloques dependen de los permisos <strong>del usuario</strong> evaluados por este servicio.</p>
+<h3 id="4-get-companiescompany_idbranchesbranch_idproduct-overviews">4. <code>GET /companies/{company_id}/branches/{branch_id}/product-overviews</code><a class="headerlink" href="#4-get-companiescompany_idbranchesbranch_idproduct-overviews" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 3, pero <code>stock</code> contiene <strong>solo la sucursal de la ruta</strong> (<code>stock.branches</code> de un elemento y <code>total_base_quantity</code> de esa sucursal). <code>branch_id</code> en la ruta debe ser de la empresa (<code>404</code> si no); no se admiten <code>branch_id</code> ni <code>scope</code> por consulta (<code>422</code>). Mismos filtros, bloques, paginación y respuesta.</p>
+<p>URL: <code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/product-overviews</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/product-overviews?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>CursorPage_ProductOverview_</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"canonical_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REF-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GOOD"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"brand"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GENFAR"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Genfar"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3af5ffc6-f94e-4d7e-8271-b22e87afa664"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANALGESICOS"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Analgésicos"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GTIN"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7702001234567"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8a9b0c1d-2e3f-4a4b-9c5d-6e7f8a9b0c1d"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8a9b0c1d-2e3f-4a4b-9c5d-6e7f8a9b0c1d"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Caja x 100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACET-500-CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001-CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_sellable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"base_quantity_factor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"stock"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"has_next"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"next_cursor"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sort_applied"</span><span class="p">:</span><span class="w"> </span><span class="s2">"display_name:asc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="5-get-companiescompany_idinventory-overviews">5. <code>GET /companies/{company_id}/inventory-overviews</code><a class="headerlink" href="#5-get-companiescompany_idinventory-overviews" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/inventory-overviews</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:product-inventory-query:inventory_overviews:read</code> (+ bloques existencias y mínimos)</td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; <code>scope=COMPANY</code> o <code>branch_id</code> repetible</td>
+</tr>
+</tbody>
+</table>
+<p>Devuelve los productos <strong>con control de inventario</strong> y sus existencias en unidad base, por sucursal y consolidadas, con equivalencias por presentación y, con el permiso de mínimos, el estado frente al mínimo. Parámetros: los filtros comunes más <code>minimum_state</code>; <strong>no</strong> admite <code>price_list_id</code> y las presentaciones <strong>no</strong> traen <code>price</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/inventory-overviews?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>CursorPage[InventoryOverview]</code>): mismo objeto que <code>ProductOverview</code> sin el bloque de precios. Ejemplo de un elemento con bloque de mínimos:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"global_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"canonical_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"global_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"product_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GOOD"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"brand"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c6c7d8e9-f0a1-4b2c-9d3e-4f5a6b7c8d94"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CJ100"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Caja x 100"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sku"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001-C"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"is_sellable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_quantity_factor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100.0000"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"total_base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"250.0000"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"branches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span><span class="w"> </span><span class="nt">"base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"250.0000"</span><span class="p">,</span><span class="w"> </span><span class="nt">"balance_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REGISTERED"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"300.0000"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BELOW_MINIMUM"</span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9b2f5c1d-3e4a-4f6b-8c7d-2a1b3c4d5e6f"</span><span class="p">,</span><span class="w"> </span><span class="nt">"base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span><span class="w"> </span><span class="nt">"balance_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NOT_REGISTERED"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_stock"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NO_POLICY"</span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"equivalences"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span><span class="w"> </span><span class="nt">"whole_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"remainder_base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50.0000"</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Errores y dependencias como en la operación 3 (sin Commercial Relationship para precios).</p>
+<h3 id="6-get-companiescompany_idbranchesbranch_idinventory-overviews">6. <code>GET /companies/{company_id}/branches/{branch_id}/inventory-overviews</code><a class="headerlink" href="#6-get-companiescompany_idbranchesbranch_idinventory-overviews" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 5 para la sucursal de la ruta (<code>stock</code> solo de esa sucursal). <code>branch_id</code>/<code>scope</code> por consulta → <code>422</code>; sucursal de otra empresa → <code>404</code>.</p>
+<p>URL: <code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/inventory-overviews</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/inventory-overviews?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>CursorPage_InventoryOverview_</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"canonical_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REF-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"global_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GOOD"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"brand"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GENFAR"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Genfar"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"categories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3af5ffc6-f94e-4d7e-8271-b22e87afa664"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANALGESICOS"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Analgésicos"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"identifiers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GTIN"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7702001234567"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_primary"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8a9b0c1d-2e3f-4a4b-9c5d-6e7f8a9b0c1d"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"global_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8a9b0c1d-2e3f-4a4b-9c5d-6e7f8a9b0c1d"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Caja x 100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACET-500-CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001-CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"is_sellable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"base_quantity_factor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"stock"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"has_next"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"next_cursor"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sort_applied"</span><span class="p">:</span><span class="w"> </span><span class="s2">"display_name:asc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="7-get-companiescompany_idlow-stock-products">7. <code>GET /companies/{company_id}/low-stock-products</code><a class="headerlink" href="#7-get-companiescompany_idlow-stock-products" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/low-stock-products</code></td>
+</tr>
+<tr>
+<td>Permisos</td>
+<td><code>perm:product-inventory-query:low_stock_products:read</code> <strong>y</strong> <code>perm:product-inventory-query:stock:read</code> <strong>y</strong> <code>perm:inventory:product-policies:read</code>; sin los tres, <code>403</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; <code>scope=COMPANY</code> o <code>branch_id</code> repetible</td>
+</tr>
+</tbody>
+</table>
+<p>Devuelve pares (producto, sucursal) con <strong>política de mínimo activa</strong> y existencia <strong>estrictamente menor</strong> que el mínimo. Parámetros: filtros comunes salvo <code>stock_state</code>, <code>minimum_state</code> y <code>price_list_id</code>; <code>sort</code>, <code>page_size</code>, <code>cursor</code>. Orden predeterminado <code>shortfall:desc</code> (mayor faltante primero).</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/low-stock-products?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>CursorPage[LowStockPair]</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"250.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"minimum_stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"300.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"shortfall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"policy_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"has_next"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"next_cursor"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sort_applied"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shortfall:desc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:40:00Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>shortfall</code> = <code>minimum_stock − base_quantity</code>, siempre mayor que cero. Un producto con política pero existencia igual al mínimo <strong>no</strong> aparece.</p>
+<h3 id="8-get-companiescompany_idbranchesbranch_idlow-stock-products">8. <code>GET /companies/{company_id}/branches/{branch_id}/low-stock-products</code><a class="headerlink" href="#8-get-companiescompany_idbranchesbranch_idlow-stock-products" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 7 para la sucursal de la ruta. <code>branch_id</code>/<code>scope</code> por consulta → <code>422</code>.</p>
+<p>URL: <code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/low-stock-products</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/low-stock-products?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>CursorPage_LowStockPair_</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"minimum_stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"shortfall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"policy_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"has_image"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"has_next"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"next_cursor"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pagination_reset_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partial_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sort_applied"</span><span class="p">:</span><span class="w"> </span><span class="s2">"display_name:asc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="9-get-companiescompany_idinventory-summary">9. <code>GET /companies/{company_id}/inventory-summary</code><a class="headerlink" href="#9-get-companiescompany_idinventory-summary" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/inventory-summary</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:product-inventory-query:inventory_summary:read</code></td>
+</tr>
+<tr>
+<td>Parámetros</td>
+<td><code>company_id</code> (ruta); <code>branch_id</code> (query, repetible, máx. 100) <strong>o</strong> <code>scope=COMPANY</code> (por defecto)</td>
+</tr>
+</tbody>
+</table>
+<p>Sin paginación. </p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<p><div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/inventory-summary'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+Respuesta <code>200</code> (<code>InventorySummaryOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:40:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"adopted_products"</span><span class="p">:</span><span class="w"> </span><span class="mi">320</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_positive_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">280</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_zero_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_policy"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_below_minimum"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"consolidated"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"products_with_positive_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">280</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_with_zero_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_with_policy"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_below_minimum"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Reglas: <code>adopted_products</code> son los productos <code>ACTIVE</code> con control de inventario según Commercial Relationship, <strong>solo a nivel de empresa</strong>. Los indicadores por sucursal y consolidados vienen de Inventory: un producto sin registro de saldo no cuenta en ninguno; pueden incluir productos inactivos o sin control de inventario que conservan saldo. Resumen <strong>solo operativo</strong>: sin costos ni valoración.</p>
+<h3 id="10-get-companiescompany_idbranchesbranch_idinventory-summary">10. <code>GET /companies/{company_id}/branches/{branch_id}/inventory-summary</code><a class="headerlink" href="#10-get-companiescompany_idbranchesbranch_idinventory-summary" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 9 para la sucursal de la ruta: <code>branches</code> tiene solo esa sucursal y <code>consolidated</code> coincide con ella; <code>adopted_products</code> sigue siendo de la empresa. <code>branch_id</code>/<code>scope</code> por consulta → <code>422</code>; sucursal de otra empresa → <code>404</code>.</p>
+<p>URL: <code>https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/inventory-summary</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/inventory-summary'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>InventorySummaryOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolved_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"adopted_products"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_positive_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_zero_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_with_policy"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"products_below_minimum"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"consolidated"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"products_with_positive_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_with_zero_balance"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_with_policy"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"products_below_minimum"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="errores-frecuentes">Errores frecuentes<a class="headerlink" href="#errores-frecuentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Respuesta</th>
+<th>Causa</th>
+<th>Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>403 PRODUCT_INVENTORY_QUERY.FORBIDDEN</code></td>
+<td>Falta el permiso funcional, o se usó <code>stock_state</code>/<code>minimum_state</code> sin el bloque, o faltan los permisos adicionales de bajo mínimo</td>
+<td>No ofrecer esos filtros a perfiles sin el bloque</td>
+</tr>
+<tr>
+<td><code>404 PRODUCT_INVENTORY_QUERY.NOT_FOUND</code></td>
+<td>Sin membresía <code>ACTIVE</code>, empresa inexistente o <code>branch_id</code> de otra empresa</td>
+<td>Revisar <code>/me/operational-context</code></td>
+</tr>
+<tr>
+<td><code>422 PRODUCT_INVENTORY_QUERY.INVALID_CURSOR</code></td>
+<td>Cursor alterado o de otra consulta</td>
+<td>Repetir sin <code>cursor</code></td>
+</tr>
+<tr>
+<td><code>422 VALIDATION_ERROR</code></td>
+<td>Parámetro desconocido, <code>branch_id</code> junto con <code>scope</code>, <code>page_size</code> fuera de 1–20, <code>branch_id</code>/<code>scope</code> en rutas de sucursal</td>
+<td>Corregir la consulta</td>
+</tr>
+<tr>
+<td><code>pagination_reset: true</code> en <code>200</code></td>
+<td>Cambiaron filtros/orden/<code>page_size</code> o el cursor venció (900 s)</td>
+<td>Descartar las páginas anteriores y reiniciar la lista</td>
+</tr>
+<tr>
+<td><code>partial: true</code> en <code>200</code></td>
+<td>Límite de trabajo alcanzado (5 s)</td>
+<td>Seguir pidiendo con <code>next_cursor</code>; no es el final</td>
+</tr>
+<tr>
+<td><code>503 PRODUCT_INVENTORY_QUERY.DEPENDENCY_UNAVAILABLE</code></td>
+<td>Un servicio no respondió a tiempo</td>
+<td>Reintentar</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependencias">Dependencias<a class="headerlink" href="#dependencias" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operational Context</td>
+<td>Membresía y sucursales de la empresa, antes de cualquier otra llamada</td>
+</tr>
+<tr>
+<td>Commercial Relationship</td>
+<td>Productos empresariales, presentaciones, búsqueda, precios por lista, conteo de adoptados</td>
+</tr>
+<tr>
+<td>Product Catalog</td>
+<td>Datos globales (nombre canónico, marca, categorías, identificadores, tipo, unidad base, imagen)</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td>Existencias por sucursal, políticas de mínimo e indicadores</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cobertura">Cobertura<a class="headerlink" href="#cobertura" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Verificación</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operaciones en el OpenAPI desplegado</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Operaciones documentadas</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Permisos contrastados con el código</td>
+<td>Sí (<code>api/product_overviews.py</code>, <code>inventory_overviews.py</code>, <code>low_stock_products.py</code>, <code>inventory_summary.py</code>, <code>visibility.py</code>)</td>
+</tr>
+<tr>
+<td>Esquemas contrastados</td>
+<td>Sí (OpenAPI desplegado, modelos <code>CursorPage</code>, <code>ProductOverview</code>, <code>InventoryOverview</code>, <code>LowStockPair</code>, <code>InventorySummaryOut</code>)</td>
+</tr>
+<tr>
+<td>Pendiente</td>
+<td>Valores exactos de <code>product_type</code>, <code>identifiers[].type</code> y formato de <code>image_url</code> (los define Product Catalog; ver su ficha)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

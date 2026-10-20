@@ -1,0 +1,3934 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/servicios/geography/">
+      
+      
+        <link rel="prev" href="../commercial-relationship/">
+      
+      
+        <link rel="next" href="../inventory/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Geography API - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#geography-api" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Geography API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-comunes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones comunes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#objetos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-global-countries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /global-countries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-post-global-countries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. POST /global-countries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-put-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. PUT /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-delete-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. DELETE /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-global-administrative-divisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /global-administrative-divisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-post-global-administrative-divisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. POST /global-administrative-divisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-put-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. PUT /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-delete-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. DELETE /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-get-global-cities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. GET /global-cities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-post-global-cities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. POST /global-cities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-get-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. GET /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-put-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. PUT /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-delete-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. DELETE /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-comunes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones comunes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#objetos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-global-countries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /global-countries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-post-global-countries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. POST /global-countries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-put-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. PUT /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-delete-global-countriescountry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. DELETE /global-countries/{country_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-global-administrative-divisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /global-administrative-divisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-post-global-administrative-divisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. POST /global-administrative-divisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-put-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. PUT /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-delete-global-administrative-divisionsdivision_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. DELETE /global-administrative-divisions/{division_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-get-global-cities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. GET /global-cities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-post-global-cities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. POST /global-cities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-get-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. GET /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-put-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. PUT /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-delete-global-citiescity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. DELETE /global-cities/{city_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="geography-api">Geography API<a class="headerlink" href="#geography-api" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Índice</a> · <a href="../../guias/autenticacion/">Autenticación</a> · <a href="../../guias/permisos/">Permisos</a> · <a href="../../guias/errores/">Errores</a> · <a href="../../parametros/">Parámetros</a></p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">&para;</a></h2>
+<p>Geography es el catálogo <strong>global</strong> de países, divisiones administrativas (departamentos, estados, provincias…) y ciudades. Lo usan las empresas, sucursales e identidades de SIO para sus direcciones. El frontend lo consume sobre todo para <strong>selectores en cascada</strong>: país → división administrativa → ciudad.</p>
+<h2 id="responsabilidad">Responsabilidad<a class="headerlink" href="#responsabilidad" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Mantener los tres catálogos con códigos únicos, jerarquía coherente (una división pertenece a un país; una ciudad a un país y, opcionalmente, a una división del mismo país) y control de concurrencia por <code>version</code>.</li>
+<li>Es un catálogo compartido: no conoce empresas ni sucursales.</li>
+</ul>
+<h2 id="datos-del-servicio">Datos del servicio<a class="headerlink" href="#datos-del-servicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL base</td>
+<td><code>https://sio-geography-dev.onrender.com</code> (<strong>sin</strong> <code>/api/v1</code>)</td>
+</tr>
+<tr>
+<td>Salud</td>
+<td><code>https://sio-geography-dev.onrender.com/health/live</code>, <code>/health/ready</code></td>
+</tr>
+<tr>
+<td>Swagger / OpenAPI</td>
+<td><a href="https://sio-geography-dev.onrender.com/docs">/docs</a> · <a href="https://sio-geography-dev.onrender.com/openapi.json">/openapi.json</a></td>
+</tr>
+<tr>
+<td>Formato de error</td>
+<td><strong>Básico</strong> (<code>{"detail": ...}</code>), sin <code>code</code>, <code>trace_id</code> ni <code>X-Trace-Id</code> (<a href="../../guias/errores/#12-formato-básico-geography-y-payment-reference">Errores §1.2</a>)</td>
+</tr>
+<tr>
+<td>Operaciones en el contrato desplegado</td>
+<td>17 (15 de negocio + 2 de salud)</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>OpenAPI de Render del 2026-10-19 cruzado con <code>services/geography-service</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="autenticacion-y-permisos">Autenticación y permisos<a class="headerlink" href="#autenticacion-y-permisos" title="Permanent link">&para;</a></h2>
+<p>Todas las rutas salvo <code>/health/*</code> exigen <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code>. Permisos con formato <code>perm:geography:{recurso}:{accion}</code>, recurso <code>global_countries</code>, <code>global_administrative_divisions</code> o <code>global_cities</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Operaciones</th>
+<th>Grupos de la plantilla que la tienen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read</code></td>
+<td>Listar y consultar</td>
+<td>Todos los grupos: <code>administradores</code>, <code>supervisores</code>, <code>compras</code>, <code>ventas</code>, <code>inventario</code> (vía <code>perm:geography:all:read</code>), <code>reportes</code> y <code>consulta</code> (permisos de lectura por recurso)</td>
+</tr>
+<tr>
+<td><code>create</code></td>
+<td>Crear</td>
+<td><code>administradores</code>, <code>supervisores</code> (<code>perm:all:all:create</code>)</td>
+</tr>
+<tr>
+<td><code>update</code></td>
+<td>Actualizar</td>
+<td><code>administradores</code>, <code>supervisores</code> (<code>perm:all:all:update</code>)</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td>Eliminar físicamente</td>
+<td><code>administradores</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="alcance-de-datos">Alcance de datos<a class="headerlink" href="#alcance-de-datos" title="Permanent link">&para;</a></h2>
+<p>Global: todos los usuarios ven los mismos registros. Las escrituras afectan a toda la plataforma.</p>
+<h2 id="convenciones-comunes">Convenciones comunes<a class="headerlink" href="#convenciones-comunes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Listas paginadas con <code>page</code> (≥ 1) y <code>page_size</code> (1–100, por defecto 20) y la envoltura <code>items</code>, <code>page</code>, <code>page_size</code>, <code>total_records</code>, <code>total_pages</code>.</li>
+<li><code>status</code> es <code>ACTIVE</code> o <code>INACTIVE</code>. Sin filtro, las listas devuelven ambos estados. <strong>No existe</strong> operación de inactivación separada: el estado se cambia con <code>PUT</code>.</li>
+<li><code>PUT</code> es reemplazo completo y exige <code>version</code> (≥ 1), la última leída. Versión desactualizada → <code>409</code> <code>{"detail": "El registro fue modificado por otra operación. Consulte nuevamente antes de actualizar."}</code>.</li>
+<li><code>DELETE</code> es <strong>borrado físico</strong> (<code>204</code>). Si existen registros relacionados (divisiones o ciudades del país, ciudades de la división, o referencias desde otros servicios no comprobables aquí), responde <code>409</code> con <code>detail</code> «No se puede eliminar … porque existen registros relacionados.».</li>
+<li><code>422</code> usa el formato estándar de FastAPI (<code>detail</code> como lista con <code>loc</code>, <code>msg</code>, <code>type</code>).</li>
+<li>Todas las respuestas de recurso incluyen <code>created_by</code>, <code>updated_by</code> (<code>sub</code> del autor), <code>created_at</code>, <code>updated_at</code> y <code>version</code>.</li>
+</ul>
+<h2 id="tabla-de-endpoints">Tabla de endpoints<a class="headerlink" href="#tabla-de-endpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Método</th>
+<th>Ruta relativa</th>
+<th>Descripción</th>
+<th>Permiso</th>
+<th>Clase</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>GET</code></td>
+<td><code>/health/live</code></td>
+<td>Proceso vivo</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#1-get-healthlive">Ver</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GET</code></td>
+<td><code>/health/ready</code></td>
+<td>Proceso y base de datos listos</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#2-get-healthready">Ver</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>GET</code></td>
+<td><code>/global-countries</code></td>
+<td>Listar países</td>
+<td><code>perm:geography:global_countries:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#3-get-global-countries">Ver</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>POST</code></td>
+<td><code>/global-countries</code></td>
+<td>Crear país</td>
+<td><code>perm:geography:global_countries:create</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#4-post-global-countries">Ver</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>GET</code></td>
+<td><code>/global-countries/{country_id}</code></td>
+<td>Consultar país</td>
+<td><code>perm:geography:global_countries:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#5-get-global-countriescountry_id">Ver</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>PUT</code></td>
+<td><code>/global-countries/{country_id}</code></td>
+<td>Reemplazar país</td>
+<td><code>perm:geography:global_countries:update</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#6-put-global-countriescountry_id">Ver</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>DELETE</code></td>
+<td><code>/global-countries/{country_id}</code></td>
+<td>Eliminar país</td>
+<td><code>perm:geography:global_countries:delete</code></td>
+<td><code>HIGH_RISK</code></td>
+<td><a href="#7-delete-global-countriescountry_id">Ver</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>GET</code></td>
+<td><code>/global-administrative-divisions</code></td>
+<td>Listar divisiones</td>
+<td><code>perm:geography:global_administrative_divisions:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#8-get-global-administrative-divisions">Ver</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>POST</code></td>
+<td><code>/global-administrative-divisions</code></td>
+<td>Crear división</td>
+<td><code>perm:geography:global_administrative_divisions:create</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#9-post-global-administrative-divisions">Ver</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>GET</code></td>
+<td><code>/global-administrative-divisions/{division_id}</code></td>
+<td>Consultar división</td>
+<td><code>perm:geography:global_administrative_divisions:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#10-get-global-administrative-divisionsdivision_id">Ver</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>PUT</code></td>
+<td><code>/global-administrative-divisions/{division_id}</code></td>
+<td>Reemplazar división</td>
+<td><code>perm:geography:global_administrative_divisions:update</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#11-put-global-administrative-divisionsdivision_id">Ver</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>DELETE</code></td>
+<td><code>/global-administrative-divisions/{division_id}</code></td>
+<td>Eliminar división</td>
+<td><code>perm:geography:global_administrative_divisions:delete</code></td>
+<td><code>HIGH_RISK</code></td>
+<td><a href="#12-delete-global-administrative-divisionsdivision_id">Ver</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>GET</code></td>
+<td><code>/global-cities</code></td>
+<td>Listar ciudades</td>
+<td><code>perm:geography:global_cities:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#13-get-global-cities">Ver</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>POST</code></td>
+<td><code>/global-cities</code></td>
+<td>Crear ciudad</td>
+<td><code>perm:geography:global_cities:create</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#14-post-global-cities">Ver</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>GET</code></td>
+<td><code>/global-cities/{city_id}</code></td>
+<td>Consultar ciudad</td>
+<td><code>perm:geography:global_cities:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#15-get-global-citiescity_id">Ver</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>PUT</code></td>
+<td><code>/global-cities/{city_id}</code></td>
+<td>Reemplazar ciudad</td>
+<td><code>perm:geography:global_cities:update</code></td>
+<td><code>WRITE</code></td>
+<td><a href="#16-put-global-citiescity_id">Ver</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>DELETE</code></td>
+<td><code>/global-cities/{city_id}</code></td>
+<td>Eliminar ciudad</td>
+<td><code>perm:geography:global_cities:delete</code></td>
+<td><code>HIGH_RISK</code></td>
+<td><a href="#17-delete-global-citiescity_id">Ver</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="objetos">Objetos<a class="headerlink" href="#objetos" title="Permanent link">&para;</a></h2>
+<p><strong><code>GlobalCountryResponse</code></strong>: <code>id</code> (UUID), <code>iso2_code</code> (2 caracteres, único), <code>iso3_code</code> (3 caracteres, único), <code>name</code> (≤ 120), <code>phone_prefix</code> (string | null, ≤ 10), <code>status</code>, <code>version</code>, trazabilidad.</p>
+<p><strong><code>GlobalAdministrativeDivisionResponse</code></strong>: <code>id</code>, <code>country_id</code> (UUID), <code>parent_division_id</code> (UUID | null; división superior del mismo país), <code>code</code> (≤ 40), <code>name</code> (≤ 160), <code>division_type</code> (<code>DEPARTMENT</code>, <code>STATE</code>, <code>PROVINCE</code>, <code>REGION</code>, <code>DISTRICT</code>, <code>OTHER</code>), <code>status</code>, <code>version</code>, trazabilidad.</p>
+<p><strong><code>GlobalCityResponse</code></strong>: <code>id</code>, <code>country_id</code>, <code>administrative_division_id</code> (UUID | null), <code>code</code> (string | null, ≤ 40), <code>name</code> (≤ 160), <code>latitude</code> y <code>longitude</code> (cadenas decimales | null), <code>status</code>, <code>version</code>, trazabilidad.</p>
+<h2 id="operaciones">Operaciones<a class="headerlink" href="#operaciones" title="Permanent link">&para;</a></h2>
+<h3 id="1-get-healthlive">1. <code>GET /health/live</code><a class="headerlink" href="#1-get-healthlive" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-geography-dev.onrender.com/health/live</code> → <code>200</code> <code>{"status": "ok"}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/health/live'</span>
+</code></pre></div>
+<h3 id="2-get-healthready">2. <code>GET /health/ready</code><a class="headerlink" href="#2-get-healthready" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-geography-dev.onrender.com/health/ready</code> → <code>200</code> <code>{"status": "ok"}</code>; <code>503</code> <code>{"detail": "La base de datos no está disponible."}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/health/ready'</span>
+</code></pre></div>
+<h3 id="3-get-global-countries">3. <code>GET /global-countries</code><a class="headerlink" href="#3-get-global-countries" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code> · global</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-geography-dev.onrender.com/global-countries</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:geography:global_countries:read</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code>, <code>page_size</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>1–100, por defecto 20</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>≤ 120; parcial por nombre, ISO2 o ISO3</td>
+</tr>
+<tr>
+<td><code>iso2_code</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>Exactamente 2 caracteres; igualdad</td>
+</tr>
+<tr>
+<td><code>iso3_code</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>Exactamente 3 caracteres; igualdad</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>query</td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>No</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-countries?status=ACTIVE&amp;page_size=100'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"iso2_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CO"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"iso3_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COL"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Colombia"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"phone_prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+57"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Campo exacto para <code>country_id</code>:</strong> <code>items[].id</code>. Se usa en empresas y sucursales (Operational Context), identidades (Party Identity) y como filtro en las operaciones 8 y 13.</p>
+<h3 id="4-post-global-countries">4. <code>POST /global-countries</code><a class="headerlink" href="#4-post-global-countries" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>WRITE</code> · catálogo global</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-geography-dev.onrender.com/global-countries</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:geography:global_countries:create</code></td>
+</tr>
+<tr>
+<td>Cabeceras</td>
+<td><code>Authorization</code>, <code>Content-Type: application/json</code></td>
+</tr>
+</tbody>
+</table>
+<p>Cuerpo (<code>GlobalCountryCreate</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iso2_code</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>2 caracteres (ISO 3166-1 alpha-2); único</td>
+</tr>
+<tr>
+<td><code>iso3_code</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>3 caracteres (alpha-3); único</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>1–120</td>
+</tr>
+<tr>
+<td><code>phone_prefix</code></td>
+<td>string | null</td>
+<td>No</td>
+<td>≤ 10</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>Sí</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"iso2_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso3_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PER"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Perú"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"phone_prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+51"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ejemplo de solicitud con el cuerpo anterior:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-countries'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "iso2_code": "PE",</span>
+<span class="s1">    "iso3_code": "PER",</span>
+<span class="s1">    "name": "Perú",</span>
+<span class="s1">    "phone_prefix": "+51",</span>
+<span class="s1">    "status": "ACTIVE"</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuestas: <code>201</code> con <code>GlobalCountryResponse</code> (<code>version</code> 1); <code>409</code> <code>{"detail": "Ya existe un país con alguno de los códigos ISO indicados."}</code>; <code>422</code>; <code>401</code>/<code>403</code>.</p>
+<h3 id="5-get-global-countriescountry_id">5. <code>GET /global-countries/{country_id}</code><a class="headerlink" href="#5-get-global-countriescountry_id" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>. URL <code>https://sio-geography-dev.onrender.com/global-countries/{country_id}</code>; <code>country_id</code> (ruta, UUID) del campo <code>id</code> de la operación 3. <code>200</code> con el objeto; <code>404</code> <code>{"detail": "El país solicitado no existe."}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-countries/c0a80101-0000-4000-8000-000000000001'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalCountryResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso2_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CO"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso3_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COL"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Colombia"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"phone_prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+57"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="6-put-global-countriescountry_id">6. <code>PUT /global-countries/{country_id}</code><a class="headerlink" href="#6-put-global-countriescountry_id" title="Permanent link">&para;</a></h3>
+<p><code>WRITE</code>. URL <code>https://sio-geography-dev.onrender.com/global-countries/{country_id}</code>; permiso <code>perm:geography:global_countries:update</code>. Cuerpo (<code>GlobalCountryUpdate</code>): los mismos campos de la operación 4 <strong>más <code>version</code></strong> (integer ≥ 1, obligatorio). Reemplazo completo, incluido <code>status</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"iso2_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CO"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso3_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COL"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Colombia"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"phone_prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+57"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ejemplo de solicitud con el cuerpo anterior:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-countries/c0a80101-0000-4000-8000-000000000001'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "iso2_code": "CO",</span>
+<span class="s1">    "iso3_code": "COL",</span>
+<span class="s1">    "name": "Colombia",</span>
+<span class="s1">    "phone_prefix": "+57",</span>
+<span class="s1">    "status": "ACTIVE",</span>
+<span class="s1">    "version": 1</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuestas: <code>200</code> con el objeto (<code>version</code> incrementada); <code>404</code>; <code>409</code> por versión desactualizada o códigos ISO duplicados; <code>422</code>. Efecto: cambiar <code>status</code> a <code>INACTIVE</code> deja el país no elegible en los servicios que validan ubicaciones activas (Operational Context responde <code>422 LOCATION_INACTIVE</code> al crear o editar empresas y sucursales con él).</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalCountryResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso2_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CO"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iso3_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COL"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Colombia"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"phone_prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+57"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="7-delete-global-countriescountry_id">7. <code>DELETE /global-countries/{country_id}</code><a class="headerlink" href="#7-delete-global-countriescountry_id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>HIGH_RISK</code> · borrado físico de un registro global</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-geography-dev.onrender.com/global-countries/{country_id}</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:geography:global_countries:delete</code></td>
+</tr>
+</tbody>
+</table>
+<p>Sin cuerpo. Respuestas: <code>204</code> sin contenido; <code>404</code> <code>{"detail": "El país solicitado no existe."}</code>; <code>409</code> si tiene divisiones o ciudades (las claves foráneas usan <code>RESTRICT</code>). <strong>Advertencia:</strong> otros servicios guardan <code>country_id</code> sin clave foránea (empresas, sucursales, identidades); Geography no puede detectar esas referencias y el borrado las deja apuntando a un país inexistente. Prefiera <code>PUT</code> con <code>status: "INACTIVE"</code>. Confirmar siempre con el usuario.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-countries/c0a80101-0000-4000-8000-000000000001'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<h3 id="8-get-global-administrative-divisions">8. <code>GET /global-administrative-divisions</code><a class="headerlink" href="#8-get-global-administrative-divisions" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code> · global</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-geography-dev.onrender.com/global-administrative-divisions</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:geography:global_administrative_divisions:read</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code>, <code>page_size</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>1–100</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>≤ 160; parcial por código o nombre</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>country_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td>Operación 3, <code>items[].id</code></td>
+</tr>
+<tr>
+<td><code>parent_division_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td>Esta operación, <code>items[].id</code></td>
+</tr>
+<tr>
+<td><code>division_type</code></td>
+<td>query</td>
+<td>enum</td>
+<td>No</td>
+<td><code>DEPARTMENT</code>, <code>STATE</code>, <code>PROVINCE</code>, <code>REGION</code>, <code>DISTRICT</code>, <code>OTHER</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>query</td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>No</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-administrative-divisions?country_id=c0a80101-0000-4000-8000-000000000001&amp;status=ACTIVE&amp;page_size=100'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"parent_division_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"05"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Antioquia"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"division_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEPARTMENT"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Campo exacto para <code>administrative_division_id</code>:</strong> <code>items[].id</code>. Para un selector en cascada, filtra por el <code>country_id</code> elegido.</p>
+<h3 id="9-post-global-administrative-divisions">9. <code>POST /global-administrative-divisions</code><a class="headerlink" href="#9-post-global-administrative-divisions" title="Permanent link">&para;</a></h3>
+<p><code>WRITE</code>. URL <code>https://sio-geography-dev.onrender.com/global-administrative-divisions</code>; permiso <code>perm:geography:global_administrative_divisions:create</code>. Cuerpo (<code>GlobalAdministrativeDivisionCreate</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>country_id</code></td>
+<td>UUID</td>
+<td>Sí</td>
+<td>Debe existir (<code>409</code> «El país indicado no existe.»)</td>
+</tr>
+<tr>
+<td><code>parent_division_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>Debe existir y pertenecer al <strong>mismo país</strong> (<code>409</code>)</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>1–40</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>1–160</td>
+</tr>
+<tr>
+<td><code>division_type</code></td>
+<td>enum</td>
+<td>Sí</td>
+<td><code>DEPARTMENT</code>, <code>STATE</code>, <code>PROVINCE</code>, <code>REGION</code>, <code>DISTRICT</code>, <code>OTHER</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>Sí</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"parent_division_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"11"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bogotá, D.C."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"division_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DISTRICT"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ejemplo de solicitud con el cuerpo anterior:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-administrative-divisions'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "country_id": "c0a80101-0000-4000-8000-000000000001",</span>
+<span class="s1">    "parent_division_id": null,</span>
+<span class="s1">    "code": "11",</span>
+<span class="s1">    "name": "Bogotá, D.C.",</span>
+<span class="s1">    "division_type": "DISTRICT",</span>
+<span class="s1">    "status": "ACTIVE"</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuestas: <code>201</code>; <code>409</code> (país inexistente, división superior inválida o de otro país, conflicto de integridad «No fue posible guardar la división administrativa.»); <code>422</code>. <code>code</code> <strong>no</strong> es único en divisiones ni ciudades (verificado en los modelos: las únicas restricciones de unicidad del servicio son <code>iso2_code</code> e <code>iso3_code</code> de países); el frontend no debe asumir que un <code>code</code> repetido se rechace.</p>
+<p>Ejemplo de respuesta <code>201</code> (<code>GlobalAdministrativeDivisionResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ae461ef2-a5f2-4c7b-8918-2b3c14efa9f1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"parent_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUN"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cundinamarca"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"division_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEPARTMENT"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="10-get-global-administrative-divisionsdivision_id">10. <code>GET /global-administrative-divisions/{division_id}</code><a class="headerlink" href="#10-get-global-administrative-divisionsdivision_id" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>. URL <code>https://sio-geography-dev.onrender.com/global-administrative-divisions/{division_id}</code>. <code>200</code> con el objeto; <code>404</code> <code>{"detail": "..."}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-administrative-divisions/c0a80101-0000-4000-8000-000000000002'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalAdministrativeDivisionResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"parent_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUN"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cundinamarca"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"division_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEPARTMENT"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="11-put-global-administrative-divisionsdivision_id">11. <code>PUT /global-administrative-divisions/{division_id}</code><a class="headerlink" href="#11-put-global-administrative-divisionsdivision_id" title="Permanent link">&para;</a></h3>
+<p><code>WRITE</code>. URL <code>https://sio-geography-dev.onrender.com/global-administrative-divisions/{division_id}</code>; permiso <code>…update</code>. Cuerpo (<code>GlobalAdministrativeDivisionUpdate</code>): los campos de la operación 9 <strong>más <code>version</code></strong> (≥ 1). Reglas adicionales: una división no puede ser su propia superior (<code>409</code> «Una división administrativa no puede ser su propia división superior…»). Respuestas: <code>200</code>; <code>404</code>; <code>409</code> (versión, padre inválido, integridad); <code>422</code>.</p>
+<p>Ejemplo de solicitud (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-administrative-divisions/c0a80101-0000-4000-8000-000000000002'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "country_id": "c0a80101-0000-4000-8000-000000000001",</span>
+<span class="s1">    "parent_division_id": "c0a80101-0000-4000-8000-000000000002",</span>
+<span class="s1">    "code": "CUN",</span>
+<span class="s1">    "name": "Cundinamarca",</span>
+<span class="s1">    "division_type": "DEPARTMENT",</span>
+<span class="s1">    "status": "ACTIVE",</span>
+<span class="s1">    "version": 1</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalAdministrativeDivisionResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"parent_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUN"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cundinamarca"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"division_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEPARTMENT"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="12-delete-global-administrative-divisionsdivision_id">12. <code>DELETE /global-administrative-divisions/{division_id}</code><a class="headerlink" href="#12-delete-global-administrative-divisionsdivision_id" title="Permanent link">&para;</a></h3>
+<p><code>HIGH_RISK</code>. URL <code>https://sio-geography-dev.onrender.com/global-administrative-divisions/{division_id}</code>; permiso <code>…delete</code>. <code>204</code>; <code>404</code>; <code>409</code> <code>{"detail": "No se puede eliminar la división porque existen registros relacionados."}</code> si tiene ciudades o divisiones hijas. Misma advertencia que la operación 7 sobre referencias en otros servicios.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-administrative-divisions/c0a80101-0000-4000-8000-000000000002'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<h3 id="13-get-global-cities">13. <code>GET /global-cities</code><a class="headerlink" href="#13-get-global-cities" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code> · global</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-geography-dev.onrender.com/global-cities</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:geography:global_cities:read</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code>, <code>page_size</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>1–100</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>≤ 160; parcial por código o nombre</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>country_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td>Operación 3</td>
+</tr>
+<tr>
+<td><code>administrative_division_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td>Operación 8</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>≤ 40; igualdad</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>query</td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>No</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-cities?administrative_division_id=c0a80101-0000-4000-8000-000000000002&amp;status=ACTIVE&amp;page_size=100'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000003"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"administrative_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"05001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Medellín"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.244203"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-75.581212"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-01T00:00:00Z"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Campo exacto para <code>city_id</code>:</strong> <code>items[].id</code>. Operational Context exige coherencia: la ciudad debe pertenecer a la división y al país enviados (<code>422 GEOGRAPHY_INCOHERENT</code>).</p>
+<h3 id="14-post-global-cities">14. <code>POST /global-cities</code><a class="headerlink" href="#14-post-global-cities" title="Permanent link">&para;</a></h3>
+<p><code>WRITE</code>. URL <code>https://sio-geography-dev.onrender.com/global-cities</code>; permiso <code>perm:geography:global_cities:create</code>. Cuerpo (<code>GlobalCityCreate</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>country_id</code></td>
+<td>UUID</td>
+<td>Sí</td>
+<td>Debe existir (<code>409</code> «El país indicado no existe.»)</td>
+</tr>
+<tr>
+<td><code>administrative_division_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>Debe existir y ser del mismo país (<code>409</code>)</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>string | null</td>
+<td>No</td>
+<td>≤ 40; código oficial cuando exista</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Sí</td>
+<td>1–160</td>
+</tr>
+<tr>
+<td><code>latitude</code></td>
+<td>number | string | null</td>
+<td>No</td>
+<td>−90 a 90</td>
+</tr>
+<tr>
+<td><code>longitude</code></td>
+<td>number | string | null</td>
+<td>No</td>
+<td>−180 a 180</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>ACTIVE</code> | <code>INACTIVE</code></td>
+<td>Sí</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"administrative_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"05001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Medellín"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.244203"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-75.581212"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ejemplo de solicitud con el cuerpo anterior:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-cities'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "country_id": "c0a80101-0000-4000-8000-000000000001",</span>
+<span class="s1">    "administrative_division_id": "c0a80101-0000-4000-8000-000000000002",</span>
+<span class="s1">    "code": "05001",</span>
+<span class="s1">    "name": "Medellín",</span>
+<span class="s1">    "latitude": "6.244203",</span>
+<span class="s1">    "longitude": "-75.581212",</span>
+<span class="s1">    "status": "ACTIVE"</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuestas: <code>201</code> (coordenadas devueltas como cadenas); <code>409</code> (país inexistente, división inválida o de otro país, integridad «No fue posible guardar la ciudad.»); <code>422</code> (rango de coordenadas, longitudes).</p>
+<p>Ejemplo de respuesta <code>201</code> (<code>GlobalCityResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fa1730d8-2668-4b82-8b1d-1acc0ddce804"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"administrative_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BOG"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bogotá"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.6097"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-74.0817"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="15-get-global-citiescity_id">15. <code>GET /global-cities/{city_id}</code><a class="headerlink" href="#15-get-global-citiescity_id" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>. URL <code>https://sio-geography-dev.onrender.com/global-cities/{city_id}</code>. <code>200</code>; <code>404</code> <code>{"detail": "La ciudad solicitada no existe."}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-cities/c0a80101-0000-4000-8000-000000000003'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalCityResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000003"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"administrative_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BOG"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bogotá"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.6097"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-74.0817"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="16-put-global-citiescity_id">16. <code>PUT /global-cities/{city_id}</code><a class="headerlink" href="#16-put-global-citiescity_id" title="Permanent link">&para;</a></h3>
+<p><code>WRITE</code>. URL <code>https://sio-geography-dev.onrender.com/global-cities/{city_id}</code>; permiso <code>…update</code>. Cuerpo (<code>GlobalCityUpdate</code>): los campos de la operación 14 <strong>más <code>version</code></strong> (≥ 1). Respuestas: <code>200</code>; <code>404</code>; <code>409</code> (versión, división inválida, integridad); <code>422</code>.</p>
+<p>Ejemplo de solicitud (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-cities/c0a80101-0000-4000-8000-000000000003'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "country_id": "c0a80101-0000-4000-8000-000000000001",</span>
+<span class="s1">    "administrative_division_id": "c0a80101-0000-4000-8000-000000000002",</span>
+<span class="s1">    "code": "BOG",</span>
+<span class="s1">    "name": "Bogotá",</span>
+<span class="s1">    "latitude": "4.6097",</span>
+<span class="s1">    "longitude": "-74.0817",</span>
+<span class="s1">    "status": "ACTIVE",</span>
+<span class="s1">    "version": 1</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>GlobalCityResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000003"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"administrative_division_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c0a80101-0000-4000-8000-000000000002"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BOG"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bogotá"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.6097"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-74.0817"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="17-delete-global-citiescity_id">17. <code>DELETE /global-cities/{city_id}</code><a class="headerlink" href="#17-delete-global-citiescity_id" title="Permanent link">&para;</a></h3>
+<p><code>HIGH_RISK</code>. URL <code>https://sio-geography-dev.onrender.com/global-cities/{city_id}</code>; permiso <code>…delete</code>. <code>204</code>; <code>404</code>; <code>409</code> <code>{"detail": "No se puede eliminar la ciudad porque existen registros relacionados."}</code>. Las empresas, sucursales y perfiles de contacto de otros servicios guardan <code>city_id</code> sin clave foránea: prefiera inactivar con <code>PUT</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s1">'https://sio-geography-dev.onrender.com/global-cities/c0a80101-0000-4000-8000-000000000003'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<h2 id="errores-frecuentes">Errores frecuentes<a class="headerlink" href="#errores-frecuentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Respuesta</th>
+<th>Causa</th>
+<th>Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code> / <code>403</code> <code>{"detail": ...}</code></td>
+<td>Sin token o sin permiso</td>
+<td>Autenticar; ocultar acciones de escritura a perfiles sin permiso</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>UUID inexistente</td>
+<td>Revisar el identificador</td>
+</tr>
+<tr>
+<td><code>409</code> «El registro fue modificado por otra operación…»</td>
+<td><code>version</code> desactualizada</td>
+<td>Recargar y repetir</td>
+</tr>
+<tr>
+<td><code>409</code> «Ya existe un país con alguno de los códigos ISO indicados.»</td>
+<td>ISO2 o ISO3 duplicado</td>
+<td>Corregir códigos</td>
+</tr>
+<tr>
+<td><code>409</code> «…debe pertenecer al mismo país…»</td>
+<td>División o ciudad con padre de otro país</td>
+<td>Corregir jerarquía</td>
+</tr>
+<tr>
+<td><code>409</code> «No se puede eliminar … registros relacionados.»</td>
+<td>Borrado con hijos</td>
+<td>Inactivar en lugar de borrar</td>
+</tr>
+<tr>
+<td><code>422</code> con lista en <code>detail</code></td>
+<td>Longitudes, enumeraciones, coordenadas fuera de rango, <code>page_size</code></td>
+<td>Leer <code>loc</code> y <code>msg</code></td>
+</tr>
+<tr>
+<td><code>503</code> <code>{"detail": "La base de datos del servicio no está disponible temporalmente. Intente de nuevo más tarde."}</code></td>
+<td>Base de datos caída</td>
+<td>Reintentar</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependencias">Dependencias<a class="headerlink" href="#dependencias" title="Permanent link">&para;</a></h2>
+<p>Ninguna hacia otros servicios. Lo consumen Operational Context (empresas y sucursales validan país, división y ciudad activos y coherentes), Party Identity (países de identificación y perfiles de contacto) y la cuenta técnica de Party Identity (lectura de países).</p>
+<h2 id="cobertura">Cobertura<a class="headerlink" href="#cobertura" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Verificación</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operaciones en el OpenAPI desplegado</td>
+<td>17</td>
+</tr>
+<tr>
+<td>Operaciones documentadas</td>
+<td>17</td>
+</tr>
+<tr>
+<td>Permisos contrastados con el código</td>
+<td>Sí (<code>api/global_countries.py</code>, <code>api/global_administrative_divisions.py</code>, <code>api/global_cities.py</code>)</td>
+</tr>
+<tr>
+<td>Esquemas contrastados</td>
+<td>Sí (OpenAPI desplegado; mensajes de error de <code>infrastructure/*_repository.py</code>)</td>
+</tr>
+<tr>
+<td>Verificado</td>
+<td><code>code</code> de divisiones y ciudades no tiene restricción de unicidad; solo <code>iso2_code</code>/<code>iso3_code</code> de países son únicos</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,3990 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/servicios/audit/">
+      
+      
+        <link rel="prev" href="../../principales/ventas/">
+      
+      
+        <link rel="next" href="../business-reporting/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Audit API - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#audit-api" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Audit API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#el-objeto-evento-auditeventresponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El objeto evento (AuditEventResponse)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-post-audit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. POST /audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-post-audit-eventsbatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. POST /audit-events/batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idaudit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idaudit-eventsaudit_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/audit-events/{audit_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_identity-historyentity_typeentity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/entity-history/{entity_type}/{entity_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-platform-audit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /platform-audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-platform-audit-eventsaudit_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /platform-audit-events/{audit_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-platform-entity-historyentity_typeentity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /platform-entity-history/{entity_type}/{entity_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#el-objeto-evento-auditeventresponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El objeto evento (AuditEventResponse)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-post-audit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. POST /audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-post-audit-eventsbatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. POST /audit-events/batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idaudit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idaudit-eventsaudit_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/audit-events/{audit_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_identity-historyentity_typeentity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/entity-history/{entity_type}/{entity_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-platform-audit-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /platform-audit-events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-platform-audit-eventsaudit_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /platform-audit-events/{audit_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-platform-entity-historyentity_typeentity_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /platform-entity-history/{entity_type}/{entity_id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="audit-api">Audit API<a class="headerlink" href="#audit-api" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Índice</a> · <a href="../../guias/autenticacion/">Autenticación</a> · <a href="../../guias/permisos/">Permisos</a> · <a href="../../guias/errores/">Errores</a> · <a href="../../parametros/">Parámetros</a></p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">&para;</a></h2>
+<p>Audit guarda el <strong>historial inmutable de lo que ocurre en SIO</strong>: quién hizo qué, sobre qué entidad, cuándo y con qué resultado. Los demás microservicios le envían eventos; el frontend solo <strong>consulta</strong> ese historial, por empresa o de plataforma, para pantallas de trazabilidad y soporte.</p>
+<h2 id="responsabilidad">Responsabilidad<a class="headerlink" href="#responsabilidad" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Recibir eventos de auditoría desde los microservicios (cuentas de servicio) de forma idempotente, individualmente o por lotes.</li>
+<li>Conservar los eventos con los valores anteriores y nuevos, ya <strong>redactados</strong>: los valores de claves sensibles (contraseñas, tokens…) se reemplazan por <code>"***"</code> y la lista de rutas ocultadas queda en <code>redacted_paths</code>.</li>
+<li>Exponer consultas por empresa (con aislamiento multi-tenant) y de plataforma (eventos sin empresa), incluido el historial cronológico de una entidad.</li>
+</ul>
+<h2 id="datos-del-servicio">Datos del servicio<a class="headerlink" href="#datos-del-servicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL base</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1</code></td>
+</tr>
+<tr>
+<td>Salud</td>
+<td><code>https://sio-audit-dev.onrender.com/health/live</code>, <code>/health/ready</code></td>
+</tr>
+<tr>
+<td>Swagger / OpenAPI</td>
+<td><a href="https://sio-audit-dev.onrender.com/docs">/docs</a> · <a href="https://sio-audit-dev.onrender.com/openapi.json">/openapi.json</a></td>
+</tr>
+<tr>
+<td>Formato de error</td>
+<td>Problem Details con <code>code</code> <code>AUDIT.*</code> y <code>trace_id</code> (<a href="../../guias/errores/">Errores</a>)</td>
+</tr>
+<tr>
+<td>Operaciones en el contrato desplegado</td>
+<td>10 (8 de negocio + 2 de salud)</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>Contrato OpenAPI de Render del 2026-10-19 cruzado con el código del servicio (<code>services/audit-service</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="autenticacion-y-permisos">Autenticación y permisos<a class="headerlink" href="#autenticacion-y-permisos" title="Permanent link">&para;</a></h2>
+<p>Todas las rutas salvo <code>/health/*</code> exigen <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code> (<a href="../../guias/autenticacion/">Autenticación</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Permiso</th>
+<th>Operaciones</th>
+<th>Quién lo tiene en la plantilla del realm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>perm:audit:audit-events:create</code></td>
+<td>Registrar eventos (una y por lote)</td>
+<td>Solo cuentas de servicio técnicas de los microservicios. Ningún grupo de usuarios lo tiene salvo <code>administradores</code> vía <code>perm:all:all:all</code>, pero además la ruta exige que el token sea de una <strong>cuenta de servicio</strong> (ver más abajo)</td>
+</tr>
+<tr>
+<td><code>perm:audit:audit-events:read</code></td>
+<td>Consultas de una empresa</td>
+<td><code>administradores</code> (<code>perm:all:all:all</code>), <code>supervisores</code> (<code>perm:all:all:read</code>)</td>
+</tr>
+<tr>
+<td><code>perm:audit:platform-events:read</code></td>
+<td>Consultas de plataforma</td>
+<td><code>administradores</code>, <code>supervisores</code></td>
+</tr>
+</tbody>
+</table>
+<p>Los grupos <code>compras</code>, <code>ventas</code>, <code>inventario</code>, <code>reportes</code> y <code>consulta</code> <strong>no</strong> tienen permisos de Audit en la plantilla: sus usuarios reciben <code>403</code> en todas las consultas.</p>
+<p><strong>Restricción de las rutas de registro:</strong> además del permiso, el token debe pertenecer a una cuenta de servicio de Keycloak. El código comprueba que el token tenga el claim <code>client_id</code> y que <code>preferred_username</code> sea exactamente <code>service-account-&lt;client_id&gt;</code>. Un token de usuario (<code>sio-web</code>) recibe <code>403 AUDIT.FORBIDDEN</code> aunque tuviera el permiso. El frontend <strong>no debe</strong> registrar eventos: los generan los propios microservicios.</p>
+<h2 id="alcance-de-datos">Alcance de datos<a class="headerlink" href="#alcance-de-datos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Alcance</th>
+<th>Rutas</th>
+<th>Regla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empresa</td>
+<td><code>/companies/{company_id}/…</code></td>
+<td>El servicio consulta a Operational Context, con el token del usuario, si tiene membresía <code>ACTIVE</code> en la empresa. Si no, <code>404 AUDIT.NOT_FOUND</code> (igual que si la empresa no existiera). Nunca devuelve eventos de plataforma</td>
+</tr>
+<tr>
+<td>Plataforma</td>
+<td><code>/platform-audit-events…</code>, <code>/platform-entity-history/…</code></td>
+<td>Solo eventos con <code>company_id</code> nulo. No consulta Operational Context; basta el permiso</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tabla-de-endpoints">Tabla de endpoints<a class="headerlink" href="#tabla-de-endpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Método</th>
+<th>Ruta relativa</th>
+<th>Descripción</th>
+<th>Permiso</th>
+<th>Clase</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>GET</code></td>
+<td><code>/health/live</code> (sin prefijo)</td>
+<td>Proceso vivo</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#1-get-healthlive">Ver</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GET</code></td>
+<td><code>/health/ready</code> (sin prefijo)</td>
+<td>Proceso y base de datos listos</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#2-get-healthready">Ver</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>POST</code></td>
+<td><code>/audit-events</code></td>
+<td>Registrar un evento</td>
+<td><code>perm:audit:audit-events:create</code> + cuenta de servicio</td>
+<td><code>WRITE</code></td>
+<td><a href="#3-post-audit-events">Ver</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>POST</code></td>
+<td><code>/audit-events/batch</code></td>
+<td>Registrar de 1 a 100 eventos (atómico)</td>
+<td><code>perm:audit:audit-events:create</code> + cuenta de servicio</td>
+<td><code>WRITE</code></td>
+<td><a href="#4-post-audit-eventsbatch">Ver</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/audit-events</code></td>
+<td>Listar eventos de una empresa</td>
+<td><code>perm:audit:audit-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#5-get-companiescompany_idaudit-events">Ver</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/audit-events/{audit_id}</code></td>
+<td>Obtener un evento de una empresa</td>
+<td><code>perm:audit:audit-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#6-get-companiescompany_idaudit-eventsaudit_id">Ver</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/entity-history/{entity_type}/{entity_id}</code></td>
+<td>Historial cronológico de una entidad de la empresa</td>
+<td><code>perm:audit:audit-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#7-get-companiescompany_identity-historyentity_typeentity_id">Ver</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>GET</code></td>
+<td><code>/platform-audit-events</code></td>
+<td>Listar eventos de plataforma</td>
+<td><code>perm:audit:platform-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#8-get-platform-audit-events">Ver</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>GET</code></td>
+<td><code>/platform-audit-events/{audit_id}</code></td>
+<td>Obtener un evento de plataforma</td>
+<td><code>perm:audit:platform-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#9-get-platform-audit-eventsaudit_id">Ver</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>GET</code></td>
+<td><code>/platform-entity-history/{entity_type}/{entity_id}</code></td>
+<td>Historial cronológico de una entidad de plataforma</td>
+<td><code>perm:audit:platform-events:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#10-get-platform-entity-historyentity_typeentity_id">Ver</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="el-objeto-evento-auditeventresponse">El objeto evento (<code>AuditEventResponse</code>)<a class="headerlink" href="#el-objeto-evento-auditeventresponse" title="Permanent link">&para;</a></h2>
+<p>Todas las consultas devuelven este objeto, solo o dentro de <code>items[]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>UUID</td>
+<td>Identificador interno asignado por Audit (<code>audit_id</code> en las rutas)</td>
+</tr>
+<tr>
+<td><code>event_id</code></td>
+<td>UUID</td>
+<td>Identificador del evento asignado por el servicio emisor; clave de idempotencia</td>
+</tr>
+<tr>
+<td><code>company_id</code></td>
+<td>UUID | null</td>
+<td>Empresa del evento; <code>null</code> en eventos de plataforma</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID | null</td>
+<td>Sucursal, si aplica</td>
+</tr>
+<tr>
+<td><code>application_user_id</code></td>
+<td>UUID | null</td>
+<td>Usuario de aplicación que actuó</td>
+</tr>
+<tr>
+<td><code>keycloak_user_id</code></td>
+<td>UUID | null</td>
+<td><code>sub</code> del token del actor</td>
+</tr>
+<tr>
+<td><code>username_snapshot</code></td>
+<td>string | null</td>
+<td>Nombre de usuario en el momento del evento (máx. 160)</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>string</td>
+<td>Acción en mayúsculas, patrón <code>^[A-Z][A-Z0-9_]{0,49}$</code> (por ejemplo <code>CREATE</code>, <code>CONFIRM_SALE</code>)</td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>string</td>
+<td>Entidad en PascalCase, patrón <code>^[A-Z][A-Za-z0-9]{0,59}$</code> (por ejemplo <code>Sale</code>, <code>CompanyProduct</code>)</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>UUID | null</td>
+<td>Identificador de la entidad afectada</td>
+</tr>
+<tr>
+<td><code>previous_values</code></td>
+<td>object | null</td>
+<td>Valores antes del cambio, ya redactados</td>
+</tr>
+<tr>
+<td><code>new_values</code></td>
+<td>object | null</td>
+<td>Valores después del cambio, ya redactados</td>
+</tr>
+<tr>
+<td><code>redacted_paths</code></td>
+<td>array<string></td>
+<td>Rutas de <code>previous_values</code>/<code>new_values</code> cuyo valor se reemplazó por <code>"***"</code></td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td><code>"SUCCESS"</code> | <code>"FAILURE"</code></td>
+<td>Resultado de la acción</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>string | null</td>
+<td>Motivo (máx. 2000), típico en fallos y anulaciones</td>
+</tr>
+<tr>
+<td><code>request_id</code>, <code>correlation_id</code></td>
+<td>UUID | null</td>
+<td>Identificadores de trazabilidad del emisor</td>
+</tr>
+<tr>
+<td><code>source_service</code></td>
+<td>string</td>
+<td><code>client_id</code> de la cuenta de servicio emisora (lo fija Audit)</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>date-time</td>
+<td>Cuándo ocurrió, según el emisor (con zona horaria)</td>
+</tr>
+<tr>
+<td><code>recorded_at</code></td>
+<td>date-time</td>
+<td>Cuándo lo guardó Audit</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>string</td>
+<td><code>sub</code> de la cuenta de servicio emisora</td>
+</tr>
+</tbody>
+</table>
+<p>Los valores concretos de <code>action</code> y <code>entity_type</code> los define cada servicio emisor; Audit solo valida el formato. El catálogo de valores que emiten hoy los servicios (verificado en el código de cada uno) está en <a href="../../principales/administracion-empresarial/#16-consultar-la-trazabilidad-de-la-empresa-auditoría">Administración empresarial §16</a>: por ejemplo Sales emite <code>CREATE_SALE</code>, <code>CONFIRM_SALE</code>, <code>CANCEL_SALE</code> sobre <code>Sale</code>, Purchase emite <code>CONFIRM_PURCHASE</code>, <code>RECEIVE_PURCHASE</code>, <code>CANCEL_PURCHASE</code> sobre <code>Purchase</code>, y Commercial Relationship <code>ADOPT_COMPANY_PRODUCT</code>, <code>CHANGE_PRICE_LIST_ITEM_PRICE</code>, etc. Las acciones siguen el patrón <code>VERBO_ENTIDAD</code> en mayúsculas.</p>
+<h2 id="operaciones">Operaciones<a class="headerlink" href="#operaciones" title="Permanent link">&para;</a></h2>
+<h3 id="1-get-healthlive">1. <code>GET /health/live</code><a class="headerlink" href="#1-get-healthlive" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code> · sin autenticación</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/health/live</code></td>
+</tr>
+<tr>
+<td>Respuesta</td>
+<td><code>200</code> <code>{"status": "ok"}</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/health/live'</span>
+</code></pre></div>
+<h3 id="2-get-healthready">2. <code>GET /health/ready</code><a class="headerlink" href="#2-get-healthready" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code> · sin autenticación</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/health/ready</code></td>
+</tr>
+<tr>
+<td>Respuestas</td>
+<td><code>200</code> <code>{"status": "ok"}</code> cuando la base de datos responde; <code>503</code> <code>{"detail": "..."}</code> si no</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/health/ready'</span>
+</code></pre></div>
+<h3 id="3-post-audit-events">3. <code>POST /audit-events</code><a class="headerlink" href="#3-post-audit-events" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>WRITE</code> (crea un registro de auditoría inmutable)</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/audit-events</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:audit-events:create</code> <strong>y</strong> token de cuenta de servicio</td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa (<code>company_id</code> informado) o plataforma (<code>company_id</code> nulo), según el evento</td>
+</tr>
+<tr>
+<td>Cabeceras</td>
+<td><code>Authorization</code>, <code>Content-Type: application/json</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Para el frontend:</strong> no usar. Un token de usuario recibe <code>403 AUDIT.FORBIDDEN</code>. Se documenta porque forma parte del contrato y para interpretar los eventos que luego se consultan.</p>
+<p>Cuerpo (<code>AuditEventIn</code>; rechaza campos adicionales con <code>422</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event_id</code></td>
+<td>UUID</td>
+<td>Sí</td>
+<td>Único por emisor; clave de idempotencia</td>
+</tr>
+<tr>
+<td><code>company_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>application_user_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>keycloak_user_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>username_snapshot</code></td>
+<td>string | null</td>
+<td>No</td>
+<td>máx. 160 caracteres</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>string</td>
+<td>Sí</td>
+<td><code>^[A-Z][A-Z0-9_]{0,49}$</code></td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>string</td>
+<td>Sí</td>
+<td><code>^[A-Z][A-Za-z0-9]{0,59}$</code></td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>previous_values</code></td>
+<td>object | null</td>
+<td>No</td>
+<td>Hasta 64 KiB serializado; profundidad limitada</td>
+</tr>
+<tr>
+<td><code>new_values</code></td>
+<td>object | null</td>
+<td>No</td>
+<td>Ídem</td>
+</tr>
+<tr>
+<td><code>redacted_paths</code></td>
+<td>array<string></td>
+<td>No (por defecto <code>[]</code>)</td>
+<td>Sin rutas repetidas</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>string</td>
+<td>Sí</td>
+<td><code>SUCCESS</code> o <code>FAILURE</code></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>string | null</td>
+<td>No</td>
+<td>máx. 2000 caracteres</td>
+</tr>
+<tr>
+<td><code>request_id</code>, <code>correlation_id</code></td>
+<td>UUID | null</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>date-time</td>
+<td>Sí</td>
+<td>Con zona horaria; no puede estar más de 300 s en el futuro</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1e2d3c4b-5a69-4788-9a0b-1c2d3e4f5a6b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span><span class="w"> </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2f3e4d5c-6b7a-4899-8a1b-2c3d4e5f6a7b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ejemplo de solicitud con el cuerpo anterior:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/audit-events'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "event_id": "1e2d3c4b-5a69-4788-9a0b-1c2d3e4f5a6b",</span>
+<span class="s1">    "company_id": "550e8400-e29b-41d4-a716-446655440000",</span>
+<span class="s1">    "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",</span>
+<span class="s1">    "application_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",</span>
+<span class="s1">    "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",</span>
+<span class="s1">    "username_snapshot": "ventas.test",</span>
+<span class="s1">    "action": "CONFIRM_SALE",</span>
+<span class="s1">    "entity_type": "Sale",</span>
+<span class="s1">    "entity_id": "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a",</span>
+<span class="s1">    "previous_values": {</span>
+<span class="s1">      "status": "DRAFT"</span>
+<span class="s1">    },</span>
+<span class="s1">    "new_values": {</span>
+<span class="s1">      "status": "CONFIRMED",</span>
+<span class="s1">      "number": "V-000123"</span>
+<span class="s1">    },</span>
+<span class="s1">    "redacted_paths": [],</span>
+<span class="s1">    "result": "SUCCESS",</span>
+<span class="s1">    "reason": null,</span>
+<span class="s1">    "request_id": "2f3e4d5c-6b7a-4899-8a1b-2c3d4e5f6a7b",</span>
+<span class="s1">    "correlation_id": null,</span>
+<span class="s1">    "occurred_at": "2026-10-19T15:04:05Z"</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuestas:</p>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>201</code></td>
+<td>Evento guardado; cuerpo <code>AuditEventResponse</code> con <code>id</code>, <code>source_service</code>, <code>recorded_at</code> y <code>created_by</code> fijados por Audit</td>
+</tr>
+<tr>
+<td><code>200</code></td>
+<td>Ya existía un evento con el mismo <code>event_id</code>, el mismo emisor y el mismo contenido (idempotente); sin cuerpo según el contrato</td>
+</tr>
+<tr>
+<td><code>400 AUDIT.MALFORMED_BODY</code></td>
+<td>El cuerpo no es JSON</td>
+</tr>
+<tr>
+<td><code>403 AUDIT.FORBIDDEN</code></td>
+<td>Sin permiso o el token no es de cuenta de servicio</td>
+</tr>
+<tr>
+<td><code>409 AUDIT.EVENT_ID_CONFLICT</code></td>
+<td><code>event_id</code> existente con contenido o emisor distinto</td>
+</tr>
+<tr>
+<td><code>422 AUDIT.VALIDATION_ERROR</code></td>
+<td>Formato inválido; <code>errors[]</code> indica el campo</td>
+</tr>
+<tr>
+<td><code>503 AUDIT.DEPENDENCY_UNAVAILABLE</code></td>
+<td><code>dependency</code>: <code>database</code></td>
+</tr>
+</tbody>
+</table>
+<p>Reglas y efectos: Audit vuelve a aplicar la redacción de claves sensibles antes de guardar (defensa en profundidad); <code>source_service</code> y <code>created_by</code> salen siempre del token, nunca del cuerpo. El registro es inmutable: no hay operaciones de modificación ni borrado.</p>
+<h3 id="4-post-audit-eventsbatch">4. <code>POST /audit-events/batch</code><a class="headerlink" href="#4-post-audit-eventsbatch" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>WRITE</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/audit-events/batch</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:audit-events:create</code> <strong>y</strong> token de cuenta de servicio</td>
+</tr>
+<tr>
+<td>Cabeceras</td>
+<td><code>Authorization</code>, <code>Content-Type: application/json</code></td>
+</tr>
+</tbody>
+</table>
+<p>Cuerpo (<code>AuditEventBatchIn</code>; rechaza campos adicionales): <code>{"events": [AuditEventIn, …]}</code> con <strong>1 a 100</strong> eventos, cada uno con las reglas de la operación 3.</p>
+<p>Ejemplo de solicitud (valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/audit-events/batch'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "events": [</span>
+<span class="s1">      {</span>
+<span class="s1">        "event_id": "4437cfac-a07f-4bc3-87b3-6b521305be41",</span>
+<span class="s1">        "company_id": "550e8400-e29b-41d4-a716-446655440000",</span>
+<span class="s1">        "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",</span>
+<span class="s1">        "application_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",</span>
+<span class="s1">        "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",</span>
+<span class="s1">        "username_snapshot": "ventas.test",</span>
+<span class="s1">        "action": "CONFIRM_SALE",</span>
+<span class="s1">        "entity_type": "Sale",</span>
+<span class="s1">        "entity_id": "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a",</span>
+<span class="s1">        "previous_values": {</span>
+<span class="s1">          "status": "DRAFT"</span>
+<span class="s1">        },</span>
+<span class="s1">        "new_values": {</span>
+<span class="s1">          "status": "CONFIRMED",</span>
+<span class="s1">          "number": "V-000123"</span>
+<span class="s1">        },</span>
+<span class="s1">        "result": "SUCCESS",</span>
+<span class="s1">        "request_id": "f68d2c36-58a2-4018-8437-29b214bc84c9",</span>
+<span class="s1">        "correlation_id": "d725508d-77ec-4d78-8adc-933ea0debbda",</span>
+<span class="s1">        "occurred_at": "2026-10-19T15:04:05Z"</span>
+<span class="s1">      }</span>
+<span class="s1">    ]</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>AuditEventBatchResponse</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"index"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1e2d3c4b-5a69-4788-9a0b-1c2d3e4f5a6b"</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5c6d7e8f-9a0b-4c1d-8e2f-3a4b5c6d7e8f"</span><span class="p">,</span><span class="w"> </span><span class="nt">"outcome"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CREATED"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"index"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2e3d4c5b-6a79-4899-9b1c-2d3e4f5a6b7c"</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6d7e8f9a-0b1c-4d2e-8f3a-4b5c6d7e8f9a"</span><span class="p">,</span><span class="w"> </span><span class="nt">"outcome"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ALREADY_EXISTS"</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>200</code></td>
+<td>Lote procesado; <code>outcome</code> por evento: <code>CREATED</code> o <code>ALREADY_EXISTS</code> (mismo contenido)</td>
+</tr>
+<tr>
+<td><code>409 AUDIT.EVENT_ID_CONFLICT</code></td>
+<td>Algún <code>event_id</code> existía con otro contenido o emisor. Extensión <code>conflicts: [{"index", "event_id"}]</code>. <strong>No se guarda ningún evento del lote</strong></td>
+</tr>
+<tr>
+<td><code>422 AUDIT.VALIDATION_ERROR</code></td>
+<td>Algún evento inválido; no se guarda ninguno</td>
+</tr>
+<tr>
+<td><code>400</code>, <code>401</code>, <code>403</code>, <code>503</code></td>
+<td>Como en la operación 3</td>
+</tr>
+</tbody>
+</table>
+<p>El lote es <strong>atómico</strong>: o se guardan todos los eventos nuevos o ninguno.</p>
+<h3 id="5-get-companiescompany_idaudit-events">5. <code>GET /companies/{company_id}/audit-events</code><a class="headerlink" href="#5-get-companiescompany_idaudit-events" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/audit-events</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:audit-events:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa (membresía <code>ACTIVE</code> evaluada en Operational Context)</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros:</p>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación / valores</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td>—</td>
+<td><a href="../../parametros/company-id/">company_id</a></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>≥ 1, por defecto 1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>1–100, por defecto 20</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at_from</code></td>
+<td>query</td>
+<td>date-time</td>
+<td>No</td>
+<td><strong>Con zona horaria</strong>; ≤ <code>occurred_at_to</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at_to</code></td>
+<td>query</td>
+<td>date-time</td>
+<td>No</td>
+<td>Con zona horaria</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>query</td>
+<td><code>SUCCESS</code> | <code>FAILURE</code></td>
+<td>No</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>Igualdad exacta</td>
+<td>Valor de <code>action</code> de eventos previos</td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td>Igualdad exacta</td>
+<td>Valor de <code>entity_type</code> de eventos previos</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td><code>id</code> del recurso en su servicio (venta, compra, producto…)</td>
+</tr>
+<tr>
+<td><code>source_service</code></td>
+<td>query</td>
+<td>string</td>
+<td>No</td>
+<td><code>client_id</code> emisor (por ejemplo <code>sales-service</code>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>keycloak_user_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td><code>sub</code> del token o <code>keycloak_user_id</code> de <code>/me/operational-context</code></td>
+</tr>
+<tr>
+<td><code>application_user_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td><code>memberships[].application_user_id</code> de <code>/me/operational-context</code></td>
+</tr>
+<tr>
+<td><code>event_id</code>, <code>correlation_id</code>, <code>request_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td>De eventos previos o de las cabeceras de trazabilidad</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>query</td>
+<td>UUID</td>
+<td>No</td>
+<td>—</td>
+<td><a href="../../parametros/branch-id/">branch_id</a></td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/audit-events?entity_type=Sale&amp;result=SUCCESS&amp;occurred_at_from=2026-10-01T00:00:00Z&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>AuditEventPage</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5c6d7e8f-9a0b-4c1d-8e2f-3a4b5c6d7e8f"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1e2d3c4b-5a69-4788-9a0b-1c2d3e4f5a6b"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span><span class="w"> </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2f3e4d5c-6b7a-4899-8a1b-2c3d4e5f6a7b"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:06Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8a7b6c5d-4e3f-4a2b-9c1d-0e9f8a7b6c5d"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Errores: <code>403 AUDIT.FORBIDDEN</code> (sin permiso), <code>403 AUDIT.OPERATIONAL_ACCESS_DENIED</code> (Operational Context respondió <code>403</code> al evaluar la membresía; suele faltar <code>perm:operational-context:application_users:read</code>), <code>404 AUDIT.NOT_FOUND</code> (sin membresía <code>ACTIVE</code> o empresa inexistente), <code>422</code> (fecha sin zona horaria, rango invertido, <code>page_size</code> fuera de rango), <code>503 AUDIT.DEPENDENCY_UNAVAILABLE</code> (<code>dependency</code>: <code>database</code> u <code>operational-context</code>).</p>
+<p>Reglas: la membresía se evalúa en <strong>cada solicitud</strong>, sin caché. Los filtros nunca amplían el alcance: solo se devuelven eventos con ese <code>company_id</code>. Orden de la lista: <code>occurred_at</code> descendente y, a igualdad, <code>id</code> descendente (del más reciente al más antiguo; verificado en el repositorio del servicio). El historial de entidad (operación 7) es ascendente.</p>
+<p>Dependencias: Operational Context (<code>GET /operational-access?company_id=</code>, con el token del usuario).</p>
+<h3 id="6-get-companiescompany_idaudit-eventsaudit_id">6. <code>GET /companies/{company_id}/audit-events/{audit_id}</code><a class="headerlink" href="#6-get-companiescompany_idaudit-eventsaudit_id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/audit-events/{audit_id}</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:audit-events:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td><a href="../../parametros/company-id/">company_id</a></td>
+</tr>
+<tr>
+<td><code>audit_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td>Campo <code>id</code> de un elemento de la operación 5 o 7 (no confundir con <code>event_id</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/audit-events/8b75ec30-6c7b-4e58-85d1-6be2ad9e8eb9'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code>: un <code>AuditEventResponse</code> (mismo objeto que en <code>items[]</code> de la operación 5). Errores: <code>404 AUDIT.NOT_FOUND</code> si el evento no existe, pertenece a otra empresa, es de plataforma o el usuario no tiene membresía; <code>403</code> y <code>503</code> como en la operación 5.</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>AuditEventResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8b75ec30-6c7b-4e58-85d1-6be2ad9e8eb9"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4437cfac-a07f-4bc3-87b3-6b521305be41"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f68d2c36-58a2-4018-8437-29b214bc84c9"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d725508d-77ec-4d78-8adc-933ea0debbda"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="7-get-companiescompany_identity-historyentity_typeentity_id">7. <code>GET /companies/{company_id}/entity-history/{entity_type}/{entity_id}</code><a class="headerlink" href="#7-get-companiescompany_identity-historyentity_typeentity_id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/entity-history/{entity_type}/{entity_id}</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:audit-events:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td>—</td>
+<td><a href="../../parametros/company-id/">company_id</a></td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>ruta</td>
+<td>string</td>
+<td>Sí</td>
+<td><code>^[A-Z][A-Za-z0-9]{0,59}$</code> (PascalCase)</td>
+<td><code>entity_type</code> de los eventos; coincide con la entidad del servicio emisor (por ejemplo <code>Sale</code>)</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td>—</td>
+<td><code>id</code> del recurso en su servicio</td>
+</tr>
+<tr>
+<td><code>page</code>, <code>page_size</code></td>
+<td>query</td>
+<td>integer</td>
+<td>No</td>
+<td>1–100, por defecto 20</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at_from</code>, <code>occurred_at_to</code></td>
+<td>query</td>
+<td>date-time</td>
+<td>No</td>
+<td>Con zona horaria; <code>from</code> ≤ <code>to</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>query</td>
+<td><code>SUCCESS</code> | <code>FAILURE</code></td>
+<td>No</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/entity-history/Sale/dffc4713-b6bf-426d-80d3-e2805bc742fd?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code>: <code>AuditEventPage</code> con los eventos de esa entidad en <strong>orden cronológico ascendente</strong>. Útil para la línea de tiempo de una venta, compra o producto. Errores como en la operación 5.</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>AuditEventPage</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e6d7d0c7-a0be-4f4b-8bca-631867ff85c8"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4437cfac-a07f-4bc3-87b3-6b521305be41"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f68d2c36-58a2-4018-8437-29b214bc84c9"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d725508d-77ec-4d78-8adc-933ea0debbda"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="8-get-platform-audit-events">8. <code>GET /platform-audit-events</code><a class="headerlink" href="#8-get-platform-audit-events" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/platform-audit-events</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:platform-events:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Plataforma: solo eventos con <code>company_id</code> nulo (por ejemplo cambios en catálogos globales)</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros de consulta: los mismos de la operación 5 <strong>excepto</strong> <code>branch_id</code>: <code>page</code>, <code>page_size</code>, <code>occurred_at_from</code>, <code>occurred_at_to</code>, <code>result</code>, <code>action</code>, <code>entity_type</code>, <code>entity_id</code>, <code>source_service</code>, <code>keycloak_user_id</code>, <code>application_user_id</code>, <code>event_id</code>, <code>correlation_id</code>, <code>request_id</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/platform-audit-events?entity_type=GlobalCountry&amp;page_size=50'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code>: <code>AuditEventPage</code> (los elementos traen <code>company_id: null</code>). Errores: <code>403 AUDIT.FORBIDDEN</code>, <code>422</code>, <code>503</code> (<code>dependency</code>: <code>database</code>). No consulta Operational Context.</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>AuditEventPage</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e6d7d0c7-a0be-4f4b-8bca-631867ff85c8"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4437cfac-a07f-4bc3-87b3-6b521305be41"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f68d2c36-58a2-4018-8437-29b214bc84c9"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d725508d-77ec-4d78-8adc-933ea0debbda"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="9-get-platform-audit-eventsaudit_id">9. <code>GET /platform-audit-events/{audit_id}</code><a class="headerlink" href="#9-get-platform-audit-eventsaudit_id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/platform-audit-events/{audit_id}</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:platform-events:read</code></td>
+</tr>
+<tr>
+<td>Parámetro</td>
+<td><code>audit_id</code> (ruta, UUID): campo <code>id</code> de un elemento de la operación 8 o 10</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/platform-audit-events/8b75ec30-6c7b-4e58-85d1-6be2ad9e8eb9'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code>: <code>AuditEventResponse</code>. <code>404 AUDIT.NOT_FOUND</code> si no existe o pertenece a una empresa (no es de plataforma).</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>AuditEventResponse</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8b75ec30-6c7b-4e58-85d1-6be2ad9e8eb9"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4437cfac-a07f-4bc3-87b3-6b521305be41"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f68d2c36-58a2-4018-8437-29b214bc84c9"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d725508d-77ec-4d78-8adc-933ea0debbda"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="10-get-platform-entity-historyentity_typeentity_id">10. <code>GET /platform-entity-history/{entity_type}/{entity_id}</code><a class="headerlink" href="#10-get-platform-entity-historyentity_typeentity_id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1/platform-entity-history/{entity_type}/{entity_id}</code></td>
+</tr>
+<tr>
+<td>Permiso</td>
+<td><code>perm:audit:platform-events:read</code></td>
+</tr>
+<tr>
+<td>Parámetros</td>
+<td><code>entity_type</code> (ruta, PascalCase <code>^[A-Z][A-Za-z0-9]{0,59}$</code>), <code>entity_id</code> (ruta, UUID), <code>page</code>, <code>page_size</code>, <code>occurred_at_from</code>, <code>occurred_at_to</code>, <code>result</code> (query, como en la operación 7)</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/platform-entity-history/Sale/dffc4713-b6bf-426d-80d3-e2805bc742fd?page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code>: <code>AuditEventPage</code> en orden cronológico ascendente, solo eventos de plataforma. Errores: <code>403</code>, <code>422</code>, <code>503</code>.</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>AuditEventPage</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e6d7d0c7-a0be-4f4b-8bca-631867ff85c8"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4437cfac-a07f-4bc3-87b3-6b521305be41"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"username_snapshot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRM_SALE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sale"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"previous_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DRAFT"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"new_values"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V-000123"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"redacted_paths"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUCCESS"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f68d2c36-58a2-4018-8437-29b214bc84c9"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"correlation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d725508d-77ec-4d78-8adc-933ea0debbda"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"source_service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-service"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"occurred_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recorded_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"created_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="errores-frecuentes">Errores frecuentes<a class="headerlink" href="#errores-frecuentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Respuesta</th>
+<th>Causa</th>
+<th>Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>403 AUDIT.FORBIDDEN</code> en consultas</td>
+<td>El grupo del usuario no tiene permisos de Audit (solo administradores y supervisores en la plantilla)</td>
+<td>Ocultar el módulo de auditoría a los demás perfiles</td>
+</tr>
+<tr>
+<td><code>403 AUDIT.FORBIDDEN</code> al registrar</td>
+<td>Token de usuario en una ruta reservada a cuentas de servicio</td>
+<td>No registrar eventos desde el frontend</td>
+</tr>
+<tr>
+<td><code>403 AUDIT.OPERATIONAL_ACCESS_DENIED</code></td>
+<td>El token no cubre <code>perm:operational-context:application_users:read</code></td>
+<td>Revisar permisos del grupo</td>
+</tr>
+<tr>
+<td><code>404 AUDIT.NOT_FOUND</code></td>
+<td>Empresa sin membresía, evento de otra empresa o de plataforma, <code>audit_id</code> inexistente</td>
+<td>Verificar <code>company_id</code> en <code>/me/operational-context</code> y usar <code>id</code> (no <code>event_id</code>)</td>
+</tr>
+<tr>
+<td><code>422</code> con <code>occurred_at_from</code></td>
+<td>Fecha sin zona horaria o posterior a <code>occurred_at_to</code></td>
+<td>Enviar ISO 8601 con <code>Z</code> u offset</td>
+</tr>
+<tr>
+<td><code>503</code> con <code>dependency: operational-context</code></td>
+<td>Operational Context no respondió</td>
+<td>Reintentar más tarde</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependencias">Dependencias<a class="headerlink" href="#dependencias" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operational Context</td>
+<td>Evalúa la membresía <code>ACTIVE</code> del usuario en las consultas por empresa (<code>GET /operational-access?company_id=</code>, con el token del usuario)</td>
+</tr>
+<tr>
+<td>Microservicios emisores</td>
+<td>Envían los eventos con sus cuentas de servicio (<code>source_service</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cobertura">Cobertura<a class="headerlink" href="#cobertura" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Verificación</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operaciones en el OpenAPI desplegado</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Operaciones documentadas</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Permisos contrastados con el código</td>
+<td>Sí (<code>audit_events.py</code>, <code>company_audit_events.py</code>, <code>platform_audit_events.py</code>)</td>
+</tr>
+<tr>
+<td>Esquemas contrastados con los modelos Pydantic</td>
+<td>Sí (<code>api/schemas/audit_event.py</code>, reglas de <code>sio_audit.event</code>)</td>
+</tr>
+<tr>
+<td>Verificado</td>
+<td>Orden de las listas de las operaciones 5 y 8: <code>occurred_at</code> desc, <code>id</code> desc; catálogo de <code>action</code>/<code>entity_type</code> por servicio emisor en <a href="../../principales/administracion-empresarial/#16-consultar-la-trazabilidad-de-la-empresa-auditoría">Administración empresarial §16</a></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

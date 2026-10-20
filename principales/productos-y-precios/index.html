@@ -1,0 +1,3016 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/principales/productos-y-precios/">
+      
+      
+        <link rel="prev" href="../inventario/">
+      
+      
+        <link rel="next" href="../reportes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>6.5 Productos y precios - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#65-productos-y-precios" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6.5 Productos y precios
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#catalogo-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catálogo global
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Catálogo global">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-buscar-productos-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Buscar productos globales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-crear-un-producto-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Crear un producto global
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-consultar-y-crear-presentaciones-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Consultar y crear presentaciones globales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-registrar-codigos-de-barras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Registrar códigos de barras
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adopcion-por-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adopción por la empresa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Adopción por la empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5-adoptar-un-producto-global-en-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Adoptar un producto global en la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-consultar-los-productos-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consultar los productos de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-adoptar-y-consultar-presentaciones-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Adoptar y consultar presentaciones de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-configurar-el-impuesto-de-compra-del-producto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Configurar el impuesto de compra del producto
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precios-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precios de la empresa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precios de la empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funcionan-las-listas-los-precios-y-las-politicas-reglas-verificadas-en-el-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo funcionan las listas, los precios y las políticas (reglas verificadas en el código)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-crear-una-lista-de-precios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Crear una lista de precios
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-consultar-las-listas-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Consultar las listas de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-modificar-una-lista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Modificar una lista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-registrar-un-precio-manual-por-presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Registrar un precio manual por presentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-consultar-precios-vigentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Consultar precios vigentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-cambiar-un-precio-vigente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Cambiar un precio vigente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-corregir-un-precio-futuro-o-cerrar-uno-vigente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Corregir un precio futuro o cerrar uno vigente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-crear-una-politica-de-porcentaje-de-ganancia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Crear una política de porcentaje de ganancia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-consultar-las-politicas-de-una-lista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Consultar las políticas de una lista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-asociar-o-retirar-presentaciones-de-una-politica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Asociar o retirar presentaciones de una política
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-cambiar-el-porcentaje-de-una-politica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Cambiar el porcentaje de una política
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-verificar-cobertura-y-ver-precios-automaticos-aplicados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Verificar cobertura y ver precios automáticos aplicados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#catalogo-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catálogo global
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Catálogo global">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-buscar-productos-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Buscar productos globales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-crear-un-producto-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Crear un producto global
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-consultar-y-crear-presentaciones-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Consultar y crear presentaciones globales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-registrar-codigos-de-barras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Registrar códigos de barras
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adopcion-por-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adopción por la empresa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Adopción por la empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5-adoptar-un-producto-global-en-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Adoptar un producto global en la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-consultar-los-productos-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consultar los productos de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-adoptar-y-consultar-presentaciones-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Adoptar y consultar presentaciones de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-configurar-el-impuesto-de-compra-del-producto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Configurar el impuesto de compra del producto
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precios-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precios de la empresa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precios de la empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funcionan-las-listas-los-precios-y-las-politicas-reglas-verificadas-en-el-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo funcionan las listas, los precios y las políticas (reglas verificadas en el código)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-crear-una-lista-de-precios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Crear una lista de precios
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-consultar-las-listas-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Consultar las listas de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-modificar-una-lista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Modificar una lista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-registrar-un-precio-manual-por-presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Registrar un precio manual por presentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-consultar-precios-vigentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Consultar precios vigentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-cambiar-un-precio-vigente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Cambiar un precio vigente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-corregir-un-precio-futuro-o-cerrar-uno-vigente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Corregir un precio futuro o cerrar uno vigente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-crear-una-politica-de-porcentaje-de-ganancia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Crear una política de porcentaje de ganancia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-consultar-las-politicas-de-una-lista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Consultar las políticas de una lista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-asociar-o-retirar-presentaciones-de-una-politica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Asociar o retirar presentaciones de una política
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-cambiar-el-porcentaje-de-una-politica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Cambiar el porcentaje de una política
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-verificar-cobertura-y-ver-precios-automaticos-aplicados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Verificar cobertura y ver precios automáticos aplicados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="65-productos-y-precios">6.5 Productos y precios<a class="headerlink" href="#65-productos-y-precios" title="Permanent link">&para;</a></h1>
+<p><a href="../">← API principales</a> · <a href="../../">← Índice</a></p>
+<p>Cómo una empresa llega a tener productos vendibles con precio. El modelo de SIO tiene tres capas:</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Servicio</th>
+<th>Qué es</th>
+<th>Identificador</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Catálogo global</strong></td>
+<td><a href="../../servicios/product-catalog/">Product Catalog</a></td>
+<td>Productos y presentaciones compartidos por todas las empresas (nombre canónico, marca, unidad base, códigos de barras)</td>
+<td><a href="../../parametros/global-product-id/">global_product_id</a>, <a href="../../parametros/global-product-presentation-id/">global_product_presentation_id</a></td>
+</tr>
+<tr>
+<td><strong>Adopción por la empresa</strong></td>
+<td><a href="../../servicios/commercial-relationship/">Commercial Relationship</a></td>
+<td>El producto y las presentaciones que la empresa decide manejar, con su código interno, moneda, impuesto de compra y banderas de compra/venta</td>
+<td><a href="../../parametros/company-product-id/">company_product_id</a>, <a href="../../parametros/company-product-presentation-id/">company_product_presentation_id</a></td>
+</tr>
+<tr>
+<td><strong>Precios de la empresa</strong></td>
+<td><a href="../../servicios/commercial-relationship/">Commercial Relationship</a></td>
+<td>Varias listas de precios propias por moneda, precios por presentación con vigencia y políticas de porcentaje de ganancia que los actualizan automáticamente</td>
+<td><a href="../../parametros/price-list-id/">price_list_id</a>, <code>price_list_item_id</code>, <a href="../../parametros/pricing-policy-id/">policy_id</a></td>
+</tr>
+</tbody>
+</table>
+<p>Ventas, Compras e Inventario trabajan siempre con la capa de empresa. Flujo completo con JSON: <a href="../../ejemplos/configurar-lista-precios/">Configurar una lista de precios</a>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funcionalidad</th>
+<th>Método y ruta</th>
+<th>Permiso</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Buscar productos globales</td>
+<td><code>GET /api/v1/products</code> (PC)</td>
+<td><code>perm:product-catalog:products:read</code></td>
+<td><a href="../../servicios/product-catalog/#49-get-products">PC 49</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Crear un producto global</td>
+<td><code>POST /api/v1/products</code> (PC)</td>
+<td><code>perm:product-catalog:products:create</code></td>
+<td><a href="../../servicios/product-catalog/#50-post-products">PC 50</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Consultar y crear presentaciones globales</td>
+<td><code>GET</code> · <code>POST /api/v1/products/{product_id}/presentations</code> (PC)</td>
+<td><code>perm:product-catalog:products:read</code> · <code>…:update</code></td>
+<td><a href="../../servicios/product-catalog/#67-get-productsproduct_idpresentations">PC 67</a> · <a href="../../servicios/product-catalog/#68-post-productsproduct_idpresentations">PC 68</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Registrar códigos de barras</td>
+<td><code>POST /api/v1/products/{product_id}/identifiers</code> (PC)</td>
+<td><code>perm:product-catalog:products:update</code></td>
+<td><a href="../../servicios/product-catalog/#74-post-productsproduct_ididentifiers">PC 74</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Adoptar un producto global en la empresa</td>
+<td><code>POST /api/v1/companies/{company_id}/company-products</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_products:create</code></td>
+<td><a href="../../servicios/commercial-relationship/#4-post-companiescompany_idcompany-products">CR 4</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Consultar los productos de la empresa</td>
+<td><code>GET /api/v1/companies/{company_id}/company-products</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_products:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#3-get-companiescompany_idcompany-products">CR 3</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Adoptar y consultar presentaciones de la empresa</td>
+<td><code>POST</code> · <code>GET /api/v1/companies/{company_id}/company-product-presentations</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_product_presentations:create</code> · <code>…:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#27-post-companiescompany_idcompany-product-presentations">CR 27</a> · <a href="../../servicios/commercial-relationship/#26-get-companiescompany_idcompany-product-presentations">CR 26</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Configurar el impuesto de compra del producto</td>
+<td><code>PUT /api/v1/company-products/{company_product_id}/purchase-tax</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_product_purchase_taxes:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#11-put-company-productscompany_product_idpurchase-tax">CR 11</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Crear una lista de precios</td>
+<td><code>POST /api/v1/companies/{company_id}/price-lists</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_lists:create</code></td>
+<td><a href="../../servicios/commercial-relationship/#47-post-companiescompany_idprice-lists">CR 47</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Consultar las listas de la empresa</td>
+<td><code>GET /api/v1/companies/{company_id}/price-lists</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_lists:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#46-get-companiescompany_idprice-lists">CR 46</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Modificar una lista (vigencia, predeterminada)</td>
+<td><code>PUT /api/v1/price-lists/{price_list_id}</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_lists:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#49-put-price-listsprice_list_id">CR 49</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Registrar un precio manual por presentación</td>
+<td><code>POST /api/v1/companies/{company_id}/price-list-items</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_list_items:create</code></td>
+<td><a href="../../servicios/commercial-relationship/#53-post-companiescompany_idprice-list-items">CR 53</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Consultar precios vigentes (por lista o por presentación)</td>
+<td><code>GET /api/v1/companies/{company_id}/price-list-items</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_list_items:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#52-get-companiescompany_idprice-list-items">CR 52</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Cambiar un precio vigente</td>
+<td><code>POST /api/v1/price-list-items/{price_list_item_id}/change-price</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_list_items:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#56-post-price-list-itemsprice_list_item_idchange-price">CR 56</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Corregir un precio futuro o cerrar uno vigente</td>
+<td><code>PUT /api/v1/price-list-items/{price_list_item_id}</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_list_items:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#55-put-price-list-itemsprice_list_item_id">CR 55</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Crear una política de porcentaje de ganancia</td>
+<td><code>POST /api/v1/companies/{company_id}/price-lists/{price_list_id}/pricing-policies</code> (CR)</td>
+<td><code>perm:commercial-relationship:pricing_policies:create</code></td>
+<td><a href="../../servicios/commercial-relationship/#62-post-companiescompany_idprice-listsprice_list_idpricing-policies">CR 62</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Consultar las políticas de una lista</td>
+<td><code>GET /api/v1/companies/{company_id}/price-lists/{price_list_id}/pricing-policies</code> (CR)</td>
+<td><code>perm:commercial-relationship:pricing_policies:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#61-get-companiescompany_idprice-listsprice_list_idpricing-policies">CR 61</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Asociar o retirar presentaciones de una política</td>
+<td><code>POST /api/v1/pricing-policies/{policy_id}/presentations</code> · <code>…/presentations/remove</code> (CR)</td>
+<td><code>perm:commercial-relationship:pricing_policies:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#67-post-pricing-policiespolicy_idpresentations">CR 67</a> · <a href="../../servicios/commercial-relationship/#69-post-pricing-policiespolicy_idpresentationsremove">CR 69</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Cambiar el porcentaje de una política</td>
+<td><code>POST /api/v1/pricing-policies/{policy_id}/percentage</code> (CR)</td>
+<td><code>perm:commercial-relationship:pricing_policies:update</code></td>
+<td><a href="../../servicios/commercial-relationship/#68-post-pricing-policiespolicy_idpercentage">CR 68</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Verificar cobertura y ver precios automáticos aplicados</td>
+<td><code>POST /api/v1/companies/{company_id}/pricing-policies/coverage</code> · <code>GET /api/v1/companies/{company_id}/automatic-price-applications</code> (CR)</td>
+<td><code>perm:commercial-relationship:pricing_policy_coverage:read</code> · <code>…automatic_price_applications:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#60-post-companiescompany_idpricing-policiescoverage">CR 60</a> · <a href="../../servicios/commercial-relationship/#72-get-companiescompany_idautomatic-price-applications">CR 72</a></td>
+</tr>
+</tbody>
+</table>
+<p>Bases: Product Catalog <code>https://sio-product-catalog-dev.onrender.com/api/v1</code>; Commercial Relationship <code>https://sio-commercial-relationship-dev.onrender.com/api/v1</code>. La vista consolidada de productos con precio y existencias para el frontend está en <a href="../inventario/#1-buscar-productos-con-precio-y-existencias">Inventario §1</a> (Product Inventory Query).</p>
+<hr />
+<h2 id="catalogo-global">Catálogo global<a class="headerlink" href="#catalogo-global" title="Permanent link">&para;</a></h2>
+<h3 id="1-buscar-productos-globales">1. Buscar productos globales<a class="headerlink" href="#1-buscar-productos-globales" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Encontrar en el catálogo compartido el producto que quiere incorporar a su empresa, por nombre, código de barras, marca o categoría.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-product-catalog-dev.onrender.com/api/v1/products</code>. Permiso <code>perm:product-catalog:products:read</code>. Consulta: <code>search</code> (≤ 200), <code>identifier</code> (código de barras exacto), <code>brand_id</code>, <code>category_id</code> + <code>include_descendants</code>, <code>manufacturer_organization_id</code>, <code>group_id</code>, <code>attribute_filters</code> (<code>CODIGO:valor</code>, repetible), <code>status</code>, <code>page</code>, <code>page_size</code> (1–100).</p>
+<p><strong>¿Qué necesita antes?</strong> Solo el token: el catálogo es global y no exige membresía.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[ProductResponse]</code>; <code>items[].id</code> es el <a href="../../parametros/global-product-id/">global_product_id</a>. Cada producto trae <code>canonical_name</code>, <code>product_type</code>, <code>brand</code>, <code>base_unit</code>, <code>status</code> y un bloque <code>completeness</code> con lo que le falta para ser adoptable.</p>
+<h3 id="2-crear-un-producto-global">2. Crear un producto global<a class="headerlink" href="#2-crear-un-producto-global" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Dar de alta un producto que no existe en el catálogo.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-product-catalog-dev.onrender.com/api/v1/products</code>. Permiso <code>perm:product-catalog:products:create</code>. Cuerpo <code>ProductCreate</code>: <code>product_type</code> (<code>GOOD</code>), <code>canonical_name</code> (≤ 400), <code>base_unit_id</code> (obligatorios); <code>description</code>, <code>global_brand_id</code>, <code>manufacturer_organization_id</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> La unidad base (<code>GET …/units-of-measure</code>, PC 4) y, opcionalmente, la marca (<code>GET …/brands</code>, PC 16) y la categoría (<code>GET …/categories</code>, PC 30). Antes de crear, busca con la funcionalidad 1 e <code>identifier=&lt;código de barras&gt;</code> para no duplicar.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>ProductResponse</code> (<code>id</code>, <code>status: "ACTIVE"</code>, <code>version: 1</code>). Un producto recién creado <strong>no tiene presentaciones</strong>: sin al menos una presentación global, la empresa no podrá adoptar nada vendible (funcionalidad 3). Errores: <code>409</code> nombre canónico duplicado, <code>422 VALIDATION_ERROR</code>.</p>
+<h3 id="3-consultar-y-crear-presentaciones-globales">3. Consultar y crear presentaciones globales<a class="headerlink" href="#3-consultar-y-crear-presentaciones-globales" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Definir cómo se presenta el producto (unidad, caja por 100, blíster por 10) y cuántas unidades base contiene cada una.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-product-catalog-dev.onrender.com/api/v1/products/{product_id}/presentations?status=ACTIVE</code> y <code>POST</code> a la misma ruta (permiso <code>perm:product-catalog:products:update</code>) con <code>code</code>, <code>name</code>, <code>base_quantity</code> (unidades base que contiene; por defecto <code>1</code>), <code>is_base</code> (una sola por producto), <code>packaging_type_id</code>, <code>content_quantity</code>, <code>content_unit_id</code>, <code>display_order</code>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con un arreglo de <code>PresentationResponse</code> o <code>201</code> con la nueva; <code>id</code> es el <a href="../../parametros/global-product-presentation-id/">global_product_presentation_id</a>. Errores: <code>409</code> código repetido o segunda presentación base.</p>
+<h3 id="4-registrar-codigos-de-barras">4. Registrar códigos de barras<a class="headerlink" href="#4-registrar-codigos-de-barras" title="Permanent link">&para;</a></h3>
+<p><code>POST https://sio-product-catalog-dev.onrender.com/api/v1/products/{product_id}/identifiers</code> (permiso <code>perm:product-catalog:products:update</code>) con <code>identifier_type</code> (<code>GTIN</code>, <code>EAN</code>, <code>UPC</code>, <code>BARCODE</code>, <code>OTHER</code>, <code>IUM</code>), <code>value</code> (≤ 200), <code>global_product_presentation_id</code> (opcional: a qué presentación pertenece el código) e <code>is_primary</code>. Responde <code>201</code>. Después, la búsqueda por <code>identifier</code> de la funcionalidad 1 y la de Product Inventory Query (<code>barcode=</code>) encuentran el producto con el lector.</p>
+<h2 id="adopcion-por-la-empresa">Adopción por la empresa<a class="headerlink" href="#adopcion-por-la-empresa" title="Permanent link">&para;</a></h2>
+<h3 id="5-adoptar-un-producto-global-en-la-empresa">5. Adoptar un producto global en la empresa<a class="headerlink" href="#5-adoptar-un-producto-global-en-la-empresa" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Incorporar un producto del catálogo a su empresa, con código interno propio, moneda y configuración de inventario.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products</code>. Permiso <code>perm:commercial-relationship:company_products:create</code>. Cuerpo <code>CompanyProductCreate</code>: <code>global_product_id</code>, <code>internal_code</code> (único en la empresa), <code>display_name</code>, <code>currency_code</code> (obligatorios); <code>reference_code</code>, <code>short_name</code>, <code>inventory_control_enabled</code> (por defecto <code>true</code>), <code>lot_tracking_enabled</code>, <code>expiration_tracking_enabled</code>, <code>is_purchasable</code>, <code>is_sellable</code> (por defecto <code>true</code>).</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"global_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"internal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg tableta"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"inventory_control_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"is_purchasable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"is_sellable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> y un <a href="../../parametros/global-product-id/">global_product_id</a> <code>ACTIVE</code> y elegible (<code>422 GLOBAL_PRODUCT_NOT_ELIGIBLE</code> si el catálogo lo marca incompleto).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>CompanyProductResponse</code>: <code>id</code> (<a href="../../parametros/company-product-id/">company_product_id</a>), <code>status: "ACTIVE"</code>, <code>purchase_tax_percentage: null</code> (todavía sin impuesto: funcionalidad 8). Efecto verificado: adoptar el producto <strong>no adopta sus presentaciones</strong>; hay que hacerlo con la funcionalidad 7. Errores: <code>409 DUPLICATE_ADOPTION</code> (ya adoptado), <code>409 DUPLICATE_INTERNAL_CODE</code>, <code>422 GLOBAL_PRODUCT_NOT_FOUND</code> / <code>GLOBAL_PRODUCT_INACTIVE</code>, <code>503 DEPENDENCY_UNAVAILABLE</code>.</p>
+<h3 id="6-consultar-los-productos-de-la-empresa">6. Consultar los productos de la empresa<a class="headerlink" href="#6-consultar-los-productos-de-la-empresa" title="Permanent link">&para;</a></h3>
+<p><code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products</code> (permiso <code>perm:commercial-relationship:company_products:read</code>). Consulta: <code>search</code> (código y nombre), <code>status</code>, <code>is_purchasable</code>, <code>is_sellable</code>, <code>inventory_control_enabled</code>, <code>global_product_id</code>, <code>page</code>, <code>page_size</code>. Responde <code>200</code> con <code>PaginatedResponse[CompanyProductResponse]</code>, incluido <code>purchase_tax_percentage</code>. Para el catálogo de venta con precio y existencias usa Product Inventory Query (<a href="../inventario/#1-buscar-productos-con-precio-y-existencias">Inventario §1</a>).</p>
+<h3 id="7-adoptar-y-consultar-presentaciones-de-la-empresa">7. Adoptar y consultar presentaciones de la empresa<a class="headerlink" href="#7-adoptar-y-consultar-presentaciones-de-la-empresa" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Elegir cuáles presentaciones del producto compra y vende la empresa, y cuál es la predeterminada en cada caso.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations</code> (permiso <code>perm:commercial-relationship:company_product_presentations:create</code>) con <code>company_product_id</code>, <code>global_product_presentation_id</code> (obligatorios), <code>internal_code</code>, <code>sku</code>, <code>reference_code</code>, <code>is_purchasable</code>, <code>is_sellable</code>, <code>is_default_purchase</code>, <code>is_default_sale</code>. Consulta: <code>GET</code> a la misma ruta con <code>company_product_id=</code>, <code>status</code>, <code>is_sellable</code>, <code>is_purchasable</code>, <code>search</code>, <code>global_product_presentation_id</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> El <a href="../../parametros/company-product-id/">company_product_id</a> de la funcionalidad 5 y el <a href="../../parametros/global-product-presentation-id/">global_product_presentation_id</a> <strong>del mismo producto global</strong> (<code>422 GLOBAL_PRESENTATION_OF_OTHER_PRODUCT</code>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>CompanyProductPresentationResponse</code>: <code>id</code> (<a href="../../parametros/company-product-presentation-id/">company_product_presentation_id</a>), <code>base_quantity_factor</code>, <code>is_sellable</code>, <code>is_purchasable</code>, <code>status: "ACTIVE"</code>. Este es el identificador que piden las líneas de venta y compra, los precios y las políticas. Errores: <code>409 DUPLICATE_PRESENTATION_ADOPTION</code>, <code>409 DUPLICATE_SKU</code>, <code>422 GLOBAL_PRESENTATION_NOT_FOUND</code> / <code>_INACTIVE</code> / <code>_NOT_ELIGIBLE</code>, <code>422 COMPANY_PRODUCT_INACTIVE</code>.</p>
+<h3 id="8-configurar-el-impuesto-de-compra-del-producto">8. Configurar el impuesto de compra del producto<a class="headerlink" href="#8-configurar-el-impuesto-de-compra-del-producto" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Fijar el porcentaje de impuesto que se aplica por defecto a las compras del producto (IVA 19 %, 5 %, 0 %).</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>PUT https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/purchase-tax</code> (permiso <code>perm:commercial-relationship:company_product_purchase_taxes:update</code>) con <code>{"version": n, "purchase_tax_percentage": "19"}</code> (0–100; <code>0</code> es válido; <code>null</code> lo deja sin configurar). Hasta 100 productos a la vez: <code>POST …/companies/{company_id}/company-products/purchase-taxes/batch</code> (CR 12).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con el producto y <code>purchase_tax_percentage</code> actualizado. Efecto en Compras: cada línea toma este porcentaje salvo que envíe <code>tax_percentage</code> propio; si no está configurado y la línea no lo envía, la confirmación falla con <code>409 PURCHASE_TAX_NOT_CONFIGURED</code> (<a href="../compras/">Compras</a>).</p>
+<h2 id="precios-de-la-empresa">Precios de la empresa<a class="headerlink" href="#precios-de-la-empresa" title="Permanent link">&para;</a></h2>
+<h3 id="como-funcionan-las-listas-los-precios-y-las-politicas-reglas-verificadas-en-el-codigo">Cómo funcionan las listas, los precios y las políticas (reglas verificadas en el código)<a class="headerlink" href="#como-funcionan-las-listas-los-precios-y-las-politicas-reglas-verificadas-en-el-codigo" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Varias listas por empresa.</strong> Cada lista tiene <code>currency_code</code> (inmutable), <code>valid_from</code>/<code>valid_to</code> opcionales, <code>status</code> (<code>ACTIVE</code>/<code>INACTIVE</code>) e <code>is_default</code>. Solo puede haber <strong>una lista predeterminada por moneda</strong>: marcar otra como <code>is_default: true</code> quita la marca a la anterior; inactivar una lista también la quita.</li>
+<li><strong>Una lista está vigente</strong> en un instante <code>t</code> cuando está <code>ACTIVE</code>, <code>valid_from</code> es <code>null</code> o ≤ <code>t</code>, y <code>valid_to</code> es <code>null</code> o &gt; <code>t</code>. Las fechas se guardan en UTC y <code>valid_to</code> debe ser posterior a <code>valid_from</code>.</li>
+<li><strong>Un precio (<code>price_list_item</code>)</strong> pertenece a una lista y a una presentación de la empresa, tiene <code>unit_price</code>, <code>valid_from</code> (si se omite, se toma el instante de creación) y <code>valid_to</code> opcional. Dentro de la misma lista y presentación los periodos <strong>no pueden solaparse</strong> (<code>409 PRICE_PERIOD_OVERLAP</code>): el precio vigente es el que cubre el instante consultado.</li>
+<li><strong>Un precio está vigente</strong> cuando su lista está vigente, su <code>status</code> es <code>ACTIVE</code> y su periodo cubre el instante. El filtro <code>applicable_at</code> de la funcionalidad 13 aplica exactamente esta regla.</li>
+<li><strong>Precios manuales y automáticos.</strong> Un precio creado por la funcionalidad 12 o 14 tiene <code>origin: "MANUAL"</code>. Un precio creado por una política tras una recepción de compra tiene <code>origin: "AUTOMATIC"</code> y <code>automatic_application_id</code>. Ambos conviven en la misma lista; el automático cierra al vigente (<code>closure_reason</code>) y cancela los futuros de esa lista y presentación.</li>
+<li><strong>Una política de ganancia</strong> pertenece a una lista <code>ACTIVE</code>, tiene un <code>markup_percentage</code> (recargo porcentual sobre el <strong>costo de compra</strong>) y un conjunto de presentaciones; cada presentación puede estar en <strong>una sola política por lista</strong>. El porcentaje vigente se guarda como un término con <code>valid_from</code>; cambiarlo abre un término nuevo y <strong>no recalcula</strong> los precios existentes.</li>
+<li><strong>El precio automático</strong> se calcula al <strong>recibir</strong> una compra (no al confirmarla): <code>precio = costo_de_referencia × (1 + markup/100)</code>, redondeado a los decimales de la moneda. El costo de referencia es el costo unitario de la compra; si bajó respecto al anterior, se usa el promedio de ambos. Lo ejecuta un proceso interno de Commercial Relationship (el <em>worker</em> de precios), de forma asíncrona: el precio nuevo puede tardar unos segundos en aparecer tras la recepción. El resultado de cada presentación queda en la funcionalidad 20 (<code>APPLIED</code>, <code>UNCHANGED</code>, <code>SKIPPED_NO_POLICY</code>, <code>SKIPPED_LIST_NOT_EFFECTIVE</code>, <code>SKIPPED_CURRENCY_MISMATCH</code>, <code>SKIPPED_PRESENTATION_INACTIVE</code>, <code>SKIPPED_ZERO_COST</code>, <code>PENDING</code>, <code>FAILED</code>, <code>RESOLVED</code>).</li>
+<li><strong>Compras exige cobertura.</strong> Confirmar una compra valida que cada presentación tenga una política en alguna lista vigente de la moneda de la compra, aunque el porcentaje sea <code>0</code>; si no, <code>409 PRICING_POLICY_NOT_CONFIGURED</code>.</li>
+<li><strong>Ventas resuelve el precio en Commercial Relationship.</strong> La línea de venta lleva <code>price_list_id</code>; Sales obtiene el precio vigente de esa lista para la presentación y lo congela en la línea. El frontend nunca envía el precio (<a href="../ventas/">Ventas</a>).</li>
+</ul>
+<h3 id="9-crear-una-lista-de-precios">9. Crear una lista de precios<a class="headerlink" href="#9-crear-una-lista-de-precios" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Crear listas distintas para mostrador, mayoristas, convenios o campañas con fecha de inicio y fin.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists</code> (permiso <code>perm:commercial-relationship:price_lists:create</code>) con <code>code</code> (único), <code>name</code>, <code>currency_code</code>, <code>description</code>, <code>valid_from</code>, <code>valid_to</code>, <code>is_default</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MOSTRADOR"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Precio de mostrador"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lista general de venta al público"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"valid_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"valid_to"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"is_default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>PriceListResponse</code> (<code>id</code> = <a href="../../parametros/price-list-id/">price_list_id</a>, <code>status: "ACTIVE"</code>). Errores: <code>409 DUPLICATE_PRICE_LIST_CODE</code>, <code>422</code> si <code>valid_to</code> no es posterior a <code>valid_from</code>.</p>
+<h3 id="10-consultar-las-listas-de-la-empresa">10. Consultar las listas de la empresa<a class="headerlink" href="#10-consultar-las-listas-de-la-empresa" title="Permanent link">&para;</a></h3>
+<p><code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists?status=ACTIVE&amp;currency_code=COP</code> (permiso <code>perm:commercial-relationship:price_lists:read</code>; también <code>search</code>, <code>is_default</code>, <code>page</code>, <code>page_size</code>). Responde <code>200</code> con <code>PaginatedResponse[PriceListResponse]</code>. El frontend determina la vigencia con <code>valid_from</code>/<code>valid_to</code> y la hora actual, como se explicó arriba.</p>
+<h3 id="11-modificar-una-lista">11. Modificar una lista<a class="headerlink" href="#11-modificar-una-lista" title="Permanent link">&para;</a></h3>
+<p><code>PUT https://sio-commercial-relationship-dev.onrender.com/api/v1/price-lists/{price_list_id}</code> (permiso <code>perm:commercial-relationship:price_lists:update</code>) con <code>version</code>, <code>code</code>, <code>name</code>, <code>description</code>, <code>valid_from</code>, <code>valid_to</code>, <code>is_default</code>. La moneda no cambia. Sirve para cerrar una lista de campaña (<code>valid_to</code>) o cambiar la predeterminada. Inactivar: <code>POST …/price-lists/{price_list_id}/deactivate</code> (CR 50, <code>HIGH_RISK</code>): sus precios dejan de ser aplicables y pierde <code>is_default</code>.</p>
+<h3 id="12-registrar-un-precio-manual-por-presentacion">12. Registrar un precio manual por presentación<a class="headerlink" href="#12-registrar-un-precio-manual-por-presentacion" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Fijar a mano el precio de venta de una presentación en una lista, con vigencia opcional.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-list-items</code> (permiso <code>perm:commercial-relationship:price_list_items:create</code>) con <code>price_list_id</code>, <code>company_product_id</code>, <code>company_product_presentation_id</code>, <code>unit_price</code> (obligatorios), <code>valid_from</code>, <code>valid_to</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"price_list_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"unit_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800.00"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"valid_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01T00:00:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"valid_to"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> Lista <code>ACTIVE</code> (<a href="../../parametros/price-list-id/">price_list_id</a>), presentación <code>ACTIVE</code> y vendible de un producto en la misma moneda (<a href="../../parametros/company-product-presentation-id/">company_product_presentation_id</a>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>PriceListItemResponse</code>: <code>id</code> (<code>price_list_item_id</code>), <code>unit_price</code>, <code>currency_code</code>, <code>valid_from</code>, <code>valid_to</code>, <code>origin: "MANUAL"</code>, <code>status: "ACTIVE"</code>. Errores: <code>409 PRICE_PERIOD_OVERLAP</code> (ya hay un precio que cubre ese periodo: usa la funcionalidad 14), <code>409 PRICE_LIST_INACTIVE</code>, <code>422 PRESENTATION_NOT_SELLABLE</code>, <code>422</code> moneda distinta a la de la lista.</p>
+<h3 id="13-consultar-precios-vigentes">13. Consultar precios vigentes<a class="headerlink" href="#13-consultar-precios-vigentes" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver el precio de una presentación en todas las listas vigentes (lo que necesita el vendedor para elegir lista) o todos los precios de una lista (lo que necesita el administrador).</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-list-items</code> (permiso <code>perm:commercial-relationship:price_list_items:read</code>). Consulta: <code>status</code>, <code>price_list_id</code>, <code>company_product_id</code>, <code>company_product_presentation_id</code>, <code>applicable_at</code> (instante ISO 8601: solo precios vigentes en ese momento, con su lista vigente), <code>page</code>, <code>page_size</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/price-list-items?company_product_presentation_id=a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83&amp;status=ACTIVE&amp;applicable_at=2026-10-19T15:00:00Z'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[PriceListItemResponse]</code>; cada elemento trae <code>price_list_id</code>, <code>unit_price</code>, <code>currency_code</code>, <code>valid_from</code>, <code>valid_to</code>, <code>origin</code>. Con el filtro por presentación y <code>applicable_at</code>, el resultado es <strong>la lista de opciones de precio</strong> de esa presentación: una por lista vigente. Para mostrar el nombre de cada lista, cruza <code>price_list_id</code> con la funcionalidad 10. <code>POST …/applicable-prices/resolve</code> (CR 59) resuelve <strong>un</strong> precio por línea (el de la lista indicada o la predeterminada) y es lo que usa Sales internamente; no enumera alternativas.</p>
+<h3 id="14-cambiar-un-precio-vigente">14. Cambiar un precio vigente<a class="headerlink" href="#14-cambiar-un-precio-vigente" title="Permanent link">&para;</a></h3>
+<p><code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/price-list-items/{price_list_item_id}/change-price</code> (permiso <code>perm:commercial-relationship:price_list_items:update</code>, <code>HIGH_RISK</code>) con <code>{"unit_price": "850.00", "effective_from": null, "version": n}</code>. Cierra el precio vigente (<code>valid_to</code> = <code>effective_from</code> o ahora) y crea el nuevo en una sola operación; responde <code>200</code> con el nuevo <code>PriceListItemResponse</code> (<code>origin: "MANUAL"</code>). Si el precio vigente fue cerrado por una actualización automática, responde <code>409 PRICE_CLOSED_BY_AUTOMATIC_UPDATE</code>: consulta el precio actual con la funcionalidad 13.</p>
+<h3 id="15-corregir-un-precio-futuro-o-cerrar-uno-vigente">15. Corregir un precio futuro o cerrar uno vigente<a class="headerlink" href="#15-corregir-un-precio-futuro-o-cerrar-uno-vigente" title="Permanent link">&para;</a></h3>
+<p><code>PUT https://sio-commercial-relationship-dev.onrender.com/api/v1/price-list-items/{price_list_item_id}</code> (permiso <code>perm:commercial-relationship:price_list_items:update</code>) con <code>version</code>, <code>unit_price</code>, <code>valid_from</code>, <code>valid_to</code>. Regla verificada: un precio <strong>futuro</strong> admite cambiar valor y vigencia; un precio <strong>en vigencia</strong> solo admite fijar su <code>valid_to</code> (cierre). Responde <code>200</code>; <code>409 VERSION_CONFLICT</code>, <code>409 PRICE_PERIOD_OVERLAP</code>, <code>422 VALIDATION_ERROR</code> si se intenta cambiar el valor de un precio vigente.</p>
+<h3 id="16-crear-una-politica-de-porcentaje-de-ganancia">16. Crear una política de porcentaje de ganancia<a class="headerlink" href="#16-crear-una-politica-de-porcentaje-de-ganancia" title="Permanent link">&para;</a></h3>
+<p><strong>¿Qué puede hacer el usuario?</strong> Definir que un grupo de presentaciones de una lista se venda al costo de compra más un porcentaje, y que el precio se actualice solo cuando llegue mercancía nueva.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists/{price_list_id}/pricing-policies</code> (permiso <code>perm:commercial-relationship:pricing_policies:create</code>) con <code>name</code>, <code>markup_percentage</code>, <code>company_product_presentation_ids[]</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Margen general 30 %"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"markup_percentage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"30"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_product_presentation_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> Lista <code>ACTIVE</code> y presentaciones <code>ACTIVE</code> y vendibles que <strong>no estén ya en otra política de la misma lista</strong>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>PricingPolicyResponse</code> (<code>id</code> = <a href="../../parametros/pricing-policy-id/">policy_id</a>, <code>markup_percentage</code>, <code>presentation_count</code>, <code>status: "ACTIVE"</code>, <code>version</code>). Errores: <code>409 POLICY_NAME_DUPLICATE</code>, <code>409 PRESENTATION_ALREADY_IN_POLICY</code>, <code>409 PRICE_LIST_INACTIVE</code>, <code>422 PRESENTATION_NOT_SELLABLE</code>.</p>
+<h3 id="17-consultar-las-politicas-de-una-lista">17. Consultar las políticas de una lista<a class="headerlink" href="#17-consultar-las-politicas-de-una-lista" title="Permanent link">&para;</a></h3>
+<p><code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists/{price_list_id}/pricing-policies?status=ACTIVE</code> (permiso <code>perm:commercial-relationship:pricing_policies:read</code>; también <code>search</code>, <code>page</code>, <code>page_size</code>). Responde <code>200</code> con <code>PaginatedResponse[PricingPolicyResponse]</code>. Presentaciones de una política: <code>GET …/pricing-policies/{policy_id}/presentations</code> (CR 66). Historial de porcentajes: <code>GET …/pricing-policies/{policy_id}/terms</code> (CR 65).</p>
+<h3 id="18-asociar-o-retirar-presentaciones-de-una-politica">18. Asociar o retirar presentaciones de una política<a class="headerlink" href="#18-asociar-o-retirar-presentaciones-de-una-politica" title="Permanent link">&para;</a></h3>
+<p><code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/pricing-policies/{policy_id}/presentations</code> y <code>…/presentations/remove</code> (permiso <code>perm:commercial-relationship:pricing_policies:update</code>) con <code>{"version": n, "company_product_presentation_ids": ["…"]}</code> (hasta 100 por llamada). Responden <code>200</code> con la política actualizada. Errores: <code>409 PRESENTATION_ALREADY_IN_POLICY</code>, <code>409 PRESENTATION_NOT_IN_POLICY</code>, <code>409 POLICY_INACTIVE</code>.</p>
+<h3 id="19-cambiar-el-porcentaje-de-una-politica">19. Cambiar el porcentaje de una política<a class="headerlink" href="#19-cambiar-el-porcentaje-de-una-politica" title="Permanent link">&para;</a></h3>
+<p><code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/pricing-policies/{policy_id}/percentage</code> (permiso <code>perm:commercial-relationship:pricing_policies:update</code>, <code>HIGH_RISK</code>) con <code>{"version": n, "markup_percentage": "35"}</code>. Responde <code>200</code> con la política y abre un término nuevo (<code>valid_from</code> = ahora). <strong>No recalcula ningún precio</strong>: los precios actuales se conservan y el porcentaje nuevo se usa en la próxima recepción de compra de cada presentación. Si se necesita el precio nuevo de inmediato, hay que registrarlo a mano (funcionalidad 14).</p>
+<h3 id="20-verificar-cobertura-y-ver-precios-automaticos-aplicados">20. Verificar cobertura y ver precios automáticos aplicados<a class="headerlink" href="#20-verificar-cobertura-y-ver-precios-automaticos-aplicados" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Antes de confirmar una compra:</strong> <code>POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/pricing-policies/coverage</code> (permiso <code>perm:commercial-relationship:pricing_policy_coverage:read</code>) con <code>{"currency_code": "COP", "company_product_presentation_ids": ["…"]}</code>. Responde <code>200</code> con <code>items[]</code> (<code>company_product_presentation_id</code>, <code>found</code>, <code>covered</code>, <code>price_list_ids[]</code>). Las presentaciones con <code>covered: false</code> harán fallar la confirmación con <code>PRICING_POLICY_NOT_CONFIGURED</code>.</li>
+<li><strong>Después de recibir una compra:</strong> <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/automatic-price-applications?purchase_id=…</code> (permiso <code>perm:commercial-relationship:automatic_price_applications:read</code>; también <code>status</code>, <code>price_list_id</code>, <code>company_product_presentation_id</code>). Cada elemento muestra <code>status</code>, <code>current_unit_cost</code>, <code>previous_unit_cost</code>, <code>reference_cost</code>, <code>markup_percentage</code>, <code>previous_price</code>, <code>new_price</code> y <code>new_price_item_id</code>. Un <code>status: PENDING</code> significa que el <em>worker</em> aún no la procesó; <code>FAILED</code> que reintentará (<code>attempts</code>, <code>next_attempt_at</code>); un administrador puede cerrarla con <code>POST …/automatic-price-applications/{application_id}/resolution</code> (CR 74).</li>
+</ul>
+<h2 id="dependencias-con-otros-modulos">Dependencias con otros módulos<a class="headerlink" href="#dependencias-con-otros-modulos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../compras/">Compras</a>: necesita productos y presentaciones compradas (<code>is_purchasable</code>), impuesto de compra (funcionalidad 8) y cobertura de políticas (funcionalidad 20); sus recepciones disparan los precios automáticos.</li>
+<li><a href="../ventas/">Ventas</a>: necesita presentaciones vendibles con precio vigente en al menos una lista; el vendedor elige la lista entre las opciones de la funcionalidad 13.</li>
+<li><a href="../inventario/">Inventario</a>: Product Inventory Query muestra los productos de la empresa con el precio de la lista indicada (<code>price_list_id</code>) o de la predeterminada, junto con las existencias.</li>
+<li><a href="../gestion-de-proveedores/">Gestión de proveedores</a>: los productos de proveedor se asocian a los productos empresariales creados aquí.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

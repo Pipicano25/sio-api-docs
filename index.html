@@ -1,0 +1,2778 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/">
+      
+      
+      
+        <link rel="next" href="ejemplos/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentacion-de-las-api-de-sio" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Documentación de las API de SIO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#comienza-aqui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comienza aquí
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-por-microservicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API por microservicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API por microservicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#para-que-sirve-cada-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Para qué sirve cada servicio?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fuente-tecnica-de-verdad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fuente técnica de verdad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clasificacion-de-seguridad-usada-en-toda-la-documentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación de seguridad usada en toda la documentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registro-de-avance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registro de avance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura-de-ejemplos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de ejemplos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-esta-documentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de esta documentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#comienza-aqui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comienza aquí
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-por-microservicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API por microservicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API por microservicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#para-que-sirve-cada-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Para qué sirve cada servicio?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fuente-tecnica-de-verdad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fuente técnica de verdad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clasificacion-de-seguridad-usada-en-toda-la-documentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación de seguridad usada en toda la documentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registro-de-avance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registro de avance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura-de-ejemplos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura de ejemplos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-esta-documentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de esta documentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="documentacion-de-las-api-de-sio">Documentación de las API de SIO<a class="headerlink" href="#documentacion-de-las-api-de-sio" title="Permanent link">&para;</a></h1>
+<p>Documentación técnica de los 12 microservicios de SIO desplegados en Render (entorno de desarrollo <code>siodev</code>), dirigida al desarrollador frontend y a cualquier equipo que integre SIO mediante API HTTP. Esta carpeta Markdown se consulta directamente en GitHub y es la única ubicación oficial de la documentación de integración.</p>
+<blockquote>
+<p><strong>Estado:</strong> completa. Las 411 operaciones de los 12 microservicios desplegados en Render están documentadas y contrastadas con el código y con los contratos OpenAPI (ver el <a href="#registro-de-avance">registro de avance</a>). Los datos que no pudieron confirmarse están marcados <strong>NO VERIFICADO</strong> en cada documento.</p>
+</blockquote>
+<p><strong>Fuente de verdad:</strong> el código fuente de cada microservicio (routers, modelos Pydantic, permisos declarados), las especificaciones en <code>specs/</code> y los contratos OpenAPI publicados en <code>/openapi.json</code> de cada servicio. Cuando un dato no pudo confirmarse se marca expresamente <strong>NO VERIFICADO</strong>.</p>
+<h2 id="comienza-aqui">Comienza aquí<a class="headerlink" href="#comienza-aqui" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Documento</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="guias/primeros-pasos/">Primeros pasos</a></td>
+<td>URLs base, cabeceras comunes, flujo de integración recomendado, arranque en frío de Render</td>
+</tr>
+<tr>
+<td><a href="guias/autenticacion/">Autenticación con Keycloak</a></td>
+<td>Realm <code>siodev</code>, cliente <code>sio-web</code>, Authorization Code + PKCE, tokens, renovación, cierre de sesión, qué validan las API</td>
+</tr>
+<tr>
+<td><a href="guias/permisos/">Permisos y contexto operativo</a></td>
+<td>Formato <code>perm:{servicio}:{recurso}:{accion}</code>, comodines <code>all</code>, grupos del realm, membresías por empresa y sucursal, aislamiento multi-tenant</td>
+</tr>
+<tr>
+<td><a href="guias/errores/">Errores y diagnóstico</a></td>
+<td>Problem Details, <code>code</code>, <code>trace_id</code>, códigos HTTP por tipo de error en cada servicio</td>
+</tr>
+<tr>
+<td><a href="principales/">API principales por módulo</a></td>
+<td>Nueve módulos funcionales (acceso y contexto operativo, administración empresarial, clientes, proveedores, productos y precios, ventas, compras, inventario, reportes): qué puede hacer el usuario, qué API consumir, qué necesita antes y cómo saber que funcionó</td>
+</tr>
+<tr>
+<td><a href="parametros/">Cómo obtener cada identificador</a></td>
+<td>Diecisiete guías reutilizables: <code>company_id</code>, <code>branch_id</code>, <code>company_customer_id</code>, <code>company_supplier_id</code>, <code>company_product_id</code>, <code>company_product_presentation_id</code>, <code>global_product_id</code>, <code>global_product_presentation_id</code>, <code>payment_method_id</code>, <code>person_identity_id</code>, <code>organization_identity_id</code>, <code>application_user_id</code>, <code>price_list_id</code>, <code>policy_id</code>, <code>sale_id</code>, <code>purchase_id</code> y los geográficos</td>
+</tr>
+<tr>
+<td><a href="ejemplos/">Ejemplos de flujos completos</a></td>
+<td>Crear una venta, registrar una compra, consultar inventario, configurar una lista de precios, crear una empresa y una sucursal</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-por-microservicio">API por microservicio<a class="headerlink" href="#api-por-microservicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Microservicio</th>
+<th>Base URL (Render, desarrollo)</th>
+<th>Documentación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Geography</td>
+<td><code>https://sio-geography-dev.onrender.com</code></td>
+<td><a href="servicios/geography/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Party Identity</td>
+<td><code>https://sio-party-identity-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/party-identity/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Product Catalog</td>
+<td><code>https://sio-product-catalog-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/product-catalog/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Operational Context</td>
+<td><code>https://sio-operational-context-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/operational-context/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Payment Reference</td>
+<td><code>https://sio-payment-reference-dev.onrender.com</code></td>
+<td><a href="servicios/payment-reference/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Commercial Relationship</td>
+<td><code>https://sio-commercial-relationship-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/commercial-relationship/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Purchase</td>
+<td><code>https://sio-purchase-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/purchase/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Sales</td>
+<td><code>https://sio-sales-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/sales/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Inventory</td>
+<td><code>https://sio-inventory-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/inventory/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Audit</td>
+<td><code>https://sio-audit-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/audit/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Product Inventory Query</td>
+<td><code>https://sio-product-inventory-query-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/product-inventory-query/">Ver referencia</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Business Reporting</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1</code></td>
+<td><a href="servicios/business-reporting/">Ver referencia</a></td>
+</tr>
+</tbody>
+</table>
+<p>Geography y Payment Reference <strong>no</strong> incluyen <code>/api/v1</code> en su URL base; los otros diez sí. Las rutas <code>/health/live</code>, <code>/health/ready</code>, <code>/docs</code> y <code>/openapi.json</code> cuelgan siempre del dominio, sin prefijo. Las URL se confirmaron en vivo el 2026-10-19: los 12 servicios respondieron <code>200</code> en <code>/openapi.json</code>.</p>
+<h3 id="para-que-sirve-cada-servicio">¿Para qué sirve cada servicio?<a class="headerlink" href="#para-que-sirve-cada-servicio" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Funcionalidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geography</td>
+<td>Países, divisiones administrativas y ciudades (datos globales)</td>
+</tr>
+<tr>
+<td>Party Identity</td>
+<td>Identidades de personas y organizaciones</td>
+</tr>
+<tr>
+<td>Product Catalog</td>
+<td>Catálogo global de productos, marcas, presentaciones y unidades</td>
+</tr>
+<tr>
+<td>Operational Context</td>
+<td>Empresas, sucursales, usuarios de aplicación, membresías y acceso operativo</td>
+</tr>
+<tr>
+<td>Payment Reference</td>
+<td>Tipos y condiciones de pago de referencia (datos globales)</td>
+</tr>
+<tr>
+<td>Commercial Relationship</td>
+<td>Clientes, proveedores, productos adoptados por la empresa, listas de precios y políticas</td>
+</tr>
+<tr>
+<td>Purchase</td>
+<td>Compras, detalles, impuestos y ciclo de vida de la compra</td>
+</tr>
+<tr>
+<td>Sales</td>
+<td>Ventas, detalles, pagos y ciclo de vida de la venta</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td>Existencias, entradas, salidas, ajustes, conteos y políticas de inventario</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Eventos de auditoría y trazabilidad</td>
+</tr>
+<tr>
+<td>Product Inventory Query</td>
+<td>Consultas consolidadas de productos, precios y existencias por empresa y sucursal</td>
+</tr>
+<tr>
+<td>Business Reporting</td>
+<td>Reportes de ventas, compras e inventario por empresa y sucursal, en JSON y CSV</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fuente-tecnica-de-verdad">Fuente técnica de verdad<a class="headerlink" href="#fuente-tecnica-de-verdad" title="Permanent link">&para;</a></h2>
+<p>Cada servicio expone su contrato OpenAPI en <code>/openapi.json</code> y la documentación Swagger en <code>/docs</code> <strong>si está habilitada</strong> (<code>SIO_DOCS_ENABLED=true</code>; el 2026-10-19 lo estaba en los 12 servicios de Render). Cada ficha de esta carpeta se construye cruzando ese contrato con el código, porque el OpenAPI generado no incluye reglas de negocio, efectos secundarios ni dependencias entre servicios.</p>
+<p><strong>Documentación pública ≠ API sin autenticación:</strong> salvo <code>/health/*</code>, <code>/docs</code> y <code>/openapi.json</code>, todas las rutas exigen un Access Token Bearer válido y el permiso declarado por la operación.</p>
+<h2 id="clasificacion-de-seguridad-usada-en-toda-la-documentacion">Clasificación de seguridad usada en toda la documentación<a class="headerlink" href="#clasificacion-de-seguridad-usada-en-toda-la-documentacion" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Clase</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>READ</code></td>
+<td>Solo consulta. No modifica información.</td>
+</tr>
+<tr>
+<td><code>WRITE</code></td>
+<td>Crea o modifica información de la empresa o de la plataforma.</td>
+</tr>
+<tr>
+<td><code>HIGH_RISK</code></td>
+<td>Operación sensible: elimina, inactiva, anula, cambia estados irreversibles, afecta saldos de inventario, precios, cartera o accesos de usuarios.</td>
+</tr>
+</tbody>
+</table>
+<p>Para cada operación <code>WRITE</code> y <code>HIGH_RISK</code>, la ficha del servicio indica qué datos pueden modificarse y qué efectos secundarios produce.</p>
+<h2 id="registro-de-avance">Registro de avance<a class="headerlink" href="#registro-de-avance" title="Permanent link">&para;</a></h2>
+<p>Cobertura contra los contratos OpenAPI desplegados en Render el 2026-10-19: <strong>411 operaciones</strong> en total, incluidas las dos rutas <code>/health/*</code> de cada servicio.</p>
+<table>
+<thead>
+<tr>
+<th>Documento</th>
+<th>Estado</th>
+<th>Operaciones en OpenAPI desplegado</th>
+<th>Operaciones documentadas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>index.md</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>guias/primeros-pasos.md</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>guias/autenticacion.md</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>guias/permisos.md</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>guias/errores.md</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>parametros/* (17 guías)</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ejemplos/* (5 flujos)</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>principales/* (índice + 9 módulos)</td>
+<td>Hecho</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>servicios/geography.md</td>
+<td>Hecho</td>
+<td>17</td>
+<td>17</td>
+</tr>
+<tr>
+<td>servicios/party-identity.md</td>
+<td>Hecho</td>
+<td>54</td>
+<td>54</td>
+</tr>
+<tr>
+<td>servicios/product-catalog.md</td>
+<td>Hecho</td>
+<td>104</td>
+<td>104</td>
+</tr>
+<tr>
+<td>servicios/operational-context.md</td>
+<td>Hecho</td>
+<td>33</td>
+<td>33</td>
+</tr>
+<tr>
+<td>servicios/payment-reference.md</td>
+<td>Hecho</td>
+<td>12</td>
+<td>12</td>
+</tr>
+<tr>
+<td>servicios/commercial-relationship.md</td>
+<td>Hecho</td>
+<td>76</td>
+<td>76</td>
+</tr>
+<tr>
+<td>servicios/purchase.md</td>
+<td>Hecho</td>
+<td>24</td>
+<td>24</td>
+</tr>
+<tr>
+<td>servicios/sales.md</td>
+<td>Hecho</td>
+<td>23</td>
+<td>23</td>
+</tr>
+<tr>
+<td>servicios/inventory.md</td>
+<td>Hecho</td>
+<td>38</td>
+<td>38</td>
+</tr>
+<tr>
+<td>servicios/audit.md</td>
+<td>Hecho</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr>
+<td>servicios/product-inventory-query.md</td>
+<td>Hecho</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr>
+<td>servicios/business-reporting.md</td>
+<td>Hecho</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>411</strong></td>
+<td><strong>411</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cobertura-de-ejemplos">Cobertura de ejemplos<a class="headerlink" href="#cobertura-de-ejemplos" title="Permanent link">&para;</a></h2>
+<p>Revisión individual de las 411 operaciones realizada el 2026-10-19 (auditoría automática sección por sección más validación de cada JSON contra el contrato OpenAPI desplegado y contra los modelos Pydantic del propio servicio):</p>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Operaciones documentadas</th>
+<th>Con ejemplo de solicitud validado</th>
+<th>Con cuerpo de solicitud (de las que lo admiten)</th>
+<th>Con ejemplo de respuesta validado</th>
+<th>Operaciones con información NO VERIFICADA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Audit</td>
+<td>10</td>
+<td>10</td>
+<td>2/2</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Business Reporting</td>
+<td>10</td>
+<td>10</td>
+<td>0/0</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Commercial Relationship</td>
+<td>76</td>
+<td>76</td>
+<td>51/51</td>
+<td>76</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Geography</td>
+<td>17</td>
+<td>17</td>
+<td>6/6</td>
+<td>17</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td>38</td>
+<td>38</td>
+<td>19/19</td>
+<td>38</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Operational Context</td>
+<td>33</td>
+<td>33</td>
+<td>18/18</td>
+<td>33</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Party Identity</td>
+<td>54</td>
+<td>54</td>
+<td>32/32</td>
+<td>54</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Payment Reference</td>
+<td>12</td>
+<td>12</td>
+<td>6/6</td>
+<td>12</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Product Catalog</td>
+<td>104</td>
+<td>104</td>
+<td>67/67</td>
+<td>104</td>
+<td>1 (introducción de activos, ops. 96–102: disponibilidad en Render de la ruta pública de imágenes)</td>
+</tr>
+<tr>
+<td>Product Inventory Query</td>
+<td>10</td>
+<td>10</td>
+<td>0/0</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Purchase</td>
+<td>24</td>
+<td>24</td>
+<td>12/12</td>
+<td>24</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Sales</td>
+<td>23</td>
+<td>23</td>
+<td>10/10</td>
+<td>23</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>411</strong></td>
+<td><strong>411</strong></td>
+<td><strong>223/223</strong></td>
+<td><strong>411</strong></td>
+<td><strong>1</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Criterios: un <em>ejemplo de solicitud</em> es un bloque cURL con método, URL completa de Render y cabeceras; un <em>ejemplo de respuesta</em> es un JSON conforme al modelo real o, cuando la operación no devuelve cuerpo, la indicación explícita <code>204 No Content: sin cuerpo</code> (o contenido no JSON para los CSV y las imágenes). Las operaciones con información NO VERIFICADA tienen ejemplos válidos, pero algún dato de su sección (un comportamiento, un valor por defecto o un efecto) no pudo confirmarse en el código y está marcado como tal. El 2026-10-19 se volvieron a revisar contra el código las 16 operaciones que tenían esa marca y se resolvieron 15; la única pendiente depende del despliegue en Render. Fuera de las fichas, las marcas NO VERIFICADO restantes dependen de configuración externa que no puede consultarse desde el repositorio: la guía de autenticación (valores en Render de <code>SIO_WEB_REDIRECT_URI</code>, <code>SIO_WEB_ORIGIN</code>, <code>SIO_WEB_DIRECT_ACCESS_GRANTS_ENABLED</code>, duración real de los tokens, usuarios de prueba e issuer), la guía de permisos (asignación real por grupo y membresías en Render), la guía de errores (campos desconocidos modelo a modelo, se indica por operación) y las dos referencias al <code>sio-web</code> en el módulo de acceso.</p>
+<h2 id="alcance-de-esta-documentacion">Alcance de esta documentación<a class="headerlink" href="#alcance-de-esta-documentacion" title="Permanent link">&para;</a></h2>
+<p>Incluye únicamente documentación Markdown de consumo funcional de las API: fichas técnicas, guías, identificadores, módulos principales y ejemplos. No incluye manuales de usuario, despliegues ni herramientas de publicación. No se ejecutaron operaciones de escritura contra las API, ni se modificaron bases de datos, Keycloak o Render para producirla.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

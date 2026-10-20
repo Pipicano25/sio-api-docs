@@ -1,0 +1,3623 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/servicios/business-reporting/">
+      
+      
+        <link rel="prev" href="../audit/">
+      
+      
+        <link rel="next" href="../commercial-relationship/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Business Reporting API - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#business-reporting-api" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Business Reporting API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-comunes-a-los-ocho-reportes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros comunes a los ocho reportes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parámetros comunes a los ocho reportes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#respuesta-json-comun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Respuesta JSON común
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descarga-csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descarga CSV
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-companiescompany_idreportstop-selling-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /companies/{company_id}/reports/top-selling-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-get-companiescompany_idbranchesbranch_idreportstop-selling-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GET /companies/{company_id}/branches/{branch_id}/reports/top-selling-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idreportssales-by-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/reports/sales-by-branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idbranchesbranch_idreportssales-by-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/branches/{branch_id}/reports/sales-by-branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_idreportspurchases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/reports/purchases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-companiescompany_idbranchesbranch_idreportspurchases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /companies/{company_id}/branches/{branch_id}/reports/purchases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-companiescompany_idreportsstock-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /companies/{company_id}/reports/stock-evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-companiescompany_idbranchesbranch_idreportsstock-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /companies/{company_id}/branches/{branch_id}/reports/stock-evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datos-del-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datos del servicio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autenticacion-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación y permisos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-comunes-a-los-ocho-reportes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros comunes a los ocho reportes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parámetros comunes a los ocho reportes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#respuesta-json-comun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Respuesta JSON común
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descarga-csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descarga CSV
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabla-de-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabla de endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-get-healthlive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. GET /health/live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-get-healthready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GET /health/ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-companiescompany_idreportstop-selling-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. GET /companies/{company_id}/reports/top-selling-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-get-companiescompany_idbranchesbranch_idreportstop-selling-products" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GET /companies/{company_id}/branches/{branch_id}/reports/top-selling-products
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-get-companiescompany_idreportssales-by-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GET /companies/{company_id}/reports/sales-by-branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-get-companiescompany_idbranchesbranch_idreportssales-by-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. GET /companies/{company_id}/branches/{branch_id}/reports/sales-by-branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-get-companiescompany_idreportspurchases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GET /companies/{company_id}/reports/purchases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-get-companiescompany_idbranchesbranch_idreportspurchases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GET /companies/{company_id}/branches/{branch_id}/reports/purchases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-get-companiescompany_idreportsstock-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. GET /companies/{company_id}/reports/stock-evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-get-companiescompany_idbranchesbranch_idreportsstock-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. GET /companies/{company_id}/branches/{branch_id}/reports/stock-evolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cobertura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cobertura
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="business-reporting-api">Business Reporting API<a class="headerlink" href="#business-reporting-api" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Índice</a> · <a href="../../guias/autenticacion/">Autenticación</a> · <a href="../../guias/permisos/">Permisos</a> · <a href="../../guias/errores/">Errores</a> · <a href="../../parametros/">Parámetros</a></p>
+<h2 id="introduccion">Introducción<a class="headerlink" href="#introduccion" title="Permanent link">&para;</a></h2>
+<p>Business Reporting genera, <strong>bajo demanda y solo en lectura</strong>, cuatro reportes de negocio por empresa o por sucursal: productos más vendidos, ventas por sucursal, compras del período y evolución de existencias. Cada reporte existe en dos rutas (empresa y sucursal) y puede devolverse en JSON o descargarse en CSV. No almacena datos propios: consulta Sales, Purchase, Inventory, Commercial Relationship, Product Catalog y Operational Context en cada solicitud.</p>
+<h2 id="responsabilidad">Responsabilidad<a class="headerlink" href="#responsabilidad" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Autorizar el alcance con Operational Context (membresía <code>ACTIVE</code>, sucursales de la empresa) antes de consultar cualquier otro servicio.</li>
+<li>Agregar la información de los servicios propietarios <strong>con el token del usuario</strong>: el usuario necesita el permiso del reporte y el permiso de lectura del servicio propietario.</li>
+<li>Entregar reportes consistentes: nunca parciales; si una dependencia falla, responde <code>503</code>.</li>
+</ul>
+<h2 id="datos-del-servicio">Datos del servicio<a class="headerlink" href="#datos-del-servicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL base</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1</code></td>
+</tr>
+<tr>
+<td>Salud</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/health/live</code>, <code>/health/ready</code></td>
+</tr>
+<tr>
+<td>Swagger / OpenAPI</td>
+<td><a href="https://sio-business-reporting-dev.onrender.com/docs">/docs</a> · <a href="https://sio-business-reporting-dev.onrender.com/openapi.json">/openapi.json</a></td>
+</tr>
+<tr>
+<td>Formato de error</td>
+<td>Problem Details con <code>code</code> <code>BUSINESS_REPORTING.*</code> y <code>trace_id</code></td>
+</tr>
+<tr>
+<td>Operaciones en el contrato desplegado</td>
+<td>10 (8 reportes + 2 de salud)</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>OpenAPI de Render del 2026-10-19 cruzado con <code>services/business-reporting-service</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="autenticacion-y-permisos">Autenticación y permisos<a class="headerlink" href="#autenticacion-y-permisos" title="Permanent link">&para;</a></h2>
+<p>Todas las rutas salvo <code>/health/*</code> exigen <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code>. Cada reporte exige <strong>dos permisos</strong>: el del reporte (lo evalúa Business Reporting) y el de lectura del servicio propietario (lo evalúa ese servicio cuando Business Reporting le reenvía el token del usuario). Si falta el segundo, la respuesta también es <code>403 BUSINESS_REPORTING.FORBIDDEN</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Reporte</th>
+<th>Permiso del reporte</th>
+<th>Permiso del propietario</th>
+<th>Grupos de la plantilla que tienen ambos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Productos más vendidos</td>
+<td><code>perm:business-reporting:top_selling_products:read</code></td>
+<td><code>perm:sales:sales:read</code> (Sales)</td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>ventas</code>, <code>reportes</code></td>
+</tr>
+<tr>
+<td>Ventas por sucursal</td>
+<td><code>perm:business-reporting:sales_by_branch:read</code></td>
+<td><code>perm:sales:sales:read</code></td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>reportes</code></td>
+</tr>
+<tr>
+<td>Compras</td>
+<td><code>perm:business-reporting:purchases:read</code></td>
+<td><code>perm:purchase:purchases:read</code> (Purchase)</td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>compras</code>, <code>reportes</code></td>
+</tr>
+<tr>
+<td>Evolución de existencias</td>
+<td><code>perm:business-reporting:stock_evolution:read</code></td>
+<td><code>perm:inventory:stock_evolution:read</code> (Inventory)</td>
+<td><code>administradores</code>, <code>supervisores</code>, <code>inventario</code>, <code>reportes</code></td>
+</tr>
+</tbody>
+</table>
+<p>El grupo <code>consulta</code> no tiene permisos de Business Reporting en la plantilla.</p>
+<h2 id="alcance-de-datos">Alcance de datos<a class="headerlink" href="#alcance-de-datos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Regla</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empresa</td>
+<td>El usuario debe tener membresía <code>ACTIVE</code> en <code>company_id</code>; si no, o si la empresa no existe, <code>404 BUSINESS_REPORTING.NOT_FOUND</code> (sin distinguir el caso)</td>
+</tr>
+<tr>
+<td>Sucursales en rutas de empresa</td>
+<td>Sin <code>branch_id</code>: todas las sucursales <code>ACTIVE</code> de la empresa (en compras y existencias también las inactivas, que pueden conservar datos). Con <code>branch_id</code> (repetible, máx. 100): esas sucursales, que deben pertenecer a la empresa (<code>404</code> si alguna no)</td>
+</tr>
+<tr>
+<td>Rutas por sucursal</td>
+<td><code>branch_id</code> va en la ruta; debe ser de la empresa (<code>404</code> si no). No se admite <code>branch_id</code> por consulta (<code>422</code>)</td>
+</tr>
+<tr>
+<td>Asignación a la sucursal</td>
+<td><strong>No se exige</strong> que el usuario tenga asignada la sucursal: con membresía y permisos puede consultar cualquier sucursal de la empresa</td>
+</tr>
+</tbody>
+</table>
+<h2 id="parametros-comunes-a-los-ocho-reportes">Parámetros comunes a los ocho reportes<a class="headerlink" href="#parametros-comunes-a-los-ocho-reportes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Dónde</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_id</code></td>
+<td>ruta</td>
+<td>UUID</td>
+<td>Sí</td>
+<td>Membresía <code>ACTIVE</code></td>
+<td><a href="../../parametros/company-id/">company_id</a></td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>ruta (rutas por sucursal) o query repetible (rutas de empresa; máx. 100)</td>
+<td>UUID</td>
+<td>Según la ruta</td>
+<td>De la empresa</td>
+<td><a href="../../parametros/branch-id/">branch_id</a></td>
+</tr>
+<tr>
+<td><code>date_from</code></td>
+<td>query</td>
+<td>date <code>YYYY-MM-DD</code></td>
+<td>Sí</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>date_to</code></td>
+<td>query</td>
+<td>date <code>YYYY-MM-DD</code></td>
+<td>Sí</td>
+<td>≥ <code>date_from</code> (<code>INVALID_DATE_RANGE</code>); período ≤ 366 días (<code>PERIOD_TOO_LONG</code>); no posterior a hoy en la zona horaria de la empresa (<code>DATE_IN_FUTURE</code>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>query</td>
+<td><code>json</code> | <code>csv</code></td>
+<td>No (<code>json</code>)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bom</code></td>
+<td>query</td>
+<td>boolean</td>
+<td>No (<code>true</code>)</td>
+<td>Solo afecta a CSV: antepone la marca de orden de bytes UTF-8 para Excel</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Todos los <code>422</code> de período llegan como <code>BUSINESS_REPORTING.VALIDATION_ERROR</code> con <code>errors[]</code> (<code>field</code>, <code>message</code>, <code>code</code>).</p>
+<h3 id="respuesta-json-comun">Respuesta JSON común<a class="headerlink" href="#respuesta-json-comun" title="Permanent link">&para;</a></h3>
+<p>Todos los reportes incluyen: <code>report</code> (nombre del reporte), <code>company_id</code>, <code>date_from</code>, <code>date_to</code>, <code>generated_at</code> (date-time), <code>criteria</code> (objeto con los parámetros aplicados; verificado en el código: productos más vendidos <code>{sales_status: "CONFIRMED", date_basis: "operation_date", rank_by}</code>, ventas por sucursal <code>{sales_status: "CONFIRMED", date_basis: "operation_date"}</code>, compras <code>{date_basis: "operation_date", categories: [...]}</code>, evolución de existencias <code>{date_basis: "created_at", from, to, consolidation: "by_product"}</code>) y, según la ruta, <code>branch_ids</code> (empresa) o <code>branch_id</code>, <code>branch_code</code>, <code>branch_name</code> (sucursal). Los importes y cantidades son <strong>cadenas decimales</strong> (por ejemplo <code>"1250000.00"</code>), nunca números flotantes.</p>
+<h3 id="descarga-csv">Descarga CSV<a class="headerlink" href="#descarga-csv" title="Permanent link">&para;</a></h3>
+<p>Con <code>format=csv</code> la respuesta es <code>text/csv; charset=utf-8</code> con cabecera <code>Content-Disposition: attachment; filename="&lt;reporte&gt;-&lt;company_id&gt;-&lt;date_from&gt;-&lt;date_to&gt;.csv"</code> (las rutas por sucursal añaden el <code>branch_id</code> al nombre). Separador coma, fin de línea CRLF, misma información que el JSON. En compras y existencias el CSV incluye <strong>todas las páginas</strong>, con un máximo de 50 000 filas (si se supera, <code>422</code>). El servidor dedica hasta 120 s a un CSV y 10 s a un JSON; si una dependencia no responde a tiempo, <code>503</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">URL</span><span class="p">(</span><span class="sb">`https://sio-business-reporting-dev.onrender.com/api/v1/companies/</span><span class="si">${</span><span class="nx">companyId</span><span class="si">}</span><span class="sb">/reports/purchases`</span><span class="p">);</span>
+<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">"date_from"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">);</span>
+<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">"date_to"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">);</span>
+<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">"format"</span><span class="p">,</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">respuesta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Authorization</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">token</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">blob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">blob</span><span class="p">();</span><span class="w"> </span><span class="c1">// guardar con el nombre de Content-Disposition</span>
+</code></pre></div>
+<h2 id="tabla-de-endpoints">Tabla de endpoints<a class="headerlink" href="#tabla-de-endpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Método</th>
+<th>Ruta relativa</th>
+<th>Descripción</th>
+<th>Permiso del reporte</th>
+<th>Clase</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>GET</code></td>
+<td><code>/health/live</code> (sin prefijo)</td>
+<td>Proceso vivo</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#1-get-healthlive">Ver</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GET</code></td>
+<td><code>/health/ready</code> (sin prefijo)</td>
+<td>Configuración válida y JWKS disponible</td>
+<td>Ninguno</td>
+<td><code>READ</code></td>
+<td><a href="#2-get-healthready">Ver</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/reports/top-selling-products</code></td>
+<td>Productos más vendidos de la empresa</td>
+<td><code>perm:business-reporting:top_selling_products:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#3-get-companiescompany_idreportstop-selling-products">Ver</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/reports/top-selling-products</code></td>
+<td>Productos más vendidos de una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#4-get-companiescompany_idbranchesbranch_idreportstop-selling-products">Ver</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/reports/sales-by-branch</code></td>
+<td>Ventas por sucursal (comparativo)</td>
+<td><code>perm:business-reporting:sales_by_branch:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#5-get-companiescompany_idreportssales-by-branch">Ver</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/reports/sales-by-branch</code></td>
+<td>Ventas de una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#6-get-companiescompany_idbranchesbranch_idreportssales-by-branch">Ver</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/reports/purchases</code></td>
+<td>Compras del período (empresa)</td>
+<td><code>perm:business-reporting:purchases:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#7-get-companiescompany_idreportspurchases">Ver</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/reports/purchases</code></td>
+<td>Compras del período (sucursal)</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#8-get-companiescompany_idbranchesbranch_idreportspurchases">Ver</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/reports/stock-evolution</code></td>
+<td>Evolución de existencias consolidada</td>
+<td><code>perm:business-reporting:stock_evolution:read</code></td>
+<td><code>READ</code></td>
+<td><a href="#9-get-companiescompany_idreportsstock-evolution">Ver</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>GET</code></td>
+<td><code>/companies/{company_id}/branches/{branch_id}/reports/stock-evolution</code></td>
+<td>Evolución de existencias de una sucursal</td>
+<td>ídem</td>
+<td><code>READ</code></td>
+<td><a href="#10-get-companiescompany_idbranchesbranch_idreportsstock-evolution">Ver</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="operaciones">Operaciones<a class="headerlink" href="#operaciones" title="Permanent link">&para;</a></h2>
+<h3 id="1-get-healthlive">1. <code>GET /health/live</code><a class="headerlink" href="#1-get-healthlive" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-business-reporting-dev.onrender.com/health/live</code> → <code>200</code> <code>{"status": "ok"}</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/health/live'</span>
+</code></pre></div>
+<h3 id="2-get-healthready">2. <code>GET /health/ready</code><a class="headerlink" href="#2-get-healthready" title="Permanent link">&para;</a></h3>
+<p><code>READ</code>, sin autenticación. <code>https://sio-business-reporting-dev.onrender.com/health/ready</code> → <code>200</code> <code>{"status": "ok"}</code> si la configuración es válida y el JWKS de Keycloak responde; <code>503</code> si no. Este servicio no tiene base de datos propia.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/health/ready'</span>
+</code></pre></div>
+<h3 id="3-get-companiescompany_idreportstop-selling-products">3. <code>GET /companies/{company_id}/reports/top-selling-products</code><a class="headerlink" href="#3-get-companiescompany_idreportstop-selling-products" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/reports/top-selling-products</code></td>
+</tr>
+<tr>
+<td>Permisos</td>
+<td><code>perm:business-reporting:top_selling_products:read</code> + <code>perm:sales:sales:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; <code>branch_id</code> repetible como filtro</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros propios (además de los comunes):</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rank_by</code></td>
+<td><code>quantity</code> | <code>amount</code></td>
+<td>No (<code>quantity</code>)</td>
+<td>Ranking por cantidad en unidad base o por importe</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>integer</td>
+<td>No (20)</td>
+<td>1–100 filas</td>
+</tr>
+<tr>
+<td><code>include_presentations</code></td>
+<td>boolean</td>
+<td>No (<code>false</code>)</td>
+<td>Añade el desglose por presentación en cada producto</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID, repetible</td>
+<td>No</td>
+<td>Máx. 100</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/reports/top-selling-products?date_from=2026-10-01&amp;date_to=2026-10-19&amp;rank_by=amount&amp;limit=10&amp;include_presentations=true'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>TopProductsOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"top-selling-products"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:30:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"mixed_base_units"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"rank"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"quantity_base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1200"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"960000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">85</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001-U"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1200"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"quantity_base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1200"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"960000.00"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"totals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4350000.00"</span><span class="p">,</span><span class="w"> </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">310</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Reglas de negocio: solo ventas <code>CONFIRMED</code> por <code>operation_date</code>; las anuladas se excluyen. Nunca se suman cantidades de productos distintos; <code>mixed_base_units: true</code> avisa de que el ranking compara productos con unidades base distintas. Los importes se agrupan por moneda. <code>presentations</code> es <code>null</code> salvo con <code>include_presentations=true</code>. Dependencias: Operational Context, Sales, Commercial Relationship y Product Catalog (nombres, códigos y unidades).</p>
+<h3 id="4-get-companiescompany_idbranchesbranch_idreportstop-selling-products">4. <code>GET /companies/{company_id}/branches/{branch_id}/reports/top-selling-products</code><a class="headerlink" href="#4-get-companiescompany_idbranchesbranch_idreportstop-selling-products" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 3 pero <strong>solo</strong> para la sucursal de la ruta (<code>branch_id</code> obligatorio en la ruta; debe ser de la empresa, si no <code>404</code>). Mismos parámetros propios salvo <code>branch_id</code> por consulta, que no se admite. Misma respuesta <code>TopProductsOut</code> con <code>branch_ids</code> de un solo elemento.</p>
+<p>URL: <code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/reports/top-selling-products</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/reports/top-selling-products?date_from=2026-10-01&amp;date_to=2026-10-19'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>TopProductsOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"top-selling-products"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"mixed_base_units"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"rank"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"quantity_base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"presentations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CJ100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Caja x 100"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"quantity_base"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0000"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"totals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="5-get-companiescompany_idreportssales-by-branch">5. <code>GET /companies/{company_id}/reports/sales-by-branch</code><a class="headerlink" href="#5-get-companiescompany_idreportssales-by-branch" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/reports/sales-by-branch</code></td>
+</tr>
+<tr>
+<td>Permisos</td>
+<td><code>perm:business-reporting:sales_by_branch:read</code> + <code>perm:sales:sales:read</code></td>
+</tr>
+<tr>
+<td>Parámetros propios</td>
+<td><code>branch_id</code> (UUID, repetible, máx. 100)</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/reports/sales-by-branch?date_from=2026-10-01&amp;date_to=2026-10-19'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>SalesByBranchOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-by-branch"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:30:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"9b2f5c1d-3e4a-4f6b-8c7d-2a1b3c4d5e6f"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUC-001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Centro"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">210</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"total_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3100000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"share_percentage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"71.26"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9b2f5c1d-3e4a-4f6b-8c7d-2a1b3c4d5e6f"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUC-002"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Norte"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"total_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1250000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"share_percentage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.74"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"totals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span><span class="w"> </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">310</span><span class="p">,</span><span class="w"> </span><span class="nt">"total_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4350000.00"</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Reglas: compara sucursales; las del alcance sin ventas aparecen con cero. <code>share_percentage</code> = total de la sucursal ÷ suma de los totales de <strong>las sucursales de la respuesta</strong> en la misma moneda × 100 (con un solo <code>branch_id</code> con ventas da <code>100</code>). Solo ventas <code>CONFIRMED</code> por <code>operation_date</code>.</p>
+<h3 id="6-get-companiescompany_idbranchesbranch_idreportssales-by-branch">6. <code>GET /companies/{company_id}/branches/{branch_id}/reports/sales-by-branch</code><a class="headerlink" href="#6-get-companiescompany_idbranchesbranch_idreportssales-by-branch" title="Permanent link">&para;</a></h3>
+<p>Número de ventas y total vendido <strong>solo</strong> de la sucursal de la ruta, por moneda, también con cero ventas. Sin <code>share_percentage</code>. <code>branch_id</code> por consulta produce <code>422</code>.</p>
+<p>URL: <code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/reports/sales-by-branch</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/reports/sales-by-branch?date_from=2026-10-01&amp;date_to=2026-10-19'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>BranchSalesReportOut</code>): campos comunes + <code>branch_id</code>, <code>branch_code</code>, <code>branch_name</code> e <code>items[]</code> con <code>currency_code</code>, <code>sales_count</code>, <code>total_amount</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sales-by-branch"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:30:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUC-001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Centro"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span><span class="w"> </span><span class="nt">"sales_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">210</span><span class="p">,</span><span class="w"> </span><span class="nt">"total_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3100000.00"</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="7-get-companiescompany_idreportspurchases">7. <code>GET /companies/{company_id}/reports/purchases</code><a class="headerlink" href="#7-get-companiescompany_idreportspurchases" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/reports/purchases</code></td>
+</tr>
+<tr>
+<td>Permisos</td>
+<td><code>perm:business-reporting:purchases:read</code> + <code>perm:purchase:purchases:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; sin <code>branch_id</code> incluye también sucursales inactivas</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros propios:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>category</code></td>
+<td>repetible, máx. 3</td>
+<td>No (todas)</td>
+<td><code>RECEIVED</code> (recibida), <code>PENDING_RECEIPT</code> (pendiente de recepción), <code>CANCELLED</code> (anulada)</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>integer</td>
+<td>No (1)</td>
+<td>≥ 1</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td>integer</td>
+<td>No (<strong>50</strong>)</td>
+<td>1–100</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID, repetible</td>
+<td>No</td>
+<td>Máx. 100</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/reports/purchases?date_from=2026-10-01&amp;date_to=2026-10-19&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>PurchasesOut</code>; paginada; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"purchases"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:30:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"purchase_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4a5b6c7d-8e9f-4a0b-9c1d-2e3f4a5b6c7d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operation_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-05"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-06T14:00:00Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Centro"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Distribuidora Ejemplo S.A.S."</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_identification"</span><span class="p">:</span><span class="w"> </span><span class="s2">"900123456-7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C-000045"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_document_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FV-8891"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RECEIVED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"receipt_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RECEIVED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2500000.00"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"totals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"18500000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"pending_receipt_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"pending_receipt_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3100000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"cancelled_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"cancelled_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"400000.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"effective_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"21600000.00"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Reglas: compras <strong>no borrador</strong> por <code>operation_date</code>. <code>totals</code> es del período completo por moneda (no de la página): <code>effective_total</code> = recibidas + pendientes; las anuladas se informan y nunca suman. <code>received_at</code> es informativa. Los valores de <code>status</code> y <code>receipt_status</code> son los de Purchase (ver su ficha); los mostrados son ilustrativos. El CSV descarga todas las páginas (máx. 50 000 filas).</p>
+<h3 id="8-get-companiescompany_idbranchesbranch_idreportspurchases">8. <code>GET /companies/{company_id}/branches/{branch_id}/reports/purchases</code><a class="headerlink" href="#8-get-companiescompany_idbranchesbranch_idreportspurchases" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 7 para una sola sucursal (en la ruta). Mismos parámetros propios salvo <code>branch_id</code> por consulta. Misma respuesta <code>PurchasesOut</code>.</p>
+<p>URL: <code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/reports/purchases</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/reports/purchases?date_from=2026-10-01&amp;date_to=2026-10-19&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Ejemplo de respuesta <code>200</code> (<code>PurchasesOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"purchases"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"purchase_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4b5c6d7e-8f9a-4b0c-8d1e-2f3a4b5c6d7e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"operation_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Centro"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Distribuidora Farma S.A.S."</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_identification"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NIT 900123456-7"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"supplier_document_number"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RECEIVED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"receipt_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RECEIVED"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"totals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"currency_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"COP"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"received_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"pending_receipt_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"pending_receipt_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"cancelled_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"cancelled_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"effective_total"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1600.00"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="9-get-companiescompany_idreportsstock-evolution">9. <code>GET /companies/{company_id}/reports/stock-evolution</code><a class="headerlink" href="#9-get-companiescompany_idreportsstock-evolution" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clasificación</td>
+<td><code>READ</code></td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/reports/stock-evolution</code></td>
+</tr>
+<tr>
+<td>Permisos</td>
+<td><code>perm:business-reporting:stock_evolution:read</code> + <code>perm:inventory:stock_evolution:read</code></td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>Empresa; consolida las sucursales del alcance (todas, incluidas inactivas, o las de <code>branch_id</code>). Máximo 100 sucursales consolidables (<code>422</code> si la empresa tiene más y no se filtra)</td>
+</tr>
+</tbody>
+</table>
+<p>Parámetros propios:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>company_product_id</code></td>
+<td>UUID, repetible, máx. 100</td>
+<td>No</td>
+<td>Limita a esos productos (<a href="../../parametros/company-product-id/">company_product_id</a>)</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>integer</td>
+<td>No (1)</td>
+<td>≥ 1</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td>integer</td>
+<td>No (50)</td>
+<td>1–100</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID, repetible, máx. 100</td>
+<td>No</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/reports/stock-evolution?date_from=2026-10-01&amp;date_to=2026-10-19&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>CompanyStockEvolutionOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stock-evolution"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:30:00Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">"branch_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"9b2f5c1d-3e4a-4f6b-8c7d-2a1b3c4d5e6f"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"timezone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"America/Bogota"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"opening_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1500"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1200"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entry_reversals"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"output_reversals"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"positive_adjustments"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"negative_adjustments"</span><span class="p">:</span><span class="w"> </span><span class="s2">"15"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"closing_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"movement_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">97</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branch_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Reglas: por producto, en su unidad base, existencias y movimientos <strong>sumados</strong> sobre las sucursales del alcance; <code>branch_count</code> = sucursales que aportan. Los días se cuentan en la zona horaria de la empresa (<code>timezone</code>). Se verifica la identidad <code>closing = opening + entries − outputs − entry_reversals + output_reversals + positive_adjustments − negative_adjustments</code>; si no cuadra, <code>503</code> (incidente de integridad). <strong>Sin costos.</strong> La consolidación la calcula Inventory.</p>
+<h3 id="10-get-companiescompany_idbranchesbranch_idreportsstock-evolution">10. <code>GET /companies/{company_id}/branches/{branch_id}/reports/stock-evolution</code><a class="headerlink" href="#10-get-companiescompany_idbranchesbranch_idreportsstock-evolution" title="Permanent link">&para;</a></h3>
+<p>Igual que la operación 9 para la sucursal de la ruta, sin <code>branch_count</code>, con <code>branch_id</code>, <code>branch_code</code>, <code>branch_name</code> y <code>timezone</code> de la sucursal. Parámetros propios: <code>company_product_id</code> (repetible), <code>page</code>, <code>page_size</code>.</p>
+<p>URL: <code>https://sio-business-reporting-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/reports/stock-evolution</code>.</p>
+<p>Ejemplo de solicitud (sin cuerpo):</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-business-reporting-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/reports/stock-evolution?date_from=2026-10-01&amp;date_to=2026-10-19&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p>Respuesta <code>200</code> (<code>StockEvolutionReportOut</code>): <code>items[]</code> con <code>company_product_id</code>, <code>product_code</code>, <code>product_name</code>, <code>base_unit</code>, <code>opening_quantity</code>, <code>entries</code>, <code>outputs</code>, <code>entry_reversals</code>, <code>output_reversals</code>, <code>positive_adjustments</code>, <code>negative_adjustments</code>, <code>closing_quantity</code>, <code>movement_count</code>, más <code>page</code>, <code>page_size</code>, <code>total_records</code>, <code>total_pages</code>.</p>
+<p>Ejemplo de respuesta <code>200</code> (<code>StockEvolutionReportOut</code>; valores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"report"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stock-evolution"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"generated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-10-19T15:04:05Z"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONFIRMED"</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SUC-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"branch_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sucursal Centro"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"timezone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"America/Bogota"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRD-0001"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"product_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acetaminofén 500 mg"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"base_unit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UN"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unidad"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"opening_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"80.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"entry_reversals"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"output_reversals"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"positive_adjustments"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"negative_adjustments"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"closing_quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"40.0000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"movement_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_records"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="errores-frecuentes">Errores frecuentes<a class="headerlink" href="#errores-frecuentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Respuesta</th>
+<th>Causa</th>
+<th>Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>403 BUSINESS_REPORTING.FORBIDDEN</code></td>
+<td>Falta el permiso del reporte <strong>o</strong> el permiso de lectura del servicio propietario</td>
+<td>Comprobar ambos permisos en el token</td>
+</tr>
+<tr>
+<td><code>404 BUSINESS_REPORTING.NOT_FOUND</code></td>
+<td>Empresa inexistente, sin membresía <code>ACTIVE</code>, o <code>branch_id</code> de otra empresa</td>
+<td>Validar <code>company_id</code> y <code>branch_id</code> con <code>/me/operational-context</code></td>
+</tr>
+<tr>
+<td><code>422</code> <code>INVALID_DATE_RANGE</code> / <code>PERIOD_TOO_LONG</code> / <code>DATE_IN_FUTURE</code></td>
+<td>Período inválido (orden, más de 366 días, fecha final futura)</td>
+<td>Corregir fechas; el «hoy» se calcula en la zona horaria de la empresa</td>
+</tr>
+<tr>
+<td><code>422</code> por <code>branch_id</code> en ruta de sucursal</td>
+<td>Se envió <code>branch_id</code> por consulta en una ruta <code>/branches/{branch_id}/…</code></td>
+<td>Quitar el parámetro</td>
+</tr>
+<tr>
+<td><code>422</code> por CSV</td>
+<td>Más de 50 000 filas</td>
+<td>Acotar el período o filtrar</td>
+</tr>
+<tr>
+<td><code>503 BUSINESS_REPORTING.DEPENDENCY_UNAVAILABLE</code></td>
+<td>Un servicio no respondió a tiempo (10 s JSON, 120 s CSV), respondió algo inválido o falló la identidad de existencias</td>
+<td>Reintentar; no hay reportes parciales</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependencias">Dependencias<a class="headerlink" href="#dependencias" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operational Context</td>
+<td>Membresía, datos de la empresa (zona horaria) y sucursales; siempre antes de cualquier otra llamada</td>
+</tr>
+<tr>
+<td>Sales</td>
+<td>Agregaciones de ventas (reportes 3 a 6), con el token del usuario</td>
+</tr>
+<tr>
+<td>Purchase</td>
+<td>Compras del período (7 y 8)</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td>Evolución de existencias por sucursal y consolidada (9 y 10)</td>
+</tr>
+<tr>
+<td>Commercial Relationship, Product Catalog</td>
+<td>Códigos, nombres, presentaciones y unidades base de los productos</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cobertura">Cobertura<a class="headerlink" href="#cobertura" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Verificación</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operaciones en el OpenAPI desplegado</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Operaciones documentadas</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Permisos contrastados con el código</td>
+<td>Sí (<code>api/reports.py</code>)</td>
+</tr>
+<tr>
+<td>Esquemas contrastados</td>
+<td>Sí (OpenAPI desplegado generado desde los modelos del servicio)</td>
+</tr>
+<tr>
+<td>Pendiente</td>
+<td>Contenido exacto de <code>criteria</code>; valores de <code>status</code>/<code>receipt_status</code> en compras (se documentan en la ficha de Purchase)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

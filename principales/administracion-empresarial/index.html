@@ -1,0 +1,3114 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/principales/administracion-empresarial/">
+      
+      
+        <link rel="prev" href="../acceso-y-contexto-operativo/">
+      
+      
+        <link rel="next" href="../compras/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>6.2 Administración empresarial - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#62-administracion-empresarial" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6.2 Administración empresarial
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-crear-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Crear empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-consultar-empresas-del-alcance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Consultar empresas del alcance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-consultar-una-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Consultar una empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-actualizar-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Actualizar empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-crear-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Crear sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consultar-sucursales-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consultar sucursales de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-consultar-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Consultar una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-actualizar-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Actualizar sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-consultar-usuarios-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Consultar usuarios de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-asociar-un-usuario-a-la-empresa-crear-membresia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Asociar un usuario a la empresa (crear membresía)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-consultar-sucursales-permitidas-de-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Consultar sucursales permitidas de un usuario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-asignar-un-usuario-a-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Asignar un usuario a una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-consultar-usuarios-asignados-a-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Consultar usuarios asignados a una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-y-15-cambiar-el-estado-de-una-membresia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14 y 15. Cambiar el estado de una membresía
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-consultar-la-trazabilidad-de-la-empresa-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Consultar la trazabilidad de la empresa (auditoría)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Consultar el historial de una venta, una compra o un producto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numeracion-de-documentos-comerciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numeración de documentos comerciales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Numeración de documentos comerciales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#18-consultar-las-secuencias-configuradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Consultar las secuencias configuradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-crear-una-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Crear una secuencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-desactivar-o-reactivar-la-secuencia-activa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Desactivar o reactivar la secuencia activa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#21-consultar-y-modificar-una-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21. Consultar y modificar una secuencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requisitos-previos-para-confirmar-documentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requisitos previos para confirmar documentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#orden-recomendado-y-efectos-automaticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orden recomendado y efectos automáticos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-crear-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Crear empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-consultar-empresas-del-alcance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Consultar empresas del alcance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-consultar-una-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Consultar una empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-actualizar-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Actualizar empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-crear-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Crear sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consultar-sucursales-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consultar sucursales de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-consultar-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Consultar una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-actualizar-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Actualizar sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-consultar-usuarios-de-la-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Consultar usuarios de la empresa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-asociar-un-usuario-a-la-empresa-crear-membresia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Asociar un usuario a la empresa (crear membresía)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-consultar-sucursales-permitidas-de-un-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Consultar sucursales permitidas de un usuario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-asignar-un-usuario-a-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Asignar un usuario a una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-consultar-usuarios-asignados-a-una-sucursal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Consultar usuarios asignados a una sucursal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-y-15-cambiar-el-estado-de-una-membresia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14 y 15. Cambiar el estado de una membresía
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-consultar-la-trazabilidad-de-la-empresa-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Consultar la trazabilidad de la empresa (auditoría)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Consultar el historial de una venta, una compra o un producto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numeracion-de-documentos-comerciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numeración de documentos comerciales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Numeración de documentos comerciales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#18-consultar-las-secuencias-configuradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Consultar las secuencias configuradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-crear-una-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Crear una secuencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-desactivar-o-reactivar-la-secuencia-activa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Desactivar o reactivar la secuencia activa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#21-consultar-y-modificar-una-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21. Consultar y modificar una secuencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requisitos-previos-para-confirmar-documentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requisitos previos para confirmar documentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#orden-recomendado-y-efectos-automaticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orden recomendado y efectos automáticos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="62-administracion-empresarial">6.2 Administración empresarial<a class="headerlink" href="#62-administracion-empresarial" title="Permanent link">&para;</a></h1>
+<p><a href="../">← API principales</a> · <a href="../../">← Índice</a></p>
+<p>Operaciones con las que un administrador configura una empresa cliente de SIO: la empresa misma, sus sucursales, las personas que trabajan en ella (membresías), las sucursales a las que cada una puede acceder, la trazabilidad de lo que ocurre en la empresa (auditoría) y la numeración de los documentos comerciales.</p>
+<p>Servicios implicados: <a href="../../servicios/operational-context/">Operational Context</a> (propietario de empresas, sucursales, membresías y asignaciones), <a href="../../servicios/party-identity/">Party Identity</a> (identidad legal de la empresa y de cada usuario), <a href="../../servicios/geography/">Geography</a> (ubicación), Keycloak (la cuenta con la que el usuario inicia sesión), <a href="../../servicios/audit/">Audit</a> (trazabilidad) y las secuencias de <a href="../../servicios/sales/">Sales</a> y <a href="../../servicios/purchase/">Purchase</a> (numeración). Flujo completo con JSON: <a href="../../ejemplos/crear-empresa-y-sucursal/">Crear una empresa y una sucursal</a>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funcionalidad</th>
+<th>Método y ruta (Operational Context, base <code>https://sio-operational-context-dev.onrender.com/api/v1</code>)</th>
+<th>Permiso (<code>perm:operational-context:…</code>)</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Crear empresa</td>
+<td><code>POST /companies</code></td>
+<td><code>companies:create</code> <strong>y</strong> <code>platform:administer</code></td>
+<td><a href="../../servicios/operational-context/#4-post-companies">OC 4</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Consultar empresas del alcance</td>
+<td><code>GET /companies</code></td>
+<td><code>companies:read</code></td>
+<td><a href="../../servicios/operational-context/#3-get-companies">OC 3</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Consultar una empresa</td>
+<td><code>GET /companies/{company_id}</code></td>
+<td><code>companies:read</code></td>
+<td><a href="../../servicios/operational-context/#5-get-companiescompany_id">OC 5</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Actualizar empresa</td>
+<td><code>PUT /companies/{company_id}</code></td>
+<td><code>companies:update</code></td>
+<td><a href="../../servicios/operational-context/#6-put-companiescompany_id">OC 6</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Crear sucursal</td>
+<td><code>POST /companies/{company_id}/branches</code></td>
+<td><code>branches:create</code></td>
+<td><a href="../../servicios/operational-context/#10-post-companiescompany_idbranches">OC 10</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Consultar sucursales de la empresa</td>
+<td><code>GET /companies/{company_id}/branches</code></td>
+<td><code>branches:read</code></td>
+<td><a href="../../servicios/operational-context/#9-get-companiescompany_idbranches">OC 9</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Consultar una sucursal</td>
+<td><code>GET /branches/{branch_id}</code></td>
+<td><code>branches:read</code></td>
+<td><a href="../../servicios/operational-context/#11-get-branchesbranch_id">OC 11</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actualizar sucursal</td>
+<td><code>PUT /branches/{branch_id}</code></td>
+<td><code>branches:update</code></td>
+<td><a href="../../servicios/operational-context/#12-put-branchesbranch_id">OC 12</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Consultar usuarios de la empresa</td>
+<td><code>GET /companies/{company_id}/application-users</code></td>
+<td><code>application_users:read</code></td>
+<td><a href="../../servicios/operational-context/#15-get-companiescompany_idapplication-users">OC 15</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Asociar un usuario a la empresa (crear membresía)</td>
+<td><code>POST /companies/{company_id}/application-users</code></td>
+<td><code>application_users:create</code></td>
+<td><a href="../../servicios/operational-context/#16-post-companiescompany_idapplication-users">OC 16</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Consultar sucursales permitidas de un usuario</td>
+<td><code>GET /application-users/{application_user_id}/user-branches</code></td>
+<td><code>user_branches:read</code></td>
+<td><a href="../../servicios/operational-context/#21-get-application-usersapplication_user_iduser-branches">OC 21</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Asignar un usuario a una sucursal</td>
+<td><code>POST /application-users/{application_user_id}/user-branches</code></td>
+<td><code>user_branches:create</code></td>
+<td><a href="../../servicios/operational-context/#22-post-application-usersapplication_user_iduser-branches">OC 22</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Consultar usuarios asignados a una sucursal</td>
+<td><code>GET /branches/{branch_id}/user-branches</code></td>
+<td><code>user_branches:read</code></td>
+<td><a href="../../servicios/operational-context/#23-get-branchesbranch_iduser-branches">OC 23</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Inactivar una membresía</td>
+<td><code>POST /application-users/{application_user_id}/deactivate</code></td>
+<td><code>application_users:delete</code></td>
+<td><a href="../../servicios/operational-context/#19-post-application-usersapplication_user_iddeactivate">OC 19</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Reactivar una membresía</td>
+<td><code>POST /application-users/{application_user_id}/reactivate</code></td>
+<td><code>application_users:update</code></td>
+<td><a href="../../servicios/operational-context/#20-post-application-usersapplication_user_idreactivate">OC 20</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Consultar la trazabilidad de la empresa (auditoría)</td>
+<td><code>GET /companies/{company_id}/audit-events</code> · <code>…/audit-events/{audit_id}</code> (Audit, base <code>https://sio-audit-dev.onrender.com/api/v1</code>)</td>
+<td><code>perm:audit:audit-events:read</code></td>
+<td><a href="../../servicios/audit/#5-get-companiescompany_idaudit-events">Audit 5</a> · <a href="../../servicios/audit/#6-get-companiescompany_idaudit-eventsaudit_id">Audit 6</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Consultar el historial de una venta, una compra o un producto</td>
+<td><code>GET /companies/{company_id}/entity-history/{entity_type}/{entity_id}</code> (Audit)</td>
+<td><code>perm:audit:audit-events:read</code></td>
+<td><a href="../../servicios/audit/#7-get-companiescompany_identity-historyentity_typeentity_id">Audit 7</a></td>
+</tr>
+<tr>
+<td>18–21</td>
+<td>Numeración de documentos comerciales: consultar, crear, activar o desactivar y modificar secuencias</td>
+<td><code>GET</code> · <code>POST /companies/{company_id}/sale-sequences[/{sequence_id}[/deactivate\|/reactivate]]</code> (Sales) y <code>…/purchase-sequences…</code> (Purchase)</td>
+<td><code>perm:sales:sale_sequences:read</code> · <code>…:create</code> · <code>…:update</code>; <code>perm:purchase:purchase_sequences:read</code> · <code>…:create</code> · <code>…:update</code></td>
+<td>Ver la <a href="#numeración-de-documentos-comerciales">sección de numeración</a></td>
+</tr>
+</tbody>
+</table>
+<p>Operaciones relacionadas que no se consideran principales (ver la ficha): inactivar o reactivar empresas y sucursales (OC 7, 8, 13, 14), retirar o reactivar una asignación de sucursal (OC 25, 26), modificar los datos de referencia de un usuario (OC 18), la gestión de asesores (OC 27–31) y los eventos de auditoría de plataforma (Audit 8–10).</p>
+<hr />
+<h2 id="1-crear-empresa">1. Crear empresa<a class="headerlink" href="#1-crear-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Un administrador de la plataforma da de alta una nueva empresa cliente.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-operational-context-dev.onrender.com/api/v1/companies</code>. Permisos: <code>perm:operational-context:companies:create</code> <strong>y</strong> <code>perm:operational-context:platform:administer</code> (en el realm de desarrollo solo el grupo <code>administradores</code> lo tiene). Cuerpo <code>CompanyCreate</code>: <code>organization_identity_id</code> (obligatorio), <code>email</code>, <code>phone</code>, <code>address_line</code>, <code>country_id</code>, <code>administrative_division_id</code>, <code>city_id</code>, <code>postal_code</code>, <code>latitude</code>, <code>longitude</code>, <code>timezone</code> (por defecto <code>America/Bogota</code>), <code>default_currency</code> (por defecto <code>COP</code>). No tiene <code>name</code>: la razón social vive en Party Identity.</p>
+<p><strong>¿Qué necesita antes?</strong></p>
+<ol>
+<li>La <strong>identidad de la organización</strong> en Party Identity: <code>POST https://sio-party-identity-dev.onrender.com/api/v1/organization-identities</code> (permiso <code>perm:party-identity:organization_identities:create</code>) o búsqueda con <code>GET …/organization-identities?search=</code> (<a href="../../parametros/organization-identity-id/">organization_identity_id</a>). Debe estar <code>ACTIVE</code> y no estar ya vinculada a otra empresa.</li>
+<li>Si se envía dirección, los tres identificadores geográficos coherentes entre sí (<a href="../../parametros/country-id/">country_id, administrative_division_id, city_id</a>).</li>
+</ol>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>CompanyResponse</code>: <code>id</code> (el nuevo <a href="../../parametros/company-id/">company_id</a>), <code>status: "ACTIVE"</code>, <code>version: 1</code>. Efectos verificados en el código (<code>company_service.py</code>): <strong>no se crea ninguna membresía ni sucursal</strong>. El administrador que la creó la ve gracias a <code>platform:administer</code>; el primer usuario de la empresa se incorpora con la funcionalidad 10. Errores: <code>422 ORGANIZATION_IDENTITY_NOT_FOUND</code> / <code>ORGANIZATION_IDENTITY_INACTIVE</code>, <code>409 DUPLICATE_ORGANIZATION_IDENTITY</code>, <code>422 COUNTRY_NOT_FOUND</code> / <code>ADMINISTRATIVE_DIVISION_NOT_FOUND</code> / <code>CITY_NOT_FOUND</code> / <code>GEOGRAPHY_INCOHERENT</code> / <code>LOCATION_INACTIVE</code>, <code>403</code> sin <code>platform:administer</code>, <code>503 DEPENDENCY_UNAVAILABLE</code> si Party Identity o Geography no responden.</p>
+<h2 id="2-consultar-empresas-del-alcance">2. Consultar empresas del alcance<a class="headerlink" href="#2-consultar-empresas-del-alcance" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver las empresas en las que tiene membresía (o todas, si administra la plataforma) con sus datos de contacto y estado.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/companies</code>. Permiso <code>perm:operational-context:companies:read</code>. Consulta: <code>page</code>, <code>page_size</code> (1–100), <code>status</code> (<code>ACTIVE</code> por defecto; <code>INACTIVE</code>), <code>organization_identity_id</code>, <code>country_id</code>, <code>city_id</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> Nada más que el token. Para un usuario normal el resultado coincide con las empresas de <code>memberships[]</code> de <a href="../acceso-y-contexto-operativo/">Acceso y contexto operativo</a>; para <code>platform:administer</code> incluye todas.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[CompanyResponse]</code> (<code>items[]</code>, <code>total</code>, <code>page</code>, <code>page_size</code>). Cada elemento trae <code>id</code>, <code>organization_identity_id</code>, dirección, <code>timezone</code>, <code>default_currency</code>, <code>status</code>, <code>version</code>.</p>
+<h2 id="3-consultar-una-empresa">3. Consultar una empresa<a class="headerlink" href="#3-consultar-una-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver la ficha completa de una empresa (por ejemplo, la seleccionada en la sesión) para mostrar sus datos en la cabecera de la aplicación.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}</code>. Permiso <code>perm:operational-context:companies:read</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a>. Para mostrar la razón social: <code>GET https://sio-party-identity-dev.onrender.com/api/v1/organization-identities/{organization_identity_id}</code> (permiso <code>perm:party-identity:organization_identities:read</code>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>CompanyResponse</code>. <code>404 NOT_FOUND</code> si la empresa no está en el alcance (sin membresía y sin <code>platform:administer</code>); también se admite <code>perm:operational-context:platform:lookup</code> para lecturas por UUID sin membresía.</p>
+<h2 id="4-actualizar-empresa">4. Actualizar empresa<a class="headerlink" href="#4-actualizar-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Corregir datos de contacto, dirección, zona horaria o moneda por defecto.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>PUT https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}</code>. Permiso <code>perm:operational-context:companies:update</code> (no exige <code>platform:administer</code>). Cuerpo <code>CompanyUpdate</code>: los campos editables de la creación más <code>version</code>. <code>organization_identity_id</code> es <strong>inmutable</strong> (<code>422 IMMUTABLE_FIELD</code>).</p>
+<p><strong>¿Qué necesita antes?</strong> La versión actual (<code>version</code> de la última lectura) y, si cambia la ubicación, identificadores geográficos coherentes.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>CompanyResponse</code> y <code>version</code> incrementada. <code>409 VERSION_CONFLICT</code> si alguien la modificó antes; <code>422 COMPANY_INACTIVE</code> si la empresa está inactiva.</p>
+<h2 id="5-crear-sucursal">5. Crear sucursal<a class="headerlink" href="#5-crear-sucursal" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Registrar un punto de operación (tienda, bodega, farmacia) donde se venderá, comprará y controlará inventario.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}/branches</code>. Permiso <code>perm:operational-context:branches:create</code>. Cuerpo <code>BranchCreate</code>: <code>code</code> (único por empresa) y <code>name</code> obligatorios; <code>email</code>, <code>phone</code>, <code>address_line</code>, <code>country_id</code>, <code>administrative_division_id</code>, <code>city_id</code>, <code>postal_code</code>, <code>latitude</code>, <code>longitude</code>, <code>timezone</code> (si se omite, hereda la de la empresa; la respuesta lo muestra en <code>effective_timezone</code>).</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> de una empresa <code>ACTIVE</code>, membresía activa del administrador en ella (o <code>platform:administer</code>) y, opcionalmente, la ubicación (<a href="../../parametros/country-id/">country-id</a>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>BranchResponse</code> (<code>id</code> = <a href="../../parametros/branch-id/">branch_id</a>, <code>status: "ACTIVE"</code>, <code>version: 1</code>). Efecto verificado: crear la sucursal <strong>no asigna a ningún usuario</strong>; cada usuario que deba operar en ella se asigna con la funcionalidad 12. Errores: <code>409 DUPLICATE_BRANCH_CODE</code>, <code>422 COMPANY_INACTIVE</code>, <code>422</code> de geografía, <code>404</code> si la empresa está fuera del alcance.</p>
+<h2 id="6-consultar-sucursales-de-la-empresa">6. Consultar sucursales de la empresa<a class="headerlink" href="#6-consultar-sucursales-de-la-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Listar las sucursales para administrarlas o para mostrar su nombre junto al <code>branch_id</code> del contexto operativo.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}/branches</code>. Permiso <code>perm:operational-context:branches:read</code>. Consulta: <code>page</code>, <code>page_size</code>, <code>search</code> (≤ 160; código y nombre), <code>status</code> (<code>ACTIVE</code> por defecto), <code>city_id</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> y membresía en la empresa.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[BranchResponse]</code>. Esta lista muestra <strong>todas</strong> las sucursales de la empresa, no solo las que el usuario tiene asignadas; para el acceso efectivo usa <code>memberships[].branches[]</code> de <code>/me/operational-context</code>.</p>
+<h2 id="7-consultar-una-sucursal">7. Consultar una sucursal<a class="headerlink" href="#7-consultar-una-sucursal" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/branches/{branch_id}</code>. Permiso <code>perm:operational-context:branches:read</code>. Responde <code>200</code> con <code>BranchResponse</code> (incluye <code>company_id</code> y <code>company_status</code>) o <code>404</code> fuera del alcance. Necesita <a href="../../parametros/branch-id/">branch_id</a>.</p>
+<h2 id="8-actualizar-sucursal">8. Actualizar sucursal<a class="headerlink" href="#8-actualizar-sucursal" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>PUT https://sio-operational-context-dev.onrender.com/api/v1/branches/{branch_id}</code>. Permiso <code>perm:operational-context:branches:update</code>. Cuerpo <code>BranchUpdate</code>: los campos de la creación más <code>version</code>. La empresa de la sucursal es inmutable. Responde <code>200</code> con <code>BranchResponse</code>; errores <code>409 VERSION_CONFLICT</code>, <code>409 DUPLICATE_BRANCH_CODE</code>, <code>422</code> de geografía.</p>
+<h2 id="9-consultar-usuarios-de-la-empresa">9. Consultar usuarios de la empresa<a class="headerlink" href="#9-consultar-usuarios-de-la-empresa" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver quiénes tienen membresía en la empresa, su estado y buscar por nombre o correo.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}/application-users</code>. Permiso <code>perm:operational-context:application_users:read</code>. Consulta: <code>page</code>, <code>page_size</code>, <code>status</code> (<code>ACTIVE</code> por defecto; <code>INACTIVE</code>), <code>search</code> (≤ 160; <code>display_name</code> y <code>reference_email</code>), <code>keycloak_user_id</code>, <code>person_identity_id</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> y membresía en la empresa (o <code>platform:administer</code>).</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[ApplicationUserResponse]</code>: <code>id</code> (<a href="../../parametros/application-user-id/">application_user_id</a>), <code>company_id</code>, <code>keycloak_user_id</code>, <code>person_identity_id</code>, <code>display_name</code>, <code>reference_email</code>, <code>status</code>, <code>version</code>. Las sucursales de cada usuario no vienen aquí: se consultan con la funcionalidad 11.</p>
+<h2 id="10-asociar-un-usuario-a-la-empresa-crear-membresia">10. Asociar un usuario a la empresa (crear membresía)<a class="headerlink" href="#10-asociar-un-usuario-a-la-empresa-crear-membresia" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Dar acceso a la empresa a una persona que ya tiene cuenta en Keycloak.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}/application-users</code>. Permiso <code>perm:operational-context:application_users:create</code> (operación <code>HIGH_RISK</code>). Cuerpo <code>ApplicationUserCreate</code> (rechaza campos adicionales):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Obligatorio</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keycloak_user_id</code> <strong>o</strong> <code>username</code></td>
+<td>Exactamente uno</td>
+<td><code>sub</code> del usuario en Keycloak, o su nombre de usuario (Operational Context lo resuelve en Keycloak)</td>
+</tr>
+<tr>
+<td><code>person_identity_id</code></td>
+<td>Sí</td>
+<td>Persona en Party Identity (<a href="../../parametros/person-identity-id/">cómo obtenerlo</a>)</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>Sí</td>
+<td>Nombre a mostrar en la empresa</td>
+</tr>
+<tr>
+<td><code>reference_email</code></td>
+<td>No</td>
+<td>Correo de referencia</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ana.perez"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"person_identity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a0e1d2c3-b4a5-4968-8776-655443322110"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"display_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ana Pérez"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reference_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ana.perez@example.com"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong></p>
+<ol>
+<li>La cuenta del usuario en Keycloak, habilitada y con los roles de <code>sio-api</code> que correspondan a su función (la asignación de roles se hace en Keycloak, no en estas API).</li>
+<li>La <strong>identidad de la persona</strong> en Party Identity: <code>POST https://sio-party-identity-dev.onrender.com/api/v1/person-identities</code> o búsqueda con <code>GET …/person-identities?search=</code> (<a href="../../parametros/person-identity-id/">person_identity_id</a>).</li>
+<li>Que el administrador vea la empresa: membresía activa en ella o <code>platform:administer</code>. Por eso la <strong>primera membresía</strong> de una empresa recién creada la registra el administrador de plataforma.</li>
+</ol>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>ApplicationUserResponse</code> (<code>id</code> = <a href="../../parametros/application-user-id/">application_user_id</a>, <code>status: "ACTIVE"</code>). Desde ese momento el usuario verá la empresa en <code>/me/operational-context</code>, pero <strong>sin sucursales</strong> hasta la funcionalidad 12. Errores: <code>422 KEYCLOAK_USER_NOT_FOUND</code>, <code>422 KEYCLOAK_USER_DISABLED</code>, <code>422 TECHNICAL_ACCOUNT_NOT_ALLOWED</code> (cuentas de servicio), <code>422 PERSON_IDENTITY_NOT_FOUND</code> / <code>PERSON_IDENTITY_INACTIVE</code>, <code>409 DUPLICATE_MEMBERSHIP</code> (la cuenta o la persona ya tiene membresía en la empresa), <code>422 COMPANY_INACTIVE</code>, <code>503 DEPENDENCY_UNAVAILABLE</code> (Keycloak o Party Identity no disponibles).</p>
+<h2 id="11-consultar-sucursales-permitidas-de-un-usuario">11. Consultar sucursales permitidas de un usuario<a class="headerlink" href="#11-consultar-sucursales-permitidas-de-un-usuario" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/application-users/{application_user_id}/user-branches</code>. Permiso <code>perm:operational-context:user_branches:read</code>. Consulta: <code>page</code>, <code>page_size</code>, <code>status</code>. Responde <code>200</code> con <code>PaginatedResponse[UserBranchResponse]</code>: <code>id</code> (<code>user_branch_id</code>), <code>application_user_id</code>, <code>branch_id</code>, <code>status</code>, <code>version</code> y <code>operational_access</code> (<code>allowed</code>, <code>reason</code>) calculado con las mismas reglas del contexto operativo. Necesita <a href="../../parametros/application-user-id/">application_user_id</a>.</p>
+<h2 id="12-asignar-un-usuario-a-una-sucursal">12. Asignar un usuario a una sucursal<a class="headerlink" href="#12-asignar-un-usuario-a-una-sucursal" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Autorizar a un miembro de la empresa a operar en una sucursal concreta (vender, comprar, ajustar inventario).</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-operational-context-dev.onrender.com/api/v1/application-users/{application_user_id}/user-branches</code>. Permiso <code>perm:operational-context:user_branches:create</code> (<code>HIGH_RISK</code>). Cuerpo <code>UserBranchCreate</code>: <code>{"branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"}</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/application-user-id/">application_user_id</a> de una membresía <code>ACTIVE</code> y <a href="../../parametros/branch-id/">branch_id</a> de una sucursal <code>ACTIVE</code> <strong>de la misma empresa</strong>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>UserBranchResponse</code> y <code>operational_access.allowed: true</code>. A partir de aquí el usuario ve la sucursal con <code>allowed: true</code> en <code>/me/operational-context</code>. Errores: <code>422 MEMBERSHIP_INACTIVE</code>, <code>422 BRANCH_INACTIVE</code>, <code>422 BRANCH_COMPANY_MISMATCH</code> (la sucursal es de otra empresa), <code>409 DUPLICATE_USER_BRANCH</code> (ya existe la asignación; si está inactiva, reactívala con OC 26 en lugar de crearla de nuevo).</p>
+<h2 id="13-consultar-usuarios-asignados-a-una-sucursal">13. Consultar usuarios asignados a una sucursal<a class="headerlink" href="#13-consultar-usuarios-asignados-a-una-sucursal" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-operational-context-dev.onrender.com/api/v1/branches/{branch_id}/user-branches</code>. Permiso <code>perm:operational-context:user_branches:read</code>. Consulta: <code>page</code>, <code>page_size</code>, <code>status</code>. Responde <code>200</code> con <code>PaginatedResponse[UserBranchResponse]</code>. Útil para la pantalla de administración de una sucursal. Necesita <a href="../../parametros/branch-id/">branch_id</a>.</p>
+<h2 id="14-y-15-cambiar-el-estado-de-una-membresia">14 y 15. Cambiar el estado de una membresía<a class="headerlink" href="#14-y-15-cambiar-el-estado-de-una-membresia" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Retirar temporal o definitivamente el acceso de una persona a la empresa, o devolvérselo.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-operational-context-dev.onrender.com/api/v1/application-users/{application_user_id}/deactivate</code> (permiso <code>perm:operational-context:application_users:delete</code>) y <code>…/reactivate</code> (permiso <code>perm:operational-context:application_users:update</code>). Ambas <code>HIGH_RISK</code>, con cuerpo <code>{"version": n}</code>.</p>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/application-user-id/">application_user_id</a> y su <code>version</code> actual.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>ApplicationUserResponse</code> y el nuevo <code>status</code>. Efectos verificados: con la membresía <code>INACTIVE</code>, todas las sucursales del usuario pasan a <code>allowed: false</code> con <code>reason: USER_MEMBERSHIP_INACTIVE</code> y las API de negocio le responden <code>404</code>/<code>403</code>; las asignaciones de sucursal se conservan y vuelven a ser efectivas al reactivar. Errores: <code>409 INVALID_STATUS_TRANSITION</code> (ya estaba en ese estado), <code>409 VERSION_CONFLICT</code>, <code>422 COMPANY_INACTIVE</code> al reactivar en una empresa inactiva.</p>
+<h2 id="16-consultar-la-trazabilidad-de-la-empresa-auditoria">16. Consultar la trazabilidad de la empresa (auditoría)<a class="headerlink" href="#16-consultar-la-trazabilidad-de-la-empresa-auditoria" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver quién hizo qué y cuándo en la empresa: creación y confirmación de ventas y compras, cambios de líneas, recepciones, anulaciones, altas y cambios de clientes, proveedores, productos adoptados, precios, políticas, sucursales y membresías.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/audit-events</code> (<a href="../../servicios/audit/#5-get-companiescompany_idaudit-events">Audit 5</a>). Permiso <code>perm:audit:audit-events:read</code>. Consulta: <code>page</code>, <code>page_size</code> (1–100), <code>occurred_at_from</code>, <code>occurred_at_to</code> (con zona horaria), <code>result</code> (<code>SUCCESS</code>, <code>FAILURE</code>), <code>action</code>, <code>entity_type</code>, <code>entity_id</code>, <code>source_service</code>, <code>keycloak_user_id</code>, <code>application_user_id</code>, <code>event_id</code>, <code>correlation_id</code>, <code>request_id</code>, <code>branch_id</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/audit-events?entity_type=Sale&amp;action=CONFIRM_SALE&amp;occurred_at_from=2026-10-01T00:00:00Z'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> Membresía <code>ACTIVE</code> en la empresa (Audit la comprueba en Operational Context en cada solicitud; sin ella responde <code>404</code>). Los filtros nunca amplían el alcance: solo se devuelven eventos de ese <code>company_id</code>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>PaginatedResponse[AuditEventResponse]</code>, ordenado del más reciente al más antiguo (<code>occurred_at</code> descendente). Cada evento trae <code>action</code>, <code>entity_type</code>, <code>entity_id</code>, <code>previous_values</code>, <code>new_values</code>, <code>redacted_paths[]</code>, <code>result</code>, <code>reason</code>, <code>application_user_id</code>, <code>keycloak_user_id</code>, <code>username_snapshot</code>, <code>branch_id</code>, <code>source_service</code>, <code>correlation_id</code>, <code>request_id</code>, <code>occurred_at</code>. Un evento concreto: <code>GET https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/audit-events/{audit_id}</code> (<a href="../../servicios/audit/#6-get-companiescompany_idaudit-eventsaudit_id">Audit 6</a>).</p>
+<p>Valores de <code>entity_type</code> y <code>action</code> que emiten hoy los servicios (verificados en el código de cada emisor; Audit solo valida el formato):</p>
+<table>
+<thead>
+<tr>
+<th>Servicio emisor (<code>source_service</code>)</th>
+<th><code>entity_type</code></th>
+<th><code>action</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sales</td>
+<td><code>Sale</code>, <code>SaleDetail</code>, <code>SaleSequence</code></td>
+<td><code>CREATE_SALE</code>, <code>UPDATE_SALE</code>, <code>ADD_SALE_DETAIL</code>, <code>UPDATE_SALE_DETAIL</code>, <code>DELETE_SALE_DETAIL</code>, <code>CONFIRM_SALE</code>, <code>CANCEL_SALE</code>, <code>CREATE_SALE_SEQUENCE</code>, <code>UPDATE_SALE_SEQUENCE</code>, <code>DEACTIVATE_SALE_SEQUENCE</code>, <code>REACTIVATE_SALE_SEQUENCE</code></td>
+</tr>
+<tr>
+<td>Purchase</td>
+<td><code>Purchase</code>, <code>PurchaseDetail</code>, <code>PurchaseLifecycleEvent</code>, <code>PurchaseSequence</code></td>
+<td><code>CREATE_PURCHASE</code>, <code>UPDATE_PURCHASE</code>, <code>ADD_PURCHASE_DETAIL</code>, <code>UPDATE_PURCHASE_DETAIL</code>, <code>DELETE_PURCHASE_DETAIL</code>, <code>CONFIRM_PURCHASE</code>, <code>CANCEL_PURCHASE</code>, <code>RECEIVE_PURCHASE</code>, <code>RECORD_PURCHASE_LIFECYCLE_EVENT</code>, <code>CREATE_PURCHASE_SEQUENCE</code>, <code>UPDATE_PURCHASE_SEQUENCE</code>, <code>DEACTIVATE_PURCHASE_SEQUENCE</code>, <code>REACTIVATE_PURCHASE_SEQUENCE</code>, <code>OVERRIDE_PURCHASE_LINE_TAX</code></td>
+</tr>
+<tr>
+<td>Commercial Relationship</td>
+<td><code>CompanyCustomer</code>, <code>CompanySupplier</code>, <code>CompanyProduct</code>, <code>CompanyProductPresentation</code>, <code>PriceList</code>, <code>PriceListItem</code>, <code>PricingPolicy</code></td>
+<td><code>CREATE_/UPDATE_/DEACTIVATE_/REACTIVATE_COMPANY_CUSTOMER</code>, <code>…_COMPANY_SUPPLIER</code> (más <code>BLOCK_</code>/<code>UNBLOCK_</code>), <code>ADOPT_COMPANY_PRODUCT</code>, <code>…_COMPANY_PRODUCT_PRESENTATION</code>, <code>…_SUPPLIER_PRODUCT</code>, <code>…_SUPPLIER_PAYMENT_CONDITION</code>, <code>…_PRICE_LIST</code>, <code>…_PRICE_LIST_ITEM</code>, <code>CHANGE_PRICE_LIST_ITEM_PRICE</code>, <code>CREATE_/UPDATE_PRICING_POLICY</code>, <code>CHANGE_PRICING_POLICY_PERCENTAGE</code>, <code>ASSIGN_/UNASSIGN_PRICING_POLICY_PRESENTATION</code></td>
+</tr>
+<tr>
+<td>Operational Context</td>
+<td><code>Company</code>, <code>Branch</code>, <code>ApplicationUser</code>, <code>UserBranch</code>, <code>CompanyAdvisorAssignment</code></td>
+<td>Altas, modificaciones y cambios de estado de esas entidades</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td><code>InventoryAdjustment</code>, <code>InventoryCount</code>, <code>InventoryOperation</code></td>
+<td><code>CREATE_INVENTORY_ADJUSTMENT</code> y las transiciones de conteos y operaciones</td>
+</tr>
+</tbody>
+</table>
+<p>Los eventos del catálogo global de Product Catalog (<code>Product</code>, <code>ProductPresentation</code>, <code>ProductIdentifier</code>, …) no pertenecen a una empresa: se consultan en <code>GET https://sio-audit-dev.onrender.com/api/v1/platform-audit-events</code> con <code>perm:audit:platform-events:read</code> (Audit 8–10), reservado a la administración de la plataforma.</p>
+<h2 id="17-consultar-el-historial-de-una-venta-una-compra-o-un-producto">17. Consultar el historial de una venta, una compra o un producto<a class="headerlink" href="#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Abrir la línea de tiempo completa de un documento o de un registro de la empresa, en orden cronológico.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-audit-dev.onrender.com/api/v1/companies/{company_id}/entity-history/{entity_type}/{entity_id}</code> (<a href="../../servicios/audit/#7-get-companiescompany_identity-historyentity_typeentity_id">Audit 7</a>; la ruta real cuelga de <code>/companies/{company_id}/entity-history/…</code>, no de <code>/audit-events/</code>). Permiso <code>perm:audit:audit-events:read</code>. <code>entity_type</code> va en PascalCase; consulta: <code>page</code>, <code>page_size</code>, <code>occurred_at_from</code>, <code>occurred_at_to</code>, <code>result</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Qué rastrear</th>
+<th><code>entity_type</code></th>
+<th><code>entity_id</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Una venta (creación, líneas, confirmación, anulación)</td>
+<td><code>Sale</code></td>
+<td><a href="../../parametros/sale-id/">sale_id</a></td>
+</tr>
+<tr>
+<td>Una línea de venta</td>
+<td><code>SaleDetail</code></td>
+<td><code>lines[].id</code> de la venta</td>
+</tr>
+<tr>
+<td>Una compra (creación, líneas, confirmación, recepción, anulación, hitos)</td>
+<td><code>Purchase</code></td>
+<td><a href="../../parametros/purchase-id/">purchase_id</a></td>
+</tr>
+<tr>
+<td>Un producto adoptado por la empresa</td>
+<td><code>CompanyProduct</code></td>
+<td><a href="../../parametros/company-product-id/">company_product_id</a></td>
+</tr>
+<tr>
+<td>Una presentación de la empresa</td>
+<td><code>CompanyProductPresentation</code></td>
+<td><a href="../../parametros/company-product-presentation-id/">company_product_presentation_id</a></td>
+</tr>
+<tr>
+<td>Un precio, una lista o una política</td>
+<td><code>PriceListItem</code>, <code>PriceList</code>, <code>PricingPolicy</code></td>
+<td>su <code>id</code></td>
+</tr>
+<tr>
+<td>Un cliente o un proveedor</td>
+<td><code>CompanyCustomer</code>, <code>CompanySupplier</code></td>
+<td><a href="../../parametros/customer-id/">company_customer_id</a>, <a href="../../parametros/supplier-id/">company_supplier_id</a></td>
+</tr>
+<tr>
+<td>Una sucursal o una membresía</td>
+<td><code>Branch</code>, <code>ApplicationUser</code></td>
+<td><a href="../../parametros/branch-id/">branch_id</a>, <a href="../../parametros/application-user-id/">application_user_id</a></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-audit-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/entity-history/Sale/9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con la misma paginación de eventos, en orden <strong>ascendente</strong> por <code>occurred_at</code> (del primero al último). Los eventos de inventario de una venta o compra no aparecen bajo <code>Sale</code>/<code>Purchase</code>: se consultan con <code>entity_type=InventoryOperation</code> y el <code>inventory_operation_id</code> del documento, o en el kardex (<a href="../inventario/#6-kardex-de-un-producto">Inventario §6</a>). Un documento sin eventos responde <code>200</code> con <code>items: []</code>.</p>
+<h2 id="numeracion-de-documentos-comerciales">Numeración de documentos comerciales<a class="headerlink" href="#numeracion-de-documentos-comerciales" title="Permanent link">&para;</a></h2>
+<p>Las ventas y las compras reciben su número (<code>V-000123</code>, <code>C-000045</code>) al <strong>confirmarse</strong>, tomándolo de una <strong>secuencia</strong> del servicio correspondiente. Sin secuencia activa aplicable, la confirmación falla con <code>409 SEQUENCE_NOT_CONFIGURED</code>. Reglas verificadas (<code>sequence_service.py</code> y <code>sequence_repository.py</code> de Sales; Purchase es simétrico):</p>
+<ul>
+<li>Una secuencia pertenece a la empresa y, opcionalmente, a una sucursal (<code>branch_id</code>). Al confirmar se usa la secuencia <strong>activa de la sucursal</strong> del documento y, si no hay, la <strong>activa de la empresa</strong> (<code>branch_id: null</code>).</li>
+<li>A lo sumo <strong>una secuencia activa</strong> por empresa, sucursal (o ninguna) y tipo documental; activar otra en el mismo alcance responde <code>409 SEQUENCE_ALREADY_ACTIVE</code>.</li>
+<li>El número se compone de <code>prefix</code> + <code>separator</code> + consecutivo rellenado a <code>number_length</code> dígitos, desde <code>initial_number</code>, con reinicio <code>NEVER</code>, <code>YEARLY</code> o <code>MONTHLY</code> (<code>reset_policy</code>) y tope opcional <code>maximum_number</code> (<code>409 SEQUENCE_EXHAUSTED</code> al superarlo).</li>
+<li>Tras asignar el primer número, <code>prefix</code>, <code>separator</code>, <code>number_length</code>, <code>series_code</code>, <code>reset_policy</code>, <code>initial_number</code> y <code>branch_id</code> son inmutables (<code>409 SEQUENCE_IN_USE</code>); solo <code>maximum_number</code> puede ampliarse.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funcionalidad</th>
+<th>Sales (base <code>https://sio-sales-dev.onrender.com/api/v1</code>)</th>
+<th>Purchase (base <code>https://sio-purchase-dev.onrender.com/api/v1</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td>Consultar las secuencias configuradas</td>
+<td><code>GET /companies/{company_id}/sale-sequences</code> · <code>perm:sales:sale_sequences:read</code> · <a href="../../servicios/sales/#17-get-companiescompany_idsale-sequences">Sales 17</a></td>
+<td><code>GET /companies/{company_id}/purchase-sequences</code> · <code>perm:purchase:purchase_sequences:read</code> · <a href="../../servicios/purchase/#19-get-companiescompany_idpurchase-sequences">Purchase 19</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Crear una secuencia (queda activa)</td>
+<td><code>POST /companies/{company_id}/sale-sequences</code> · <code>perm:sales:sale_sequences:create</code> · <a href="../../servicios/sales/#16-post-companiescompany_idsale-sequences">Sales 16</a></td>
+<td><code>POST /companies/{company_id}/purchase-sequences</code> · <code>perm:purchase:purchase_sequences:create</code> · <a href="../../servicios/purchase/#18-post-companiescompany_idpurchase-sequences">Purchase 18</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Desactivar o reactivar la secuencia activa</td>
+<td><code>POST …/sale-sequences/{sequence_id}/deactivate</code> · <code>…/reactivate</code> · <code>perm:sales:sale_sequences:update</code> · <a href="../../servicios/sales/#20-post-companiescompany_idsale-sequencessequence_iddeactivate">Sales 20</a> · <a href="../../servicios/sales/#21-post-companiescompany_idsale-sequencessequence_idreactivate">Sales 21</a></td>
+<td><code>POST …/purchase-sequences/{sequence_id}/deactivate</code> · <code>…/reactivate</code> · <code>perm:purchase:purchase_sequences:update</code> · <a href="../../servicios/purchase/#22-post-companiescompany_idpurchase-sequencessequence_iddeactivate">Purchase 22</a> · <a href="../../servicios/purchase/#23-post-companiescompany_idpurchase-sequencessequence_idreactivate">Purchase 23</a></td>
+</tr>
+<tr>
+<td>21</td>
+<td>Consultar y modificar una secuencia</td>
+<td><code>GET</code> · <code>PUT /companies/{company_id}/sale-sequences/{sequence_id}</code> · <code>perm:sales:sale_sequences:read</code> · <code>…:update</code> · <a href="../../servicios/sales/#18-get-companiescompany_idsale-sequencessequence_id">Sales 18</a> · <a href="../../servicios/sales/#19-put-companiescompany_idsale-sequencessequence_id">Sales 19</a></td>
+<td><code>GET</code> · <code>PUT /companies/{company_id}/purchase-sequences/{sequence_id}</code> · <code>perm:purchase:purchase_sequences:read</code> · <code>…:update</code> · <a href="../../servicios/purchase/#20-get-companiescompany_idpurchase-sequencessequence_id">Purchase 20</a> · <a href="../../servicios/purchase/#21-put-companiescompany_idpurchase-sequencessequence_id">Purchase 21</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="18-consultar-las-secuencias-configuradas">18. Consultar las secuencias configuradas<a class="headerlink" href="#18-consultar-las-secuencias-configuradas" title="Permanent link">&para;</a></h3>
+<p><code>GET …/sale-sequences</code> y <code>GET …/purchase-sequences</code> (sin parámetros) responden <code>200</code> con <code>items[]</code>: <code>id</code> (<code>sequence_id</code>), <code>branch_id</code> (<code>null</code> = secuencia de la empresa), <code>document_kind</code> (<code>SALE</code> / <code>PURCHASE</code>), <code>series_code</code>, <code>prefix</code>, <code>separator</code>, <code>initial_number</code>, <code>maximum_number</code>, <code>number_length</code>, <code>reset_policy</code>, <code>is_active</code>, <code>version</code> y <code>counters[]</code> (<code>period_key</code>, <code>current_number</code>, <code>next_number_preview</code>). Es la pantalla de configuración: muestra qué sucursales tienen secuencia propia, cuál es la de la empresa y cuál será el próximo número.</p>
+<h3 id="19-crear-una-secuencia">19. Crear una secuencia<a class="headerlink" href="#19-crear-una-secuencia" title="Permanent link">&para;</a></h3>
+<p><code>POST https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences</code> (o <code>…/purchase-sequences</code> en Purchase). Cuerpo <code>SequenceIn</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"series_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"POS-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"prefix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"V"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"separator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"initial_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"maximum_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">999999</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"number_length"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reset_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NEVER"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>branch_id</code> en <code>null</code> (u omitido) crea la secuencia de la empresa, que sirve de respaldo a todas las sucursales sin secuencia propia; <code>separator</code> admite <code>-</code>, <code>/</code>, <code>.</code>, <code>_</code> o vacío. Responde <code>201</code> con la secuencia (<code>is_active: true</code>). Errores: <code>409 SEQUENCE_ALREADY_ACTIVE</code> (ya hay una activa en ese alcance: desactívala primero o modifica la existente), <code>422 VALIDATION_ERROR</code>, <code>404</code> si la sucursal no es de la empresa.</p>
+<h3 id="20-desactivar-o-reactivar-la-secuencia-activa">20. Desactivar o reactivar la secuencia activa<a class="headerlink" href="#20-desactivar-o-reactivar-la-secuencia-activa" title="Permanent link">&para;</a></h3>
+<p><code>POST …/{sequence_id}/deactivate</code> (<code>HIGH_RISK</code>: desde ese momento las confirmaciones de ese alcance fallan con <code>409 SEQUENCE_NOT_CONFIGURED</code>, salvo que exista la secuencia de respaldo de la empresa) y <code>POST …/{sequence_id}/reactivate</code>, ambos con <code>{"version": n}</code>. Responden <code>200</code> con la secuencia y su nuevo <code>is_active</code>. Reactivar una secuencia cuando otra ya está activa en el mismo alcance responde <code>409 SEQUENCE_ALREADY_ACTIVE</code>. Los contadores no se reinician al desactivar y reactivar.</p>
+<h3 id="21-consultar-y-modificar-una-secuencia">21. Consultar y modificar una secuencia<a class="headerlink" href="#21-consultar-y-modificar-una-secuencia" title="Permanent link">&para;</a></h3>
+<p><code>GET …/{sequence_id}</code> devuelve la secuencia con sus contadores. <code>PUT …/{sequence_id}</code> (<code>SequenceUpdateIn</code>: los mismos campos de la creación más <code>version</code>) permite ajustar el formato <strong>solo mientras no se haya asignado ningún número</strong>; después únicamente <code>maximum_number</code> (<code>409 SEQUENCE_IN_USE</code> en caso contrario, <code>409 VERSION_CONFLICT</code> si la versión no es la actual).</p>
+<h3 id="requisitos-previos-para-confirmar-documentos">Requisitos previos para confirmar documentos<a class="headerlink" href="#requisitos-previos-para-confirmar-documentos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Documento</th>
+<th>Requisito</th>
+<th>Dónde se verifica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Venta y compra</td>
+<td>Secuencia activa de la sucursal <strong>o</strong> de la empresa para ese tipo documental</td>
+<td>Funcionalidad 18 (<code>is_active: true</code> y <code>branch_id</code> igual al de la sucursal o <code>null</code>)</td>
+</tr>
+<tr>
+<td>Venta y compra</td>
+<td>Sucursal asignada al usuario que confirma</td>
+<td>Funcionalidad 12 de este módulo (<a href="../acceso-y-contexto-operativo/">Acceso y contexto operativo</a>)</td>
+</tr>
+<tr>
+<td>Venta</td>
+<td>Existencias y precios vigentes</td>
+<td><a href="../ventas/">Ventas</a></td>
+</tr>
+<tr>
+<td>Compra</td>
+<td>Impuesto de compra y política de ganancia por presentación</td>
+<td><a href="../compras/">Compras</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cómo resolver <code>409 SEQUENCE_NOT_CONFIGURED</code>:</strong> (1) consultar las secuencias (funcionalidad 18) y comprobar si existe una para la <code>branch_id</code> del documento o una de empresa (<code>branch_id: null</code>) con <code>is_active: true</code>; (2) si existe pero está inactiva, reactivarla (funcionalidad 20); (3) si no existe, crearla (funcionalidad 19) con los permisos <code>perm:sales:sale_sequences:create</code> o <code>perm:purchase:purchase_sequences:create</code> (grupos <code>administradores</code> y <code>supervisores</code> en el realm de desarrollo); (4) repetir la confirmación con la misma <code>Idempotency-Key</code> y la <code>version</code> actual del documento. No hace falta recrear el borrador.</p>
+<h2 id="orden-recomendado-y-efectos-automaticos">Orden recomendado y efectos automáticos<a class="headerlink" href="#orden-recomendado-y-efectos-automaticos" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Identidad de la organización (Party Identity) → 2. Empresa (OC 4) → 3. Sucursales (OC 10) → 4. Identidad de cada persona (Party Identity) → 5. Membresía (OC 16) → 6. Asignación de sucursales (OC 22).</li>
+</ol>
+<p>Ningún paso crea automáticamente el siguiente: crear la empresa no crea sucursales ni membresías; crear la membresía no asigna sucursales. Las secuencias de numeración de ventas y compras tampoco se crean solas y son obligatorias para confirmar documentos (funcionalidades 18 a 21). El ejemplo <a href="../../ejemplos/crear-empresa-y-sucursal/">Crear una empresa y una sucursal</a> recorre la cadena completa con cuerpos y respuestas reales.</p>
+<h2 id="dependencias-con-otros-modulos">Dependencias con otros módulos<a class="headerlink" href="#dependencias-con-otros-modulos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../acceso-y-contexto-operativo/">Acceso y contexto operativo</a> refleja al instante las membresías y asignaciones creadas aquí.</li>
+<li><a href="../gestion-de-clientes/">Gestión de clientes</a> y <a href="../gestion-de-proveedores/">Gestión de proveedores</a> usan las mismas identidades de Party Identity que este módulo.</li>
+<li>Sales, Purchase e Inventory exigen que el usuario tenga asignada la sucursal sobre la que opera (<code>403 BRANCH_ACCESS_DENIED</code> en caso contrario).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
