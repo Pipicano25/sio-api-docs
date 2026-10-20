@@ -1,0 +1,3911 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/guias/autenticacion/">
+      
+      
+        <link rel="prev" href="../../ejemplos/registrar-compra/">
+      
+      
+        <link rel="next" href="../errores/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Autenticación de SIO con Keycloak - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#autenticacion-de-sio-con-keycloak" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Autenticación de SIO con Keycloak
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-resumen-para-desarrolladores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Resumen para desarrolladores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-datos-de-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Datos de conexión
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Datos de conexión">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#endpoints-de-keycloak-verificados-en-vivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoints de Keycloak (verificados en vivo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-clientes-del-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Clientes del realm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Clientes del realm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-que-debe-configurar-el-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. ¿Qué debe configurar el frontend?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-redirect-uris-y-web-origins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Redirect URIs y Web Origins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-inicio-de-sesion-authorization-code-pkce-s256" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Inicio de sesión: Authorization Code + PKCE S256
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Inicio de sesión: Authorization Code + PKCE S256">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-solicitud-de-autorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Solicitud de autorización
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-canje-del-codigo-por-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Canje del código por tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-ejemplo-para-react-vue-o-javascript-con-keycloak-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ejemplo para React, Vue o JavaScript con keycloak-js
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consumir-una-api-de-sio-con-el-access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consumir una API de SIO con el Access Token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Consumir una API de SIO con el Access Token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-de-donde-sale-cada-dato" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. ¿De dónde sale cada dato?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-primera-consulta-recomendada-contexto-operativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Primera consulta recomendada: contexto operativo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-ejemplo-desde-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Ejemplo desde JavaScript
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-que-contiene-el-access-token-y-que-permisos-se-utilizan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Qué contiene el Access Token y qué permisos se utilizan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-que-comprueban-las-api-al-recibir-el-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Qué comprueban las API al recibir el token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Qué comprueban las API al recibir el token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-respuestas-401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Respuestas 401
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-respuestas-403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2. Respuestas 403
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-renovar-tokens-rotacion-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Renovar tokens: rotación obligatoria
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Renovar tokens: rotación obligatoria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-endpoint-de-renovacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1. Endpoint de renovación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-regla-fundamental" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2. Regla fundamental
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-grant-password-direct-access-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Grant password (Direct Access Grants)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-cerrar-sesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Cerrar sesión
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-usuarios-y-grupos-de-prueba-del-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Usuarios y grupos de prueba del realm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-errores-habituales-y-que-hacer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Errores habituales y qué hacer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-seguridad-y-buenas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Seguridad y buenas prácticas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-lista-de-verificacion-de-integracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Lista de verificación de integración
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-informacion-pendiente-de-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Información pendiente de verificar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-resumen-para-desarrolladores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Resumen para desarrolladores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-datos-de-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Datos de conexión
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Datos de conexión">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#endpoints-de-keycloak-verificados-en-vivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoints de Keycloak (verificados en vivo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-clientes-del-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Clientes del realm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Clientes del realm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-que-debe-configurar-el-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. ¿Qué debe configurar el frontend?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-redirect-uris-y-web-origins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Redirect URIs y Web Origins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-inicio-de-sesion-authorization-code-pkce-s256" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Inicio de sesión: Authorization Code + PKCE S256
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Inicio de sesión: Authorization Code + PKCE S256">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-solicitud-de-autorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Solicitud de autorización
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-canje-del-codigo-por-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Canje del código por tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-ejemplo-para-react-vue-o-javascript-con-keycloak-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ejemplo para React, Vue o JavaScript con keycloak-js
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consumir-una-api-de-sio-con-el-access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Consumir una API de SIO con el Access Token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Consumir una API de SIO con el Access Token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-de-donde-sale-cada-dato" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. ¿De dónde sale cada dato?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-primera-consulta-recomendada-contexto-operativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Primera consulta recomendada: contexto operativo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-ejemplo-desde-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Ejemplo desde JavaScript
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-que-contiene-el-access-token-y-que-permisos-se-utilizan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Qué contiene el Access Token y qué permisos se utilizan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-que-comprueban-las-api-al-recibir-el-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Qué comprueban las API al recibir el token
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Qué comprueban las API al recibir el token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-respuestas-401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Respuestas 401
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-respuestas-403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2. Respuestas 403
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-renovar-tokens-rotacion-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Renovar tokens: rotación obligatoria
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Renovar tokens: rotación obligatoria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-endpoint-de-renovacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1. Endpoint de renovación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-regla-fundamental" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2. Regla fundamental
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-grant-password-direct-access-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Grant password (Direct Access Grants)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-cerrar-sesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Cerrar sesión
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-usuarios-y-grupos-de-prueba-del-realm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Usuarios y grupos de prueba del realm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-errores-habituales-y-que-hacer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Errores habituales y qué hacer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-seguridad-y-buenas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Seguridad y buenas prácticas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-lista-de-verificacion-de-integracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Lista de verificación de integración
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-informacion-pendiente-de-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Información pendiente de verificar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="autenticacion-de-sio-con-keycloak">Autenticación de SIO con Keycloak<a class="headerlink" href="#autenticacion-de-sio-con-keycloak" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Volver al índice de las API</a> · <a href="../primeros-pasos/">Primeros pasos</a> · <a href="../permisos/">Permisos de usuario</a> · <a href="../errores/">Errores</a> · <a href="../../servicios/operational-context/">Operational Context</a></p>
+<blockquote>
+<p><strong>Entorno de esta guía:</strong> <code>siodev</code>, servicios publicados en Render. Explica cómo una aplicación cliente obtiene una sesión de usuario, llama a las API de SIO, renueva la sesión y cierra sesión, y qué comprueban exactamente las API al recibir el token. <strong>No incluye contraseñas, tokens ni secretos reales.</strong></p>
+</blockquote>
+<h2 id="1-resumen-para-desarrolladores">1. Resumen para desarrolladores<a class="headerlink" href="#1-resumen-para-desarrolladores" title="Permanent link">&para;</a></h2>
+<p>SIO usa <strong>Keycloak</strong> como proveedor de identidad (OpenID Connect) y <strong>tokens Bearer</strong> para acceder a las API FastAPI.</p>
+<ol>
+<li>El usuario entra en su aplicación web.</li>
+<li>La aplicación lo envía a Keycloak mediante <strong>Authorization Code + PKCE S256</strong>.</li>
+<li>Keycloak autentica al usuario y devuelve un <em>authorization code</em> a la URL de retorno autorizada.</li>
+<li>El cliente canjea ese código por un <strong>Access Token</strong> y un <strong>Refresh Token</strong>.</li>
+<li>La aplicación invoca las API enviando <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code>.</li>
+<li>Cuando el Access Token está por expirar, el cliente renueva <strong>una sola vez</strong> y sustituye los tokens anteriores por los nuevos.</li>
+</ol>
+<p><strong>Importante:</strong> poder acceder a una URL de Render no concede acceso a un recurso protegido. La API valida el token, el permiso y, cuando corresponda, la membresía en la empresa o sucursal.</p>
+<h2 id="2-datos-de-conexion">2. Datos de conexión<a class="headerlink" href="#2-datos-de-conexion" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+<th>¿Para qué sirve?</th>
+<th>Verificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Servidor Keycloak</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com</code></td>
+<td>Servidor de autenticación público</td>
+<td>Verificado en vivo el 2026-10-19 (<code>/.well-known/openid-configuration</code>)</td>
+</tr>
+<tr>
+<td>Realm</td>
+<td><code>siodev</code></td>
+<td>Ámbito de usuarios, roles y clientes de esta instalación</td>
+<td>Verificado en vivo</td>
+</tr>
+<tr>
+<td>Issuer (<code>iss</code> del token)</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev</code></td>
+<td>Emisor que comprueban las API</td>
+<td>Verificado en vivo</td>
+</tr>
+<tr>
+<td>Client ID web</td>
+<td><code>sio-web</code></td>
+<td>Identificador público de cliente (no es una contraseña)</td>
+<td>Plantilla del realm (<code>infrastructure/keycloak/realm-template/sio-realm.template.json</code>)</td>
+</tr>
+<tr>
+<td>Audience de las API (<code>aud</code>)</td>
+<td><code>sio-api</code></td>
+<td>Audiencia que exige <code>libs/sio-auth</code> en todos los servicios</td>
+<td>Código de <code>libs/sio-auth</code> (valor predeterminado) y plantilla del realm</td>
+</tr>
+<tr>
+<td>Tipo de cliente</td>
+<td>Público</td>
+<td><strong>No</strong> utiliza <code>client_secret</code> en el navegador</td>
+<td>Plantilla del realm</td>
+</tr>
+<tr>
+<td>Flujo web</td>
+<td>Authorization Code + PKCE S256</td>
+<td>Autenticación interactiva; PKCE obligatorio (<code>pkce.code.challenge.method = S256</code>)</td>
+<td>Plantilla del realm</td>
+</tr>
+<tr>
+<td>Algoritmo de firma aceptado</td>
+<td><code>RS256</code></td>
+<td>Único algoritmo que aceptan las API; no es configurable</td>
+<td>Código de <code>libs/sio-auth</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="endpoints-de-keycloak-verificados-en-vivo">Endpoints de Keycloak (verificados en vivo)<a class="headerlink" href="#endpoints-de-keycloak-verificados-en-vivo" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Finalidad</th>
+<th>URL completa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td>Descubrir la configuración OpenID Connect</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/.well-known/openid-configuration</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td>Iniciar autorización / mostrar login</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/protocol/openid-connect/auth</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td>Canjear código o renovar tokens</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/protocol/openid-connect/token</code></td>
+</tr>
+<tr>
+<td><code>GET</code> / <code>POST</code></td>
+<td>Cerrar sesión (<em>end session</em>)</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/protocol/openid-connect/logout</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td>Consultar información básica del usuario</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/protocol/openid-connect/userinfo</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td>Consultar las claves públicas (JWKS)</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/protocol/openid-connect/certs</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td>Gestionar la cuenta del usuario</td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev/account</code></td>
+</tr>
+</tbody>
+</table>
+<p>El JWKS publicado contiene una clave de firma <code>RS256</code> (<code>use: sig</code>) y una clave de cifrado <code>RSA-OAEP</code> (<code>use: enc</code>). Las API solo usan la de firma.</p>
+<p><strong>Recomendación:</strong> si usas una biblioteca OIDC, configúrala con el <em>issuer</em> o el documento de descubrimiento en lugar de construir a mano todas las URL.</p>
+<h2 id="3-clientes-del-realm">3. Clientes del realm<a class="headerlink" href="#3-clientes-del-realm" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Tipo</th>
+<th>Uso</th>
+<th>Quién lo usa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sio-web</code></td>
+<td>Público (sin secreto), Standard Flow, PKCE S256, sin Implicit Flow, sin Service Account</td>
+<td>Login de usuarios desde el navegador</td>
+<td><strong>Frontend</strong></td>
+</tr>
+<tr>
+<td><code>sio-api</code></td>
+<td>Bearer-only (no inicia sesiones)</td>
+<td>Representa a las API. Es la <strong>audiencia</strong> (<code>aud</code>) de los tokens y el contenedor de los <em>client roles</em> <code>perm:*</code></td>
+<td>Las 12 API, al validar tokens</td>
+</tr>
+<tr>
+<td><code>party-identity-service</code>, <code>operational-context-service</code>, <code>commercial-relationship-service</code>, <code>product-catalog-service</code>, <code>inventory-service</code>, <code>purchase-service</code>, <code>sales-service</code>, <code>product-inventory-query-service</code>, <code>sio-data-importer</code>, <code>audit-test-emitter</code>, <code>inventory-test-operator</code></td>
+<td>Confidenciales con <code>client_credentials</code></td>
+<td>Identidades técnicas entre servicios y de pruebas</td>
+<td><strong>Solo backend. Nunca desde el frontend.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>El cliente <code>sio-web</code> incluye un <em>protocol mapper</em> de audiencia que añade <code>sio-api</code> al claim <code>aud</code> del Access Token. Sin ese claim las API responden <code>401</code>.</p>
+<p>Scopes por defecto de <code>sio-web</code>: <code>web-origins</code>, <code>acr</code>, <code>roles</code>, <code>profile</code>, <code>basic</code>, <code>email</code>. Scopes opcionales: <code>address</code>, <code>phone</code>, <code>organization</code>, <code>microprofile-jwt</code>. <strong><code>offline_access</code> no está disponible</strong> para <code>sio-web</code>: no solicite tokens sin conexión.</p>
+<h3 id="31-que-debe-configurar-el-frontend">3.1. ¿Qué debe configurar el frontend?<a class="headerlink" href="#31-que-debe-configurar-el-frontend" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Ejemplo</th>
+<th>Dónde obtenerlo o configurarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code> / <code>issuer</code></td>
+<td><code>https://fastapi-postgrest-online-keycloak.onrender.com</code></td>
+<td>Tabla anterior; es un valor público</td>
+</tr>
+<tr>
+<td><code>realm</code></td>
+<td><code>siodev</code></td>
+<td>Tabla anterior</td>
+</tr>
+<tr>
+<td><code>clientId</code></td>
+<td><code>sio-web</code></td>
+<td>Cliente de Keycloak habilitado para la aplicación</td>
+</tr>
+<tr>
+<td><code>redirect_uri</code></td>
+<td><code>https://mi-frontend.example.com/auth/callback</code></td>
+<td><strong>La define el desarrollador del frontend</strong>; debe registrarse como <em>Valid Redirect URI</em> en <code>sio-web</code></td>
+</tr>
+<tr>
+<td>Origen de la aplicación</td>
+<td><code>https://mi-frontend.example.com</code></td>
+<td>Dirección donde se publicará la aplicación; debe registrarse como <em>Web Origin</em> en <code>sio-web</code></td>
+</tr>
+<tr>
+<td>URL de retorno tras el logout</td>
+<td><code>https://mi-frontend.example.com/</code></td>
+<td>Debe registrarse como <em>Valid Post Logout Redirect URI</em> en <code>sio-web</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>openid profile email</code></td>
+<td>Solicitud OIDC habitual; los permisos llegan por el client scope <code>roles</code></td>
+</tr>
+<tr>
+<td><code>access_token</code></td>
+<td><code>eyJ...</code></td>
+<td>Lo entrega el <strong>token endpoint</strong> tras el login; es sensible y no debe incluirse en documentación ni logs</td>
+</tr>
+<tr>
+<td><code>refresh_token</code></td>
+<td><code>eyJ...</code></td>
+<td>Lo entrega el token endpoint; se usa únicamente para renovar la sesión</td>
+</tr>
+<tr>
+<td><code>company_id</code></td>
+<td>UUID</td>
+<td><strong>No</strong> viene en el token. Se obtiene de <a href="../../parametros/company-id/">Operational Context</a> después de iniciar sesión</td>
+</tr>
+<tr>
+<td><code>branch_id</code></td>
+<td>UUID</td>
+<td>Se obtiene de <a href="../../parametros/branch-id/">Operational Context</a> después de iniciar sesión</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>El dominio <code>mi-frontend.example.com</code> es <strong>ficticio</strong>. El equipo integrador debe comunicar su URL de retorno y su origen para registrarlos en Keycloak.</p>
+</blockquote>
+<h3 id="32-redirect-uris-y-web-origins">3.2. Redirect URIs y Web Origins<a class="headerlink" href="#32-redirect-uris-y-web-origins" title="Permanent link">&para;</a></h3>
+<p>La plantilla del realm toma estos valores de variables de entorno (<code>SIO_WEB_REDIRECT_URI</code>, <code>SIO_WEB_ORIGIN</code>). En el entorno local valen <code>http://localhost:3000/*</code> y <code>http://localhost:3000</code>.</p>
+<p>La plantilla del realm del repositorio define estos tres campos a partir de variables de entorno del despliegue de Keycloak: <code>redirectUris</code> y <code>post.logout.redirect.uris</code> toman <code>SIO_WEB_REDIRECT_URI</code>, y <code>webOrigins</code> y <code>rootUrl</code> toman <code>SIO_WEB_ORIGIN</code>. <strong>NO VERIFICADO:</strong> los valores de esas variables en Render y, por tanto, los <em>Valid Redirect URIs</em>, <em>Web Origins</em> y <em>Valid Post Logout Redirect URIs</em> efectivos del <code>sio-web</code> (no pueden consultarse desde el repositorio). Antes de integrar, el administrador de Keycloak debe confirmar que el origen del frontend (por ejemplo <code>http://localhost:5173</code> o el dominio desplegado) esté autorizado en los tres campos. Si la <code>redirect_uri</code> no coincide con un patrón autorizado, Keycloak muestra <code>Invalid parameter: redirect_uri</code> y el login no continúa.</p>
+<h2 id="4-inicio-de-sesion-authorization-code-pkce-s256">4. Inicio de sesión: Authorization Code + PKCE S256<a class="headerlink" href="#4-inicio-de-sesion-authorization-code-pkce-s256" title="Permanent link">&para;</a></h2>
+<p>Es el único flujo permitido para el frontend. <strong>No envíes el usuario y la contraseña directamente desde tu aplicación al token endpoint usando <code>grant_type=password</code></strong> (ver la sección 10). Los flujos <em>implicit</em> e <em>hybrid</em> están deshabilitados en <code>sio-web</code>.</p>
+<p>Secuencia:</p>
+<ol>
+<li>El frontend genera un <code>code_verifier</code> aleatorio (43 a 128 caracteres) y su <code>code_challenge = BASE64URL(SHA256(code_verifier))</code>.</li>
+<li>Redirige al usuario al endpoint de autorización.</li>
+<li>El usuario se autentica en la pantalla de Keycloak.</li>
+<li>Keycloak redirige a la <code>redirect_uri</code> con <code>code</code> y <code>state</code>.</li>
+<li>El frontend intercambia el <code>code</code> por tokens en el token endpoint, enviando el <code>code_verifier</code>.</li>
+<li>El frontend guarda los tokens <strong>en memoria</strong> y usa el <code>access_token</code> en cada llamada a las API.</li>
+</ol>
+<h3 id="41-solicitud-de-autorizacion">4.1. Solicitud de autorización<a class="headerlink" href="#41-solicitud-de-autorizacion" title="Permanent link">&para;</a></h3>
+<p>El navegador abre una URL con esta estructura (ejemplo ilustrativo; el <em>code challenge</em> y el estado se generan para cada intento):</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /realms/siodev/protocol/openid-connect/auth</span>
+<span class="err">    ?client_id=sio-web</span>
+<span class="err">    &amp;response_type=code</span>
+<span class="err">    &amp;scope=openid%20profile%20email</span>
+<span class="err">    &amp;redirect_uri=https%3A%2F%2Fmi-frontend.example.com%2Fauth%2Fcallback</span>
+<span class="err">    &amp;state=f3c1a2b4c5d6e7f8</span>
+<span class="err">    &amp;code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM</span>
+<span class="err">    &amp;code_challenge_method=S256</span>
+<span class="err">Host: fastapi-postgrest-online-keycloak.onrender.com</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Obligatorio</th>
+<th>Función</th>
+<th>Origen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>Sí</td>
+<td>Identifica la aplicación cliente</td>
+<td><code>sio-web</code></td>
+</tr>
+<tr>
+<td><code>response_type</code></td>
+<td>Sí</td>
+<td>Solicita un código de autorización</td>
+<td>Valor fijo: <code>code</code></td>
+</tr>
+<tr>
+<td><code>redirect_uri</code></td>
+<td>Sí</td>
+<td>Dirección a la que Keycloak devuelve el navegador</td>
+<td>URL de retorno propia del frontend, registrada en Keycloak</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>Habitual</td>
+<td>Solicita identidad OpenID Connect</td>
+<td><code>openid</code>, opcionalmente <code>profile</code> y <code>email</code></td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>Sí, recomendado</td>
+<td>Protege y vincula la solicitud con su respuesta</td>
+<td>Valor impredecible generado por el cliente y verificado al volver</td>
+</tr>
+<tr>
+<td><code>code_challenge</code></td>
+<td>Sí (PKCE obligatorio)</td>
+<td>Resumen derivado del <code>code_verifier</code></td>
+<td>Lo genera la biblioteca OIDC</td>
+</tr>
+<tr>
+<td><code>code_challenge_method</code></td>
+<td>Sí</td>
+<td>Algoritmo PKCE</td>
+<td><code>S256</code></td>
+</tr>
+</tbody>
+</table>
+<p>Tras autenticarse, Keycloak redirige a la aplicación con parámetros parecidos a estos:</p>
+<div class="highlight"><pre><span></span><code>https://mi-frontend.example.com/auth/callback?code=CODIGO_TEMPORAL&amp;state=f3c1a2b4c5d6e7f8
+</code></pre></div>
+<p>La aplicación comprueba <code>state</code> y canjea el código utilizando el <code>code_verifier</code> original. Un código es de corta duración y solo puede utilizarse una vez.</p>
+<h3 id="42-canje-del-codigo-por-tokens">4.2. Canje del código por tokens<a class="headerlink" href="#42-canje-del-codigo-por-tokens" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="err">POST /realms/siodev/protocol/openid-connect/token</span>
+<span class="err">Host: fastapi-postgrest-online-keycloak.onrender.com</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">grant_type=authorization_code</span>
+<span class="err">&amp;client_id=sio-web</span>
+<span class="err">&amp;code=CODIGO_TEMPORAL</span>
+<span class="err">&amp;redirect_uri=https%3A%2F%2Fmi-frontend.example.com%2Fauth%2Fcallback</span>
+<span class="err">&amp;code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk</span>
+</code></pre></div>
+<p><strong>Campos de formulario</strong> (no JSON):</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Obligatorio</th>
+<th>Ejemplo</th>
+<th>Origen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_type</code></td>
+<td>Sí</td>
+<td><code>authorization_code</code></td>
+<td>Valor fijo</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>Sí</td>
+<td><code>sio-web</code></td>
+<td>Configuración pública del frontend</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>Sí</td>
+<td><code>CODIGO_TEMPORAL</code></td>
+<td>Parámetro <code>code</code> recibido en la URL de retorno</td>
+</tr>
+<tr>
+<td><code>redirect_uri</code></td>
+<td>Sí</td>
+<td>La misma URL de retorno usada al autorizar</td>
+<td>Configuración del frontend</td>
+</tr>
+<tr>
+<td><code>code_verifier</code></td>
+<td>Sí</td>
+<td>Valor secreto temporal generado antes de iniciar el flujo</td>
+<td>Lo genera la biblioteca OIDC; <strong>no</strong> es un <code>client_secret</code></td>
+</tr>
+</tbody>
+</table>
+<p>No se envía <code>client_secret</code>: <code>sio-web</code> es público.</p>
+<p><strong>Respuesta <code>200 OK</code></strong> (formato estándar de Keycloak; valores ilustrativos, no son tokens utilizables):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXOEhnaC4uLiJ9.eyJleHAiOjE3OTI0NTYwMDB9.firma"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIn0.eyJleHAiOjE3OTI0NTc1MDB9.firma"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"id_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzZjJhIn0.firma"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"not-before-policy"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"session_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6b0c5a1e-2f4d-4c8e-9a1b-0d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile email"</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Uso en el frontend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_token</code></td>
+<td>string (JWT RS256)</td>
+<td>Enviar a las API como <code>Authorization: Bearer …</code></td>
+</tr>
+<tr>
+<td><code>expires_in</code></td>
+<td>integer (segundos)</td>
+<td>Programar la renovación antes de que venza (30 a 60 s de margen). Valor documentado: 300</td>
+</tr>
+<tr>
+<td><code>refresh_token</code></td>
+<td>string (JWT)</td>
+<td>Solo para renovar. Nunca enviarlo a las API</td>
+</tr>
+<tr>
+<td><code>refresh_expires_in</code></td>
+<td>integer (segundos)</td>
+<td>Si vence, hay que volver a iniciar sesión. También aplican los límites de sesión de la sección 9</td>
+</tr>
+<tr>
+<td><code>id_token</code></td>
+<td>string (JWT)</td>
+<td>Identidad para la interfaz y para el cierre de sesión (<code>id_token_hint</code>). <strong>No</strong> sustituye al Access Token</td>
+</tr>
+<tr>
+<td><code>token_type</code></td>
+<td>string</td>
+<td>Siempre <code>Bearer</code></td>
+</tr>
+<tr>
+<td><code>session_state</code></td>
+<td>string (UUID)</td>
+<td>Identificador de sesión SSO; informativo</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>string</td>
+<td>Scopes concedidos</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Errores del token endpoint</strong> (formato estándar OAuth 2.0 de Keycloak):</p>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th><code>error</code></th>
+<th>Causa habitual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td><code>invalid_grant</code></td>
+<td><code>code</code> ya usado o vencido, <code>code_verifier</code> incorrecto, <code>redirect_uri</code> distinta de la usada en el login, refresh token vencido o ya rotado</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>invalid_request</code></td>
+<td>Falta un parámetro obligatorio (por ejemplo <code>code_verifier</code>)</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>unauthorized_client</code></td>
+<td>El cliente no tiene habilitado ese <code>grant_type</code></td>
+</tr>
+<tr>
+<td>401</td>
+<td><code>invalid_client</code></td>
+<td><code>client_id</code> inexistente o se envió un secreto a un cliente público</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_grant"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"error_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Code not valid"</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Consejo:</strong> utiliza una biblioteca probada como <code>keycloak-js</code> para generar y validar los elementos del flujo PKCE. No implementes criptografía de PKCE ni almacenamiento de sesión manualmente si puedes evitarlo.</p>
+</blockquote>
+<h2 id="5-ejemplo-para-react-vue-o-javascript-con-keycloak-js">5. Ejemplo para React, Vue o JavaScript con <code>keycloak-js</code><a class="headerlink" href="#5-ejemplo-para-react-vue-o-javascript-con-keycloak-js" title="Permanent link">&para;</a></h2>
+<p>Instalación:</p>
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>keycloak-js
+</code></pre></div>
+<p>Configuración pública de ejemplo para Vite (<code>.env.development</code>):</p>
+<div class="highlight"><pre><span></span><code>VITE_KEYCLOAK_URL=https://fastapi-postgrest-online-keycloak.onrender.com
+VITE_KEYCLOAK_REALM=siodev
+VITE_KEYCLOAK_CLIENT_ID=sio-web
+VITE_OPERATIONAL_CONTEXT_API=https://sio-operational-context-dev.onrender.com/api/v1
+</code></pre></div>
+<p>Crea <code>src/auth/keycloak.ts</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">Keycloak</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"keycloak-js"</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">keycloak</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Keycloak</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="kt">import.meta.env.VITE_KEYCLOAK_URL</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">realm</span><span class="o">:</span><span class="w"> </span><span class="kt">import.meta.env.VITE_KEYCLOAK_REALM</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="kt">import.meta.env.VITE_KEYCLOAK_CLIENT_ID</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// Inicializar una sola vez al arrancar la aplicación.</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">iniciarSesion</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">onLoad</span><span class="o">:</span><span class="w"> </span><span class="s2">"login-required"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">pkceMethod</span><span class="o">:</span><span class="w"> </span><span class="s2">"S256"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">checkLoginIframe</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">obtenerAccessToken</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">authenticated</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">"El usuario no tiene sesión activa"</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// keycloak-js coordina las renovaciones dentro de una misma página.</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">updateToken</span><span class="p">(</span><span class="mf">60</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">token</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">"No fue posible obtener un Access Token vigente"</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">token</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">cerrarSesion</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">logout</span><span class="p">({</span><span class="w"> </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>La página y la URL de retorno deben estar autorizadas en <code>sio-web</code>. El código anterior es un ejemplo inicial; una aplicación con <strong>varias pestañas</strong> debe coordinar la renovación entre ellas (ver la sección 9).</p>
+</blockquote>
+<h2 id="6-consumir-una-api-de-sio-con-el-access-token">6. Consumir una API de SIO con el Access Token<a class="headerlink" href="#6-consumir-una-api-de-sio-con-el-access-token" title="Permanent link">&para;</a></h2>
+<h3 id="61-de-donde-sale-cada-dato">6.1. ¿De dónde sale cada dato?<a class="headerlink" href="#61-de-donde-sale-cada-dato" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dato</th>
+<th>Lo entrega</th>
+<th>Cómo obtenerlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access Token</td>
+<td>Keycloak</td>
+<td>Se obtiene al completar el login; con <code>keycloak-js</code> se lee mediante <code>obtenerAccessToken()</code></td>
+</tr>
+<tr>
+<td>Dirección de la API</td>
+<td>Render</td>
+<td>Se consulta en <a href="../../#api-por-microservicio">el índice de servicios</a></td>
+</tr>
+<tr>
+<td>Empresa activa (<code>company_id</code>)</td>
+<td>Operational Context</td>
+<td><a href="../../parametros/company-id/">Cómo obtener <code>company_id</code></a></td>
+</tr>
+<tr>
+<td>Sucursal (<code>branch_id</code>)</td>
+<td>Operational Context</td>
+<td><a href="../../parametros/branch-id/">Cómo obtener <code>branch_id</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-primera-consulta-recomendada-contexto-operativo">6.2. Primera consulta recomendada: contexto operativo<a class="headerlink" href="#62-primera-consulta-recomendada-contexto-operativo" title="Permanent link">&para;</a></h3>
+<p><strong>Método:</strong> <code>GET</code>
+<strong>URL completa:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="err">GET https://sio-operational-context-dev.onrender.com/api/v1/me/operational-context</span>
+<span class="err">Authorization: Bearer &lt;ACCESS_TOKEN&gt;</span>
+<span class="err">Accept: application/json</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Encabezado</th>
+<th>Obligatorio</th>
+<th>Ejemplo</th>
+<th>Origen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Authorization</code></td>
+<td>Sí</td>
+<td><code>Bearer eyJ...</code></td>
+<td>Access Token devuelto por Keycloak; nunca el Refresh Token</td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td>Opcional</td>
+<td><code>application/json</code></td>
+<td>Lo define la aplicación</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Permiso exigido:</strong> <code>perm:operational-context:application_users:read</code> (declarado en el router del servicio). Lo incluyen todos los grupos de prueba del realm salvo que se haya modificado la asignación.</p>
+<p><strong>Parámetros de ruta:</strong> ninguno. <strong>Parámetros de consulta:</strong> ninguno. <strong>Body:</strong> no lleva.</p>
+<p><strong>Ejemplo cURL</strong>, usando un token previamente obtenido y almacenado solo en la sesión de terminal:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">'https://sio-operational-context-dev.onrender.com/api/v1/me/operational-context'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--header<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--header<span class="w"> </span><span class="s1">'Accept: application/json'</span>
+</code></pre></div>
+<p><strong>Respuesta <code>200</code></strong> (estructura tomada del modelo Pydantic <code>MeOperationalContextResponse</code>; identificadores ilustrativos):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"keycloak_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"memberships"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"application_user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"550e8400-e29b-41d4-a716-446655440000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"branches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"user_branch_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"branch_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVE"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"allowed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keycloak_user_id</code></td>
+<td>string</td>
+<td>El <code>sub</code> del token</td>
+</tr>
+<tr>
+<td><code>memberships[]</code></td>
+<td>array</td>
+<td>Una entrada por empresa en la que el usuario tiene membresía</td>
+</tr>
+<tr>
+<td><code>memberships[].application_user_id</code></td>
+<td>UUID</td>
+<td>Usuario de aplicación dentro de esa empresa</td>
+</tr>
+<tr>
+<td><code>memberships[].company_id</code></td>
+<td>UUID</td>
+<td><strong>Valor de <code>company_id</code></strong> para el resto de las API</td>
+</tr>
+<tr>
+<td><code>memberships[].company_status</code>, <code>memberships[].status</code></td>
+<td><code>"ACTIVE"</code> | <code>"INACTIVE"</code></td>
+<td>Estado de la empresa y de la membresía</td>
+</tr>
+<tr>
+<td><code>memberships[].branches[].branch_id</code></td>
+<td>UUID</td>
+<td><strong>Valor de <code>branch_id</code></strong></td>
+</tr>
+<tr>
+<td><code>memberships[].branches[].allowed</code></td>
+<td>boolean</td>
+<td>Si el usuario puede operar en esa sucursal ahora</td>
+</tr>
+<tr>
+<td><code>memberships[].branches[].reason</code></td>
+<td>string | null</td>
+<td>Causa estable cuando <code>allowed</code> es <code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p>Un usuario autenticado sin membresías recibe <code>memberships: []</code>. Esta respuesta permite elegir la empresa y la sucursal activas; el detalle completo está en la ficha de <a href="../../servicios/operational-context/">Operational Context</a>.</p>
+<h3 id="63-ejemplo-desde-javascript">6.3. Ejemplo desde JavaScript<a class="headerlink" href="#63-ejemplo-desde-javascript" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">obtenerAccessToken</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./auth/keycloak"</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">consultarContextoOperativo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">obtenerAccessToken</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">respuesta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span>
+<span class="w">    </span><span class="s2">"https://sio-operational-context-dev.onrender.com/api/v1/me/operational-context"</span><span class="p">,</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Authorization</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">token</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Accept</span><span class="o">:</span><span class="w"> </span><span class="s2">"application/json"</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">401</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">"Sesión no válida o expirada; revisar renovación de token"</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">traceId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"X-Trace-Id"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`El usuario no tiene permiso para esta operación (trace_id: </span><span class="si">${</span><span class="nx">traceId</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`Error consultando Operational Context: </span><span class="si">${</span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">respuesta</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Siguiente paso:</strong> <a href="../../parametros/company-id/">obtener la empresa</a>, <a href="../../parametros/branch-id/">obtener la sucursal</a> y consultar el <a href="../../">catálogo de servicios</a>.</p>
+<h2 id="7-que-contiene-el-access-token-y-que-permisos-se-utilizan">7. Qué contiene el Access Token y qué permisos se utilizan<a class="headerlink" href="#7-que-contiene-el-access-token-y-que-permisos-se-utilizan" title="Permanent link">&para;</a></h2>
+<p>Payload decodificado de un Access Token de <code>sio-web</code> (<strong>ejemplo ilustrativo</strong>; los identificadores no son reales):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1792456300</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1792456000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"sio-api"</span><span class="p">,</span><span class="w"> </span><span class="s2">"account"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"typ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"azp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sio-web"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"session_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6b0c5a1e-2f4d-4c8e-9a1b-0d2e3f4a5b6c"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"acr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile email"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resource_access"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"sio-api"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"ventas"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"perm:sales:all:create"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"perm:sales:all:read"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"perm:sales:all:update"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"perm:geography:all:read"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"perm:product-catalog:all:read"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"account"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"manage-account"</span><span class="p">,</span><span class="w"> </span><span class="s2">"manage-account-links"</span><span class="p">,</span><span class="w"> </span><span class="s2">"view-profile"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"email_verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Nombre Apellido"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"preferred_username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"given_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Nombre"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"family_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Apellido"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ventas.test@ejemplo.test"</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Uso en SIO</th>
+<th>Quién lo entrega</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iss</code></td>
+<td>Debe ser exactamente el issuer configurado en cada API</td>
+<td>Keycloak</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>Debe incluir <code>sio-api</code></td>
+<td>Keycloak (mapper de audiencia de <code>sio-web</code>)</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>Identificador estable del usuario (<code>keycloak_user_id</code>). Es la clave con la que Operational Context asocia membresías y sucursales</td>
+<td>Keycloak</td>
+</tr>
+<tr>
+<td><code>exp</code></td>
+<td>Vencimiento. No hay tolerancia de reloj: un token vencido por un segundo es rechazado</td>
+<td>Keycloak</td>
+</tr>
+<tr>
+<td><code>resource_access["sio-api"].roles</code></td>
+<td>Roles de negocio (<code>administrador</code>, <code>supervisor</code>, <code>compras</code>, <code>ventas</code>, <code>inventario</code>, <code>reportes</code>, <code>consulta</code>) y permisos <code>perm:*</code>. <strong>Solo los que empiezan por <code>perm:</code> conceden acceso a operaciones</strong></td>
+<td>Keycloak (client scope <code>roles</code>)</td>
+</tr>
+<tr>
+<td><code>preferred_username</code>, <code>email</code></td>
+<td>Informativos; algunos servicios los registran en auditoría</td>
+<td>Keycloak</td>
+</tr>
+</tbody>
+</table>
+<p>Los permisos tienen la forma <code>perm:{servicio}:{recurso}:{accion}</code> y admiten el comodín <code>all</code> en cualquier segmento. Por ejemplo, <code>perm:sales:sales:create</code> permite solicitar la creación de ventas <strong>si las demás validaciones del endpoint también se cumplen</strong>. Los roles simples, como <code>ventas</code>, representan perfiles, no permisos suficientes por sí solos. Un <code>perm:</code> con un número de segmentos distinto de cuatro se ignora.</p>
+<p>El frontend puede leer <code>resource_access["sio-api"].roles</code> para mostrar u ocultar opciones, pero <strong>la autorización definitiva la hace cada API</strong>. No use <code>realm_access</code>, <code>groups</code> ni el ID Token para decidir permisos.</p>
+<p><strong>Atención:</strong> el Access Token <strong>no contiene la lista de empresas y sucursales</strong> del usuario. Ese contexto se consulta en Operational Context. Para ampliar, visita <a href="../permisos/">Permisos</a>.</p>
+<h2 id="8-que-comprueban-las-api-al-recibir-el-token">8. Qué comprueban las API al recibir el token<a class="headerlink" href="#8-que-comprueban-las-api-al-recibir-el-token" title="Permanent link">&para;</a></h2>
+<p>Las 12 API usan la misma librería (<code>libs/sio-auth</code>) como middleware global. Comportamiento verificado en el código:</p>
+<ol>
+<li><strong>Rutas públicas</strong> (sin token): <code>/health/live</code>, <code>/health/ready</code> y, cuando la documentación está habilitada, <code>/docs</code> y <code>/openapi.json</code>. El 2026-10-19 los 12 servicios en Render servían <code>/openapi.json</code> sin token. Todo lo demás exige token.</li>
+<li><strong>Cabecera</strong>: debe ser exactamente <code>Authorization: Bearer &lt;token&gt;</code> (dos partes; el esquema no distingue mayúsculas). Sin cabecera o mal formada: <code>401</code>.</li>
+<li><strong>Encabezado JWT</strong>: <code>alg</code> debe ser <code>RS256</code> y debe existir <code>kid</code>. La clave se busca en el JWKS del issuer (caché de 300 s).</li>
+<li><strong>Claims obligatorios</strong>: <code>exp</code>, <code>iss</code>, <code>aud</code>, <code>sub</code>. <code>iss</code> igual al configurado; <code>aud</code> debe contener <code>sio-api</code>.</li>
+<li><strong>Permisos</strong>: se extraen de <code>resource_access["sio-api"].roles</code> y cada operación exige un permiso concreto. Sin permiso: <code>403</code>.</li>
+<li><strong>Alcance de datos</strong>: además del permiso, los servicios con datos de empresa comprueban la membresía del <code>sub</code> en la empresa o sucursal de la ruta. Fuera de alcance responden <code>404</code>, igual que si el recurso no existiera.</li>
+</ol>
+<h3 id="81-respuestas-401">8.1. Respuestas <code>401</code><a class="headerlink" href="#81-respuestas-401" title="Permanent link">&para;</a></h3>
+<p>Mensajes posibles en <code>detail</code> (texto exacto del código de <code>libs/sio-auth</code>):</p>
+<ul>
+<li>«Se requiere un token de acceso Bearer»</li>
+<li>«El token de acceso está mal formado»</li>
+<li>«El token de acceso utiliza un algoritmo no permitido»</li>
+<li>«El encabezado del token de acceso no contiene kid»</li>
+<li>«El token de acceso ha expirado»</li>
+<li>«El issuer del token de acceso es inválido»</li>
+<li>«La audiencia del token de acceso es inválida»</li>
+<li>«Al token de acceso le falta el claim obligatorio: {claim}»</li>
+<li>«El token de acceso es inválido»</li>
+</ul>
+<p>Toda respuesta <code>401</code> incluye <code>WWW-Authenticate: Bearer</code>. El cuerpo tiene dos formas según el servicio:</p>
+<p>Forma básica (la emite la librería; es la que devuelven <strong>Geography</strong> y <strong>Payment Reference</strong>):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"El token de acceso ha expirado"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Forma Problem Details (<code>application/problem+json</code>, con <code>code</code> y <code>trace_id</code>; la emiten los otros diez servicios a través de su middleware de trazabilidad; ejemplo de Operational Context):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://sio/errors/operational-context/unauthenticated"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No autenticado"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"El token de acceso ha expirado"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/v1/me/operational-context"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OPERATIONAL_CONTEXT.UNAUTHENTICATED"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"trace_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9f8e7d6c5b4a39281716151413121110"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>El detalle por servicio está en <a href="../errores/">Errores</a>.</p>
+<h3 id="82-respuestas-403">8.2. Respuestas <code>403</code><a class="headerlink" href="#82-respuestas-403" title="Permanent link">&para;</a></h3>
+<p>Cuando el token es válido pero no cubre el permiso de la operación, la librería responde <code>403</code> con este <code>detail</code> fijo, que <strong>nunca revela el permiso exigido</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Su usuario no tiene permiso para realizar esta operación. Si necesita acceso, solicítelo al administrador del sistema indicando el trace_id de esta respuesta."</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>El permiso exigido queda registrado solo en el log del servidor junto con el <code>trace_id</code> (cabecera <code>X-Trace-Id</code> en los servicios que la emiten). El frontend debe mostrar ese identificador al usuario para que soporte pueda diagnosticar. No reintente un <code>403</code>.</p>
+<h2 id="9-renovar-tokens-rotacion-obligatoria">9. Renovar tokens: rotación obligatoria<a class="headerlink" href="#9-renovar-tokens-rotacion-obligatoria" title="Permanent link">&para;</a></h2>
+<p>La configuración del realm (plantilla del repositorio) establece:</p>
+<table>
+<thead>
+<tr>
+<th>Regla</th>
+<th>Valor documentado</th>
+<th>Consecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vida del Access Token</td>
+<td><code>300</code> segundos</td>
+<td>Renovar antes de que expire (por ejemplo, con 30–60 s de margen)</td>
+</tr>
+<tr>
+<td>Sesión inactiva</td>
+<td><code>1800</code> segundos (30 min)</td>
+<td>Si transcurre el límite sin renovar, habrá que volver a iniciar sesión</td>
+</tr>
+<tr>
+<td>Duración máxima de sesión</td>
+<td><code>36000</code> segundos (10 h)</td>
+<td>La sesión no puede renovarse indefinidamente</td>
+</tr>
+<tr>
+<td>Rotación</td>
+<td>Activada (<code>revokeRefreshToken=true</code>)</td>
+<td>Cada renovación sustituye el Refresh Token anterior</td>
+</tr>
+<tr>
+<td>Reutilización permitida</td>
+<td><code>0</code> (<code>refreshTokenMaxReuse=0</code>)</td>
+<td>Reutilizar un Refresh Token anterior invalida toda la sesión, incluido el Refresh Token vigente</td>
+</tr>
+<tr>
+<td><code>offline_access</code></td>
+<td>No habilitado en <code>sio-web</code></td>
+<td>No solicitar tokens offline para el frontend</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NO VERIFICADO:</strong> que el realm <code>siodev</code> de Render tenga exactamente estos valores. Confírmelos con <code>expires_in</code> y <code>refresh_expires_in</code> de la primera respuesta del token endpoint.</p>
+<h3 id="91-endpoint-de-renovacion">9.1. Endpoint de renovación<a class="headerlink" href="#91-endpoint-de-renovacion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="err">POST /realms/siodev/protocol/openid-connect/token</span>
+<span class="err">Host: fastapi-postgrest-online-keycloak.onrender.com</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">grant_type=refresh_token</span>
+<span class="err">&amp;client_id=sio-web</span>
+<span class="err">&amp;refresh_token=REFRESH_TOKEN_VIGENTE</span>
+</code></pre></div>
+<p><strong>Respuesta <code>200 OK</code></strong> (mismo formato que en 4.2; incluye un <strong>nuevo</strong> <code>refresh_token</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NUEVO_ACCESS_TOKEN"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NUEVO_REFRESH_TOKEN"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Respuesta ante reutilización de un Refresh Token ya consumido</strong> (texto observado en el realm de desarrollo local con la misma política):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_grant"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"error_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Maximum allowed refresh token reuse exceeded"</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="92-regla-fundamental">9.2. Regla fundamental<a class="headerlink" href="#92-regla-fundamental" title="Permanent link">&para;</a></h3>
+<p><strong>Después de cada renovación, reemplaza tanto el <code>access_token</code> como el <code>refresh_token</code>. Nunca vuelvas a utilizar el Refresh Token anterior.</strong></p>
+<ul>
+<li>Centraliza la renovación en un único punto del cliente y <strong>serializa</strong> las renovaciones. Dos pestañas o dos peticiones concurrentes que renueven con el mismo token cierran la sesión. <code>keycloak-js</code> agrupa renovaciones dentro de una misma página, pero <strong>no garantiza coordinación entre varias pestañas</strong>; una aplicación multi-pestaña debe usar un único coordinador (por ejemplo <code>BroadcastChannel</code> o un <code>SharedWorker</code>) sin exponer tokens innecesariamente.</li>
+<li>Ante <code>invalid_grant</code> o una sesión ya no renovable, lleva al usuario al login. No reintentes con el mismo Refresh Token.</li>
+<li>Después de cada renovación, recalcula los permisos representados en la interfaz: pueden haber cambiado.</li>
+<li>Estrategia recomendada ante las API: si una llamada devuelve <code>401</code>, renovar una vez y reintentar una vez. Si vuelve a fallar, cerrar sesión localmente y redirigir al login.</li>
+</ul>
+<h2 id="10-grant-password-direct-access-grants">10. Grant <code>password</code> (Direct Access Grants)<a class="headerlink" href="#10-grant-password-direct-access-grants" title="Permanent link">&para;</a></h2>
+<p>La plantilla del realm deja este grant <strong>deshabilitado por defecto</strong> en <code>sio-web</code> y solo se habilita en entornos de desarrollo mediante <code>SIO_WEB_DIRECT_ACCESS_GRANTS_ENABLED=true</code>. Existe únicamente para pruebas y scripts de desarrollo (<code>services/get_token.py</code>, pruebas de integración), no para la aplicación web.</p>
+<p>La plantilla lo define como <code>directAccessGrantsEnabled: ${SIO_WEB_DIRECT_ACCESS_GRANTS_ENABLED:false}</code>, pero el script de despliegue <code>infrastructure/scripts/render-realm.sh</code> lo deja en <code>true</code> cuando esa variable no está definida. <strong>NO VERIFICADO:</strong> el valor de <code>SIO_WEB_DIRECT_ACCESS_GRANTS_ENABLED</code> en Render y, por tanto, si el grant está habilitado en el <code>sio-web</code> desplegado. No lo use en el frontend. Si se necesita para pruebas manuales (Postman, scripts), el administrador puede comprobarlo enviando al token endpoint <code>grant_type=password</code> con un usuario inexistente: la respuesta <code>unauthorized_client</code> indica que está deshabilitado; <code>invalid_grant</code> indica que está habilitado.</p>
+<h2 id="11-cerrar-sesion">11. Cerrar sesión<a class="headerlink" href="#11-cerrar-sesion" title="Permanent link">&para;</a></h2>
+<p>Redirección del navegador (cierra la sesión SSO y vuelve al frontend):</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /realms/siodev/protocol/openid-connect/logout</span>
+<span class="err">    ?client_id=sio-web</span>
+<span class="err">    &amp;id_token_hint=ID_TOKEN_DE_LA_SESION</span>
+<span class="err">    &amp;post_logout_redirect_uri=https%3A%2F%2Fmi-frontend.example.com%2F</span>
+<span class="err">Host: fastapi-postgrest-online-keycloak.onrender.com</span>
+</code></pre></div>
+<p><code>post_logout_redirect_uri</code> debe estar autorizada en el cliente (<em>Valid Post Logout Redirect URIs</em>). <code>sio-web</code> tiene <em>front-channel logout</em> habilitado. Con <code>keycloak-js</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nx">keycloak</span><span class="p">.</span><span class="nx">logout</span><span class="p">({</span><span class="w"> </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+<p>Alternativa sin redirección (revoca la sesión desde el cliente):</p>
+<div class="highlight"><pre><span></span><code><span class="err">POST /realms/siodev/protocol/openid-connect/logout</span>
+<span class="err">Host: fastapi-postgrest-online-keycloak.onrender.com</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">client_id=sio-web&amp;refresh_token=REFRESH_TOKEN_VIGENTE</span>
+</code></pre></div>
+<p>Respuesta <code>204 No Content</code>. Después, borre los tokens de memoria. Los Access Tokens ya emitidos siguen siendo válidos para las API hasta su vencimiento (máximo 5 min), porque las API validan la firma y no consultan la sesión en Keycloak.</p>
+<h2 id="12-usuarios-y-grupos-de-prueba-del-realm">12. Usuarios y grupos de prueba del realm<a class="headerlink" href="#12-usuarios-y-grupos-de-prueba-del-realm" title="Permanent link">&para;</a></h2>
+<p>La plantilla del realm define grupos con roles y permisos ya asignados, y un usuario de prueba por grupo (con <code>id</code> fijo, de modo que su <code>sub</code> se conserve entre reconstrucciones):</p>
+<table>
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Grupo</th>
+<th>Rol de negocio</th>
+<th>Permisos del grupo (resumen)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>admin.test</code></td>
+<td><code>/administradores</code></td>
+<td><code>administrador</code></td>
+<td><code>perm:all:all:all</code></td>
+</tr>
+<tr>
+<td><code>supervisor.test</code></td>
+<td><code>/supervisores</code></td>
+<td><code>supervisor</code></td>
+<td><code>perm:all:all:read</code>, <code>perm:all:all:create</code>, <code>perm:all:all:update</code> y 4 permisos específicos</td>
+</tr>
+<tr>
+<td><code>compras.test</code></td>
+<td><code>/compras</code></td>
+<td><code>compras</code></td>
+<td>47 permisos de Purchase y lecturas de apoyo</td>
+</tr>
+<tr>
+<td><code>ventas.test</code></td>
+<td><code>/ventas</code></td>
+<td><code>ventas</code></td>
+<td>34 permisos de Sales y lecturas de apoyo</td>
+</tr>
+<tr>
+<td><code>inventario.test</code></td>
+<td><code>/inventario</code></td>
+<td><code>inventario</code></td>
+<td>20 permisos de Inventory y lecturas de apoyo</td>
+</tr>
+<tr>
+<td><code>reportes.test</code></td>
+<td><code>/reportes</code></td>
+<td><code>reportes</code></td>
+<td>59 permisos de solo lectura</td>
+</tr>
+<tr>
+<td><code>consulta.test</code></td>
+<td><code>/consulta</code></td>
+<td><code>consulta</code></td>
+<td>54 permisos de solo lectura</td>
+</tr>
+</tbody>
+</table>
+<p>La lista completa de permisos por grupo está en <a href="../permisos/">Permisos</a>.</p>
+<ul>
+<li>La contraseña de estos usuarios se define por variable de entorno al renderizar el realm y <strong>no se publica</strong> en esta documentación. Solicítela al administrador.</li>
+<li>Política de contraseñas del realm: mínimo 12 caracteres, al menos una mayúscula, una minúscula y un dígito.</li>
+<li>Protección contra fuerza bruta activa: dos intentos fallidos seguidos bloquean al usuario 60 s y Keycloak responde <code>Invalid user credentials</code> incluso con la contraseña correcta (comportamiento observado en el realm de desarrollo local).</li>
+<li>El autorregistro está deshabilitado; se permite iniciar sesión con el correo electrónico.</li>
+<li><strong>NO VERIFICADO:</strong> que estos siete usuarios existan con esos grupos en el Keycloak de Render, y qué membresías de empresa y sucursal tienen en Operational Context. Sin membresía activa, un usuario autenticado verá <code>memberships: []</code> en <code>GET /me/operational-context</code> y recibirá <code>404</code> en los recursos de empresa.</li>
+</ul>
+<h2 id="13-errores-habituales-y-que-hacer">13. Errores habituales y qué hacer<a class="headerlink" href="#13-errores-habituales-y-que-hacer" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Dónde sucede</th>
+<th>Respuesta habitual</th>
+<th>Acción para el frontend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Falta <code>Authorization</code> en una API protegida</td>
+<td>Microservicio FastAPI</td>
+<td><code>401</code> «Se requiere un token de acceso Bearer»</td>
+<td>Iniciar sesión y enviar Access Token</td>
+</tr>
+<tr>
+<td>Token expirado, inválido o con emisor o audiencia incorrectos</td>
+<td>Microservicio FastAPI</td>
+<td><code>401</code> con el <code>detail</code> correspondiente (sección 8.1)</td>
+<td>Renovar una vez si procede; si no es posible, ir al login</td>
+</tr>
+<tr>
+<td>Token válido, sin permiso funcional</td>
+<td>Microservicio FastAPI</td>
+<td><code>403</code> con <code>detail</code> fijo (sección 8.2)</td>
+<td>Mostrar falta de permisos y el <code>trace_id</code>; no repetir la acción</td>
+</tr>
+<tr>
+<td>Empresa o sucursal no accesible</td>
+<td>API de negocio / Operational Context</td>
+<td><code>404</code></td>
+<td>Revisar el contexto activo mediante <code>me/operational-context</code></td>
+</tr>
+<tr>
+<td>URL de retorno no autorizada</td>
+<td>Keycloak</td>
+<td><code>Invalid parameter: redirect_uri</code></td>
+<td>Registrar la Redirect URI exacta del frontend en <code>sio-web</code></td>
+</tr>
+<tr>
+<td>Refresh Token anterior reutilizado o renovaciones simultáneas</td>
+<td>Keycloak</td>
+<td><code>400</code> <code>invalid_grant</code> «Maximum allowed refresh token reuse exceeded»</td>
+<td>Cerrar el estado local de sesión y volver a autenticar</td>
+</tr>
+<tr>
+<td>Sesión vencida por inactividad o duración máxima</td>
+<td>Keycloak</td>
+<td><code>400</code> <code>invalid_grant</code></td>
+<td>Volver al login</td>
+</tr>
+<tr>
+<td>Usuario o contraseña incorrectos</td>
+<td>Keycloak</td>
+<td>Error en el formulario de login</td>
+<td>Permitir corrección sin registrar credenciales en logs</td>
+</tr>
+</tbody>
+</table>
+<p>Los detalles de errores y JSON de cada operación se documentan en <a href="../errores/">Errores</a> y en la ficha de cada microservicio.</p>
+<h2 id="14-seguridad-y-buenas-practicas">14. Seguridad y buenas prácticas<a class="headerlink" href="#14-seguridad-y-buenas-practicas" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Utiliza siempre <strong>HTTPS</strong> para Keycloak y para las API públicas de Render.</li>
+<li>Use solo <code>sio-web</code> con Authorization Code + PKCE S256. No use <code>client_credentials</code>, <code>grant_type=password</code> ni ningún secreto de cliente técnico en el navegador.</li>
+<li><strong>Nunca</strong> coloques contraseñas, Refresh Tokens, <code>client_secret</code> de clientes técnicos ni credenciales de Neon en archivos públicos del frontend.</li>
+<li>Mantén los tokens en memoria cuando sea viable; evita <code>localStorage</code> para Access Tokens, Refresh Tokens y permisos derivados de ellos.</li>
+<li>No envíes tokens mediante parámetros de URL ni los imprimas en consola, capturas, analíticas o logs.</li>
+<li>Nunca envíes el <code>refresh_token</code> ni el <code>id_token</code> a las API de SIO. Solo el <code>access_token</code>.</li>
+<li>No asumas acceso por tener un rol de perfil (<code>ventas</code>, <code>supervisor</code>): comprueba <code>perm:*</code> y deja la decisión final al backend.</li>
+<li>No inventes <code>company_id</code> ni <code>branch_id</code>: consulta los valores permitidos en Operational Context.</li>
+<li>Trata <code>401</code> como «renovar y reintentar una vez» y <code>403</code> como «sin permiso: mostrar mensaje y <code>trace_id</code>».</li>
+<li>Cada operación sensible (<code>WRITE</code>, <code>HIGH_RISK</code>) debe confirmarse con el usuario antes de enviarse; las API no piden confirmación.</li>
+<li>Los ejemplos de esta guía usan dominios, identificadores y credenciales ficticios.</li>
+</ul>
+<h2 id="15-lista-de-verificacion-de-integracion">15. Lista de verificación de integración<a class="headerlink" href="#15-lista-de-verificacion-de-integracion" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] El frontend conoce URL de Keycloak, realm <code>siodev</code> y el <code>client_id</code> <code>sio-web</code>.</li>
+<li>[ ] Su URL de retorno, su origen y su URL de post-logout están registrados en <code>sio-web</code>.</li>
+<li>[ ] El login usa <strong>Authorization Code + PKCE S256</strong>.</li>
+<li>[ ] Las API reciben <code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;</code>.</li>
+<li>[ ] El Access Token incluye la audiencia <code>sio-api</code>.</li>
+<li>[ ] El frontend consulta <code>GET /api/v1/me/operational-context</code> para obtener empresas y sucursales reales.</li>
+<li>[ ] Los permisos se leen desde <code>resource_access["sio-api"].roles</code> y se recalculan después de renovar.</li>
+<li>[ ] Se reemplaza el Refresh Token en cada renovación y no se renueva simultáneamente con el mismo token.</li>
+<li>[ ] Ante <code>403</code> se muestra el <code>trace_id</code> de la cabecera <code>X-Trace-Id</code> o del cuerpo.</li>
+<li>[ ] El logout termina la sesión y limpia el estado local del frontend.</li>
+</ul>
+<h2 id="16-informacion-pendiente-de-verificar">16. Información pendiente de verificar<a class="headerlink" href="#16-informacion-pendiente-de-verificar" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Valid Redirect URIs</em>, <em>Web Origins</em> y <em>Valid Post Logout Redirect URIs</em> del cliente <code>sio-web</code> en Render</td>
+<td>NO VERIFICADO (la plantilla los toma de <code>SIO_WEB_REDIRECT_URI</code> y <code>SIO_WEB_ORIGIN</code>)</td>
+</tr>
+<tr>
+<td>Duración real de Access Token, Refresh Token y sesión en el realm <code>siodev</code> de Render</td>
+<td>NO VERIFICADO (la plantilla indica 300 s, 1 800 s y 36 000 s)</td>
+</tr>
+<tr>
+<td>Grant <code>password</code> habilitado o no en <code>sio-web</code> de Render</td>
+<td>NO VERIFICADO (depende de <code>SIO_WEB_DIRECT_ACCESS_GRANTS_ENABLED</code>; el script de despliegue lo activa si la variable falta)</td>
+</tr>
+<tr>
+<td>Existencia de los usuarios de prueba y sus membresías en Render</td>
+<td>NO VERIFICADO</td>
+</tr>
+<tr>
+<td>Que el issuer configurado en las 12 API de Render (<code>SIO_AUTH_ISSUER</code>) sea exactamente <code>https://fastapi-postgrest-online-keycloak.onrender.com/realms/siodev</code></td>
+<td>NO VERIFICADO directamente; se infiere de que las API usan el mismo realm</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Referencias del propio repositorio:</strong> <code>libs/sio-auth/</code> (validación de tokens y permisos), <code>infrastructure/keycloak/realm-template/sio-realm.template.json</code> (clientes, grupos, usuarios de prueba, tiempos de sesión), <code>infrastructure/README.md</code> (sesiones y tokens de <code>sio-web</code>, validación manual con cURL), <code>docs/frontend-permissions.md</code> (uso de permisos en la interfaz) y los contratos OpenAPI de los microservicios.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

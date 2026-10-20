@@ -1,0 +1,2737 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/guias/errores/">
+      
+      
+        <link rel="prev" href="../autenticacion/">
+      
+      
+        <link rel="next" href="../permisos/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Errores y diagnóstico - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#errores-y-diagnostico" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Errores y diagnóstico
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-dos-formatos-segun-el-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Dos formatos según el servicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Dos formatos según el servicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-problem-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Problem Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-formato-basico-geography-y-payment-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Formato básico (Geography y Payment Reference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-codigos-http-y-que-hacer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Códigos HTTP y qué hacer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-errores-de-validacion-en-detalle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Errores de validación en detalle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-concurrencia-y-versiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Concurrencia y versiones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-trazabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Trazabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-manejo-recomendado-en-el-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Manejo recomendado en el cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-errores-de-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Errores de Keycloak
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-informacion-pendiente-de-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Información pendiente de verificar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../principales/ventas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-dos-formatos-segun-el-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Dos formatos según el servicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Dos formatos según el servicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-problem-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Problem Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-formato-basico-geography-y-payment-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Formato básico (Geography y Payment Reference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-codigos-http-y-que-hacer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Códigos HTTP y qué hacer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-errores-de-validacion-en-detalle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Errores de validación en detalle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-concurrencia-y-versiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Concurrencia y versiones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-trazabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Trazabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-manejo-recomendado-en-el-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Manejo recomendado en el cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-errores-de-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Errores de Keycloak
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-informacion-pendiente-de-verificar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Información pendiente de verificar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="errores-y-diagnostico">Errores y diagnóstico<a class="headerlink" href="#errores-y-diagnostico" title="Permanent link">&para;</a></h1>
+<p><a href="../../">← Volver al índice</a> · <a href="../primeros-pasos/">Primeros pasos</a> · <a href="../autenticacion/">Autenticación</a> · <a href="../permisos/">Permisos</a></p>
+<p>Esta guía describe los formatos de error que devuelven las API de SIO, qué significa cada código HTTP y cómo debe reaccionar el frontend. Los códigos de aplicación (<code>code</code>) propios de cada operación se detallan en la ficha de cada servicio; aquí están las reglas comunes, verificadas en el código de los 12 servicios.</p>
+<h2 id="1-dos-formatos-segun-el-servicio">1. Dos formatos según el servicio<a class="headerlink" href="#1-dos-formatos-segun-el-servicio" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Formato</th>
+<th>Servicios</th>
+<th>Content-Type</th>
+<th>Cuerpo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Problem Details</strong> (RFC 9457) con <code>code</code> y <code>trace_id</code></td>
+<td>Party Identity, Product Catalog, Operational Context, Commercial Relationship, Purchase, Sales, Inventory, Audit, Product Inventory Query, Business Reporting</td>
+<td><code>application/problem+json</code></td>
+<td>Objeto con <code>type</code>, <code>title</code>, <code>status</code>, <code>detail</code>, <code>instance</code>, <code>code</code>, <code>trace_id</code> y extensiones</td>
+</tr>
+<tr>
+<td><strong>Básico</strong> (FastAPI)</td>
+<td>Geography, Payment Reference</td>
+<td><code>application/json</code></td>
+<td><code>{"detail": ...}</code>; Payment Reference añade <code>code</code> en dos conflictos</td>
+</tr>
+</tbody>
+</table>
+<p>Comprueba <code>Content-Type</code> o la presencia de <code>code</code> para distinguirlos. En ambos, los <code>401</code> emitidos por la librería de autenticación llevan <code>WWW-Authenticate: Bearer</code>.</p>
+<h3 id="11-problem-details">1.1. Problem Details<a class="headerlink" href="#11-problem-details" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://sio/errors/sales/validation-error"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Solicitud inválida"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"La solicitud contiene datos inválidos."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"instance"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sales"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SALES.VALIDATION_ERROR"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"trace_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9f8e7d6c5b4a39281716151413121110"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lines.0.quantity"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"La cantidad debe ser mayor que cero."</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"QUANTITY_NOT_POSITIVE"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>string (URI)</td>
+<td><code>https://sio/errors/{servicio}/{code en kebab-case}</code>. Identificador estable del tipo de error; no es una página navegable</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Título corto en español</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>integer</td>
+<td>Mismo valor que el código HTTP</td>
+</tr>
+<tr>
+<td><code>detail</code></td>
+<td>string</td>
+<td>Mensaje en español apto para mostrar al usuario</td>
+</tr>
+<tr>
+<td><code>instance</code></td>
+<td>string</td>
+<td>Ruta de la solicitud</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>string</td>
+<td><code>{PREFIJO}.{CODIGO}</code>; el prefijo identifica al servicio (tabla siguiente). Es el valor que debe usar el frontend para decidir</td>
+</tr>
+<tr>
+<td><code>trace_id</code></td>
+<td>string</td>
+<td>Identificador de la solicitud; también va en la cabecera <code>X-Trace-Id</code>. Pídelo al usuario al reportar un problema</td>
+</tr>
+<tr>
+<td><code>errors[]</code></td>
+<td>array, opcional</td>
+<td>Solo en <code>400</code>/<code>422</code> de validación: lista de <code>{field, message, code}</code></td>
+</tr>
+<tr>
+<td><code>dependency</code></td>
+<td>string, opcional</td>
+<td>Solo en <code>503</code>: dependencia caída (<code>database</code>, u otro servicio)</td>
+</tr>
+<tr>
+<td>Otras extensiones</td>
+<td>según el error</td>
+<td>Algunos <code>409</code> añaden campos (por ejemplo la versión esperada). Se documentan en cada ficha</td>
+</tr>
+</tbody>
+</table>
+<p>Prefijos de <code>code</code> y base de <code>type</code> por servicio:</p>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Prefijo de <code>code</code></th>
+<th>Base de <code>type</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Party Identity</td>
+<td><code>PARTY_IDENTITY.</code></td>
+<td><code>https://sio/errors/party-identity/</code></td>
+</tr>
+<tr>
+<td>Product Catalog</td>
+<td><code>PRODUCT_CATALOG.</code></td>
+<td><code>https://sio/errors/product-catalog/</code></td>
+</tr>
+<tr>
+<td>Operational Context</td>
+<td><code>OPERATIONAL_CONTEXT.</code></td>
+<td><code>https://sio/errors/operational-context/</code></td>
+</tr>
+<tr>
+<td>Commercial Relationship</td>
+<td><code>COMMERCIAL_RELATIONSHIP.</code></td>
+<td><code>https://sio/errors/commercial-relationship/</code></td>
+</tr>
+<tr>
+<td>Purchase</td>
+<td><code>PURCHASE.</code></td>
+<td><code>https://sio/errors/purchase/</code></td>
+</tr>
+<tr>
+<td>Sales</td>
+<td><code>SALES.</code></td>
+<td><code>https://sio/errors/sales/</code></td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td><code>INVENTORY.</code></td>
+<td><code>https://sio/errors/inventory/</code></td>
+</tr>
+<tr>
+<td>Audit</td>
+<td><code>AUDIT.</code></td>
+<td><code>https://sio/errors/audit/</code></td>
+</tr>
+<tr>
+<td>Product Inventory Query</td>
+<td><code>PRODUCT_INVENTORY_QUERY.</code></td>
+<td><code>https://sio/errors/product-inventory-query/</code></td>
+</tr>
+<tr>
+<td>Business Reporting</td>
+<td><code>BUSINESS_REPORTING.</code></td>
+<td><code>https://sio/errors/business-reporting/</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-formato-basico-geography-y-payment-reference">1.2. Formato básico (Geography y Payment Reference)<a class="headerlink" href="#12-formato-basico-geography-y-payment-reference" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"El país solicitado no existe."</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>404</code> y <code>409</code>: <code>detail</code> con un mensaje en español. Payment Reference añade <code>code</code> en dos <code>409</code>: <code>PAYMENT_REFERENCE.VERSION_CONFLICT</code> y <code>PAYMENT_REFERENCE.INVALID_STATUS_TRANSITION</code>.</li>
+<li><code>422</code>: formato estándar de FastAPI, con <code>detail</code> como <strong>lista</strong> de errores de validación:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string_too_long"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"loc"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"body"</span><span class="p">,</span><span class="w"> </span><span class="s2">"name"</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"String should have at most 100 characters"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"input"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ctx"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"max_length"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>503</code>: <code>{"detail": "..."}</code> cuando la base de datos no está disponible, sin <code>code</code> ni <code>trace_id</code>.</li>
+<li>No envían <code>X-Trace-Id</code>.</li>
+</ul>
+<h2 id="2-codigos-http-y-que-hacer">2. Códigos HTTP y qué hacer<a class="headerlink" href="#2-codigos-http-y-que-hacer" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Cuándo ocurre</th>
+<th><code>code</code> habitual (servicios con Problem Details)</th>
+<th>Qué hacer en el frontend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>200</code></td>
+<td>Consulta o modificación satisfactoria</td>
+<td>—</td>
+<td>Procesar el cuerpo</td>
+</tr>
+<tr>
+<td><code>201</code></td>
+<td>Recurso creado</td>
+<td>—</td>
+<td>Leer el identificador generado por el servidor en el cuerpo</td>
+</tr>
+<tr>
+<td><code>204</code></td>
+<td>Operación sin cuerpo de respuesta (algunas eliminaciones y cierres)</td>
+<td>—</td>
+<td>No intentar leer JSON</td>
+</tr>
+<tr>
+<td><code>304</code></td>
+<td>Solo con <code>If-None-Match</code> en la lectura de imagen de Product Catalog</td>
+<td>—</td>
+<td>Usar la copia en caché</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td>Cuerpo que no es JSON válido; en Product Catalog también parámetros de ruta o consulta no interpretables</td>
+<td><code>MALFORMED_REQUEST</code> (<code>MALFORMED_BODY</code> en Purchase y Sales)</td>
+<td>Error de programación del cliente; revisar la serialización</td>
+</tr>
+<tr>
+<td><code>401</code></td>
+<td>Token ausente, mal formado, vencido, con <code>iss</code> o <code>aud</code> incorrectos</td>
+<td><code>UNAUTHENTICATED</code></td>
+<td>Renovar el token una vez y reintentar una vez; si persiste, volver al login</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>Token válido sin el permiso de la operación; o acceso operativo denegado en Purchase, Sales, Inventory, Commercial Relationship y Audit</td>
+<td><code>FORBIDDEN</code>, <code>OPERATIONAL_ACCESS_DENIED</code>, <code>BRANCH_ACCESS_DENIED</code></td>
+<td>Mostrar el <code>detail</code> y el <code>trace_id</code>. No reintentar. Recalcular los permisos de la interfaz</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>El recurso de la ruta no existe <strong>o está fuera del alcance</strong> del usuario (empresa o sucursal sin membresía)</td>
+<td><code>NOT_FOUND</code></td>
+<td>Revisar el identificador y el contexto operativo (<a href="../permisos/#5-alcance-de-datos-plataforma-empresa-y-sucursal">Permisos §5</a>)</td>
+</tr>
+<tr>
+<td><code>405</code></td>
+<td>Método no permitido en la ruta</td>
+<td><code>METHOD_NOT_ALLOWED</code></td>
+<td>Error de programación del cliente</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td>Conflicto de estado: duplicado, versión desactualizada, transición no permitida, secuencia no configurada, clave de idempotencia reutilizada con otro cuerpo</td>
+<td><code>VERSION_CONFLICT</code>, <code>INVALID_STATUS_TRANSITION</code>, <code>DUPLICATE_*</code>, <code>IDEMPOTENCY_KEY_CONFLICT</code>, otros por servicio</td>
+<td>Mostrar el <code>detail</code>; recargar el recurso y repetir la acción con la versión actual si procede</td>
+</tr>
+<tr>
+<td><code>422</code></td>
+<td>Validación de campos o de reglas de negocio de la entrada, incluidas referencias a recursos inexistentes o inactivos</td>
+<td><code>VALIDATION_ERROR</code>, <code>IMMUTABLE_FIELD</code>, otros por servicio</td>
+<td>Mostrar <code>errors[].message</code> junto al campo <code>errors[].field</code></td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>Error no controlado</td>
+<td><code>INTERNAL_ERROR</code></td>
+<td>Mostrar mensaje genérico y el <code>trace_id</code>; reportar</td>
+</tr>
+<tr>
+<td><code>503</code></td>
+<td>Base de datos del servicio o un servicio dependiente no disponible</td>
+<td><code>DEPENDENCY_UNAVAILABLE</code> con <code>dependency</code></td>
+<td>Mostrar estado temporal y permitir reintentar tras unos segundos</td>
+</tr>
+</tbody>
+</table>
+<p>Reglas generales (comunes a los servicios con Problem Details):</p>
+<ul>
+<li><code>400</code> solo si el JSON no se puede interpretar; <code>422</code> para toda validación de entrada y de dominio.</li>
+<li><code>409</code> para unicidad, versión y transiciones de estado.</li>
+<li><code>404</code> tanto para «no existe» como para «fuera de alcance», a propósito, para no revelar la existencia de datos de otras empresas.</li>
+<li><code>503</code> solo por pérdida de conexión con la base de datos o indisponibilidad de otro servicio; otros errores de base de datos se reportan como <code>500</code>.</li>
+</ul>
+<h2 id="3-errores-de-validacion-en-detalle">3. Errores de validación en detalle<a class="headerlink" href="#3-errores-de-validacion-en-detalle" title="Permanent link">&para;</a></h2>
+<p>En los servicios con Problem Details, <code>422</code> incluye <code>errors[]</code> con un elemento por campo inválido:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>field</code></td>
+<td>Ruta del campo en notación de puntos, sin el prefijo <code>body</code> (por ejemplo <code>lines.0.quantity</code>, <code>name</code>)</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>Mensaje en español o el mensaje de Pydantic</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>Causa. En la mayoría de los servicios es siempre <code>VALIDATION_ERROR</code> (o <code>IMMUTABLE_FIELD</code> en Product Catalog). Purchase y Sales usan causas específicas</td>
+</tr>
+</tbody>
+</table>
+<p>Causas de <code>errors[].code</code> en Purchase y Sales: <code>REQUIRED</code>, <code>INVALID_FORMAT</code>, <code>UNKNOWN_FIELD</code>, <code>LINES_LIMIT_EXCEEDED</code>, <code>QUANTITY_NOT_POSITIVE</code>, <code>TOO_MANY_DECIMALS</code>, <code>AMOUNT_OUT_OF_RANGE</code>, <code>REASON_REQUIRED</code>, <code>IDEMPOTENCY_KEY_REQUIRED</code>, <code>PAGE_SIZE_OUT_OF_RANGE</code>, <code>INVALID_DATE_RANGE</code>.</p>
+<p>Un campo desconocido en el cuerpo produce <code>422</code> en los servicios que rechazan campos extra (Purchase y Sales lo reportan como <code>UNKNOWN_FIELD</code>). <strong>NO VERIFICADO</strong> para cada modelo de los demás servicios; las fichas indican cuándo un modelo rechaza campos adicionales.</p>
+<h2 id="4-concurrencia-y-versiones">4. Concurrencia y versiones<a class="headerlink" href="#4-concurrencia-y-versiones" title="Permanent link">&para;</a></h2>
+<p>Varios recursos llevan un campo <code>version</code> (entero) que debe enviarse al modificar. Si el recurso cambió desde que se leyó, el servicio responde <code>409</code> <code>VERSION_CONFLICT</code>. El frontend debe recargar el recurso, mostrar los cambios y repetir la acción con la nueva versión. Las fichas indican qué operaciones exigen <code>version</code> y en qué campo (cuerpo o cabecera).</p>
+<h2 id="5-trazabilidad">5. Trazabilidad<a class="headerlink" href="#5-trazabilidad" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Los 10 servicios con Problem Details devuelven la cabecera <code>X-Trace-Id</code> en <strong>todas</strong> las respuestas, correctas o no, y el mismo valor en el campo <code>trace_id</code> de los errores.</li>
+<li>Si el cliente envía una cabecera <code>traceparent</code> válida (W3C Trace Context), el servicio reutiliza su trace-id; si no, genera uno.</li>
+<li>Los <code>403</code> por permiso no indican qué permiso faltó; esa información está solo en el log del servidor, asociada al <code>trace_id</code>. Por eso el frontend debe mostrarlo al usuario.</li>
+<li>Geography y Payment Reference no devuelven <code>X-Trace-Id</code>.</li>
+</ul>
+<h2 id="6-manejo-recomendado-en-el-cliente">6. Manejo recomendado en el cliente<a class="headerlink" href="#6-manejo-recomendado-en-el-cliente" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">ProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">detail</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">instance</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">trace_id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">errors</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}[];</span>
+<span class="w">  </span><span class="nx">dependency?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">ErrorBasico</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">detail</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">unknown</span><span class="p">[];</span><span class="w"> </span><span class="nx">code?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">describirError</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">,</span><span class="w"> </span><span class="nx">traceId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">problem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Partial</span><span class="o">&lt;</span><span class="nx">ProblemDetails</span><span class="o">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">problem</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">detail</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">problem</span><span class="o">?</span><span class="p">.</span><span class="nx">detail</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">problem</span><span class="p">.</span><span class="nx">detail</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"La solicitud no pudo completarse."</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">401</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"renovar-y-reintentar"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="kt">detail</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">403</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"mostrar"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">detail</span><span class="si">}</span><span class="sb"> (trace_id: </span><span class="si">${</span><span class="nx">traceId</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">problem</span><span class="o">?</span><span class="p">.</span><span class="nx">trace_id</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">"n/d"</span><span class="si">}</span><span class="sb">)`</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">404</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"revisar-contexto"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="kt">detail</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">409</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"recargar"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="kt">detail</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">422</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"marcar-campos"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="kt">detail</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">campos</span><span class="o">:</span><span class="w"> </span><span class="kt">problem?.errors</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">503</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"reintentar-luego"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="kt">detail</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">default</span><span class="o">:</span>
+<span class="w">      </span><span class="kt">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accion</span><span class="o">:</span><span class="w"> </span><span class="s2">"reportar"</span><span class="p">,</span><span class="w"> </span><span class="nx">mensaje</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">detail</span><span class="si">}</span><span class="sb"> (trace_id: </span><span class="si">${</span><span class="nx">traceId</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">"n/d"</span><span class="si">}</span><span class="sb">)`</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Para Geography y Payment Reference, <code>body.detail</code> en <code>422</code> es una lista; conviértela a mensajes por campo usando <code>loc</code> y <code>msg</code>.</p>
+<h2 id="7-errores-de-keycloak">7. Errores de Keycloak<a class="headerlink" href="#7-errores-de-keycloak" title="Permanent link">&para;</a></h2>
+<p>Los errores del token endpoint (<code>invalid_grant</code>, <code>unauthorized_client</code>, <code>invalid_client</code>) y del login se describen en <a href="../autenticacion/#42-canje-del-código-por-tokens">Autenticación §4.2 y §13</a>. No llegan desde las API de SIO sino desde Keycloak, con el formato OAuth 2.0 <code>{"error": "...", "error_description": "..."}</code>.</p>
+<h2 id="8-informacion-pendiente-de-verificar">8. Información pendiente de verificar<a class="headerlink" href="#8-informacion-pendiente-de-verificar" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comportamiento exacto de cada modelo ante campos desconocidos en el cuerpo</td>
+<td>NO VERIFICADO de forma global; se indica por operación en las fichas</td>
+</tr>
+<tr>
+<td>Lista completa de códigos <code>409</code> y <code>422</code> por servicio</td>
+<td>Se documenta en cada ficha a medida que se completa</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

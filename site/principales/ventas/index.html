@@ -1,0 +1,2758 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica y operacional de los microservicios de SIO.
+">
+      
+      
+      
+        <link rel="canonical" href="https://pipicano25.github.io/sio-api-docs/principales/ventas/">
+      
+      
+        <link rel="prev" href="../reportes/">
+      
+      
+        <link rel="next" href="../../servicios/audit/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>6.6 Ventas - SIO - Documentación de API</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#66-ventas" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="SIO - Documentación de API" class="md-header__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SIO - Documentación de API
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6.6 Ventas
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SIO - Documentación de API" class="md-nav__button md-logo" aria-label="SIO - Documentación de API" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SIO - Documentación de API
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentación de las API de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejemplos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ejemplos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos de integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/configurar-lista-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar una lista de precios con política de ganancia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/consultar-inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consultar inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-empresa-y-sucursal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear una empresa, una sucursal y sus usuarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/crear-venta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear y confirmar una venta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ejemplos/registrar-compra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registrar, confirmar y recibir una compra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guias
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guias
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/autenticacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación de SIO con Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/errores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errores y diagnóstico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guias/primeros-pasos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametros
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Parametros
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ¿De dónde sale cada parámetro?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/application-user-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro application_user_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/branch-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro branch_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/company-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/country-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetros geográficos: country_id, administrative_division_id, city_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/customer-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_customer_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/global-product-presentation-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro global_product_presentation_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/organization-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro organization_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/payment-method-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro payment_method_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/person-identity-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro person_identity_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/price-list-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro price_list_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/pricing-policy-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro policy_id (política de ganancia)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/purchase-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro purchase_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/sale-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro sale_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../parametros/supplier-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parámetro company_supplier_id
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Principales
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Principales
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API principales de SIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../acceso-y-contexto-operativo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.1 Acceso y contexto operativo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../administracion-empresarial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.2 Administración empresarial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compras/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.7 Compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-clientes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.3 Gestión de clientes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gestion-de-proveedores/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.4 Gestión de proveedores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inventario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.8 Inventario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../productos-y-precios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.5 Productos y precios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reportes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.9 Reportes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6.6 Ventas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#regla-de-precios-aprobada-para-el-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regla de precios aprobada para el frontend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#antes-de-empezar-configuracion-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Antes de empezar: configuración obligatoria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-buscar-el-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Buscar el cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-buscar-productos-con-disponibilidad-y-precio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Buscar productos con disponibilidad y precio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-y-4-consultar-las-listas-y-los-precios-vigentes-de-una-presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 y 4. Consultar las listas y los precios vigentes de una presentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-elegir-el-metodo-de-pago" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Elegir el método de pago
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-crear-la-venta-en-borrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Crear la venta en borrador
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-8-y-9-agregar-modificar-y-eliminar-lineas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7, 8 y 9. Agregar, modificar y eliminar líneas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-consultar-la-venta-con-lineas-y-totales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Consultar la venta con líneas y totales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-verificar-disponibilidad-antes-de-confirmar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Verificar disponibilidad antes de confirmar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-confirmar-la-venta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Confirmar la venta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-listar-ventas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Listar ventas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-anular-una-venta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Anular una venta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Servicios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Servicios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/business-reporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Reporting API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/commercial-relationship/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commercial Relationship API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/geography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geography API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/operational-context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operational Context API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/party-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Party Identity API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/payment-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Reference API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Catalog API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/product-inventory-query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Inventory Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/purchase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchase API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../servicios/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#regla-de-precios-aprobada-para-el-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regla de precios aprobada para el frontend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#antes-de-empezar-configuracion-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Antes de empezar: configuración obligatoria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-buscar-el-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Buscar el cliente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-buscar-productos-con-disponibilidad-y-precio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Buscar productos con disponibilidad y precio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-y-4-consultar-las-listas-y-los-precios-vigentes-de-una-presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 y 4. Consultar las listas y los precios vigentes de una presentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-elegir-el-metodo-de-pago" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Elegir el método de pago
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-crear-la-venta-en-borrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Crear la venta en borrador
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-8-y-9-agregar-modificar-y-eliminar-lineas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7, 8 y 9. Agregar, modificar y eliminar líneas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-consultar-la-venta-con-lineas-y-totales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Consultar la venta con líneas y totales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-verificar-disponibilidad-antes-de-confirmar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Verificar disponibilidad antes de confirmar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-confirmar-la-venta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Confirmar la venta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-listar-ventas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Listar ventas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-anular-una-venta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Anular una venta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-con-otros-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias con otros módulos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="66-ventas">6.6 Ventas<a class="headerlink" href="#66-ventas" title="Permanent link">&para;</a></h1>
+<p><a href="../">← API principales</a> · <a href="../../">← Índice</a></p>
+<p>El flujo de punto de venta: elegir cliente, buscar productos con existencias y precio, armar la venta en borrador eligiendo la lista de precios de cada línea, verificar disponibilidad, confirmar (numera el documento y descuenta inventario) y consultar lo vendido.</p>
+<p>Servicios implicados: <a href="../../servicios/sales/">Sales</a> (propietario de la venta), <a href="../../servicios/commercial-relationship/">Commercial Relationship</a> (clientes, presentaciones, listas y precios), <a href="../../servicios/product-inventory-query/">Product Inventory Query</a> (catálogo con precio y existencias), <a href="../../servicios/payment-reference/">Payment Reference</a> (método de pago) e <a href="../../servicios/inventory/">Inventory</a> (salida de existencias, invocada por Sales). Flujo completo con JSON: <a href="../../ejemplos/crear-venta/">Crear una venta</a>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funcionalidad</th>
+<th>Método y ruta</th>
+<th>Permiso</th>
+<th>Ficha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Buscar el cliente</td>
+<td><code>GET /api/v1/companies/{company_id}/company-customers</code> (CR)</td>
+<td><code>perm:commercial-relationship:company_customers:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#13-get-companiescompany_idcompany-customers">CR 13</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Buscar productos con disponibilidad y precio</td>
+<td><code>GET /api/v1/companies/{company_id}/branches/{branch_id}/product-overviews</code> (PIQS)</td>
+<td><code>perm:product-inventory-query:product_overviews:read</code></td>
+<td><a href="../../servicios/product-inventory-query/#4-get-companiescompany_idbranchesbranch_idproduct-overviews">PIQS 4</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Consultar las listas de precios vigentes</td>
+<td><code>GET /api/v1/companies/{company_id}/price-lists</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_lists:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#46-get-companiescompany_idprice-lists">CR 46</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Consultar los precios vigentes de una presentación</td>
+<td><code>GET /api/v1/companies/{company_id}/price-list-items</code> (CR)</td>
+<td><code>perm:commercial-relationship:price_list_items:read</code></td>
+<td><a href="../../servicios/commercial-relationship/#52-get-companiescompany_idprice-list-items">CR 52</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Elegir el método de pago</td>
+<td><code>GET /global-payment-methods</code> (Payment Reference)</td>
+<td><code>perm:payment-reference:global_payment_methods:read</code></td>
+<td><a href="../../servicios/payment-reference/#9-get-global-payment-methods">PR 9</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Crear la venta en borrador</td>
+<td><code>POST /api/v1/companies/{company_id}/sales</code> (Sales)</td>
+<td><code>perm:sales:sales:create</code></td>
+<td><a href="../../servicios/sales/#3-post-companiescompany_idsales">Sales 3</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Agregar una línea</td>
+<td><code>POST /api/v1/companies/{company_id}/sales/{sale_id}/details</code> (Sales)</td>
+<td><code>perm:sales:sale_details:create</code></td>
+<td><a href="../../servicios/sales/#7-post-companiescompany_idsalessale_iddetails">Sales 7</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Modificar una línea</td>
+<td><code>PUT /api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}</code> (Sales)</td>
+<td><code>perm:sales:sale_details:update</code></td>
+<td><a href="../../servicios/sales/#9-put-companiescompany_idsalessale_iddetailsdetail_id">Sales 9</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Eliminar una línea</td>
+<td><code>DELETE /api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}?version=</code> (Sales)</td>
+<td><code>perm:sales:sale_details:delete</code></td>
+<td><a href="../../servicios/sales/#10-delete-companiescompany_idsalessale_iddetailsdetail_id">Sales 10</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Consultar la venta con líneas y totales</td>
+<td><code>GET /api/v1/companies/{company_id}/sales/{sale_id}</code> (Sales)</td>
+<td><code>perm:sales:sales:read</code></td>
+<td><a href="../../servicios/sales/#5-get-companiescompany_idsalessale_id">Sales 5</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Verificar disponibilidad antes de confirmar</td>
+<td><code>GET /api/v1/companies/{company_id}/sales/{sale_id}/availability</code> (Sales)</td>
+<td><code>perm:sales:sales:read</code></td>
+<td><a href="../../servicios/sales/#15-get-companiescompany_idsalessale_idavailability">Sales 15</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Confirmar la venta</td>
+<td><code>POST /api/v1/companies/{company_id}/sales/{sale_id}/confirmation</code> (Sales)</td>
+<td><code>perm:sales:sales:update</code></td>
+<td><a href="../../servicios/sales/#11-post-companiescompany_idsalessale_idconfirmation">Sales 11</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Listar ventas</td>
+<td><code>GET /api/v1/companies/{company_id}/sales</code> (Sales)</td>
+<td><code>perm:sales:sales:read</code></td>
+<td><a href="../../servicios/sales/#4-get-companiescompany_idsales">Sales 4</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Anular una venta</td>
+<td><code>POST /api/v1/companies/{company_id}/sales/{sale_id}/cancellation</code> (Sales)</td>
+<td><code>perm:sales:sales:delete</code></td>
+<td><a href="../../servicios/sales/#12-post-companiescompany_idsalessale_idcancellation">Sales 12</a></td>
+</tr>
+</tbody>
+</table>
+<p>Bases: Sales <code>https://sio-sales-dev.onrender.com/api/v1</code>; Commercial Relationship <code>https://sio-commercial-relationship-dev.onrender.com/api/v1</code>; Product Inventory Query <code>https://sio-product-inventory-query-dev.onrender.com/api/v1</code>; Payment Reference <code>https://sio-payment-reference-dev.onrender.com</code> (sin <code>/api/v1</code>).</p>
+<p>Operaciones relacionadas que no se consideran principales: editar la cabecera del borrador (Sales 6), consultar las operaciones de confirmación y anulación (Sales 13, 14) y los agregados de ventas (Sales 22, 23; ver <a href="../reportes/">Reportes</a>). Las secuencias de numeración (Sales 16–21) se documentan en <a href="../administracion-empresarial/#numeración-de-documentos-comerciales">Administración empresarial</a>.</p>
+<p><strong>Alcance actual: ventas de contado.</strong> El contrato de creación (<code>SaleCreateIn</code>) recibe únicamente <code>payment_method_id</code> y rechaza con <code>422</code> los campos <code>customer_payment_condition_id</code>, <code>payment_condition_code_snapshot</code>, <code>payment_terms_days_snapshot</code> y <code>due_date</code>; al confirmar, el servicio fija <code>payment_condition_code_snapshot: "CASH"</code> y <code>due_date</code> igual a <code>operation_date</code>. Las ventas a crédito son una funcionalidad <strong>futura, no implementada</strong> en Sales; esos campos y las condiciones de pago de clientes se conservan en las fichas como referencia técnica de los contratos existentes.</p>
+<hr />
+<h2 id="regla-de-precios-aprobada-para-el-frontend">Regla de precios aprobada para el frontend<a class="headerlink" href="#regla-de-precios-aprobada-para-el-frontend" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Al agregar un producto, el frontend consulta los <strong>precios vigentes de la presentación en todas las listas</strong> (funcionalidad 4) y los nombres de las listas (funcionalidad 3).</li>
+<li>Muestra las opciones <strong>ordenadas de mayor a menor precio</strong> y selecciona inicialmente la de <strong>mayor precio</strong>.</li>
+<li>El vendedor elige la lista. El frontend envía <strong><code>price_list_id</code> de forma explícita</strong> en cada línea (funcionalidades 6, 7 y 8).</li>
+<li>El frontend <strong>nunca envía <code>unit_price</code></strong>: el contrato de Sales lo rechaza con <code>422 UNIT_PRICE_NOT_ALLOWED</code>. Sales resuelve el precio en Commercial Relationship para la lista indicada, lo congela en la línea (<code>unit_price</code>, <code>price_list_item_id</code>, <code>price_source: "PRICE_LIST_ITEM"</code>) y lo vuelve a verificar al confirmar.</li>
+</ol>
+<h2 id="antes-de-empezar-configuracion-obligatoria">Antes de empezar: configuración obligatoria<a class="headerlink" href="#antes-de-empezar-configuracion-obligatoria" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Requisito</th>
+<th>Dónde se configura</th>
+<th>Qué pasa si falta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sucursal asignada al vendedor</td>
+<td><a href="../administracion-empresarial/#12-asignar-un-usuario-a-una-sucursal">Administración empresarial §12</a></td>
+<td><code>403 BRANCH_ACCESS_DENIED</code> al crear la venta</td>
+</tr>
+<tr>
+<td>Secuencia de numeración activa para la sucursal o la empresa</td>
+<td><a href="../administracion-empresarial/#numeración-de-documentos-comerciales">Administración empresarial §18–21</a> (<code>POST …/sale-sequences</code>, Sales 16)</td>
+<td><code>409 SEQUENCE_NOT_CONFIGURED</code> al confirmar; se resuelve creando o reactivando la secuencia y repitiendo la confirmación</td>
+</tr>
+<tr>
+<td>Cliente <code>ACTIVE</code></td>
+<td><a href="../gestion-de-clientes/">Gestión de clientes</a></td>
+<td><code>409 REFERENCES_NOT_ELIGIBLE</code></td>
+</tr>
+<tr>
+<td>Presentación vendible con precio vigente en al menos una lista</td>
+<td><a href="../productos-y-precios/">Productos y precios</a></td>
+<td><code>409 REFERENCES_NOT_ELIGIBLE</code> (<code>NO_PRICE_IN_LIST</code>)</td>
+</tr>
+<tr>
+<td>Método de pago activo</td>
+<td>Payment Reference</td>
+<td><code>409 REFERENCES_NOT_ELIGIBLE</code></td>
+</tr>
+<tr>
+<td>Existencias en la sucursal (productos con control de inventario)</td>
+<td><a href="../compras/">Compras</a> e <a href="../inventario/">Inventario</a></td>
+<td><code>409 INSUFFICIENT_STOCK</code> al confirmar</td>
+</tr>
+</tbody>
+</table>
+<p>Regla verificada en <code>sequence_repository.py</code>: Sales usa la secuencia activa de la <strong>sucursal</strong> y, si no hay, la de la <strong>empresa</strong> (<code>branch_id: null</code>).</p>
+<h2 id="1-buscar-el-cliente">1. Buscar el cliente<a class="headerlink" href="#1-buscar-el-cliente" title="Permanent link">&para;</a></h2>
+<p><code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers?search=&lt;código o nombre&gt;&amp;status=ACTIVE</code> (permiso <code>perm:commercial-relationship:company_customers:read</code>). Responde <code>200</code>; el valor que necesita la venta es <code>items[].id</code> (<a href="../../parametros/customer-id/">company_customer_id</a>). Detalle en <a href="../gestion-de-clientes/#4-buscar-y-listar-los-clientes-de-la-empresa">Gestión de clientes §4</a>.</p>
+<h2 id="2-buscar-productos-con-disponibilidad-y-precio">2. Buscar productos con disponibilidad y precio<a class="headerlink" href="#2-buscar-productos-con-disponibilidad-y-precio" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Buscar por nombre, código interno, SKU o código de barras y ver, en una sola respuesta, las presentaciones vendibles, su precio en la lista elegida y las existencias de la sucursal.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/product-overviews</code>. Permiso <code>perm:product-inventory-query:product_overviews:read</code> (más los permisos de lectura de precios y existencias que el servicio comprueba por detrás). Consulta: <code>search</code>, <code>internal_code</code>, <code>sku</code>, <code>barcode</code>, <code>identifier</code>, <code>brand_id[]</code>, <code>category_id[]</code> + <code>include_descendants</code>, <code>status</code>, <code>has_image</code>, <code>stock_state</code>, <code>price_list_id</code> (precio de esa lista; si se omite, el de la lista predeterminada de la moneda), <code>sort</code>, <code>page_size</code> (1–20), <code>cursor</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span><span class="s1">'https://sio-product-inventory-query-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/branches/7c9e6679-7425-40de-944b-e07fc1f90ae7/product-overviews?search=acetaminofen&amp;status=ACTIVE&amp;page_size=20'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> <a href="../../parametros/company-id/">company_id</a> y <a href="../../parametros/branch-id/">branch_id</a> seleccionados.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>items[]</code>: <code>company_product_id</code>, <code>display_name</code>, <code>internal_code</code>, <code>identifiers[]</code>, <code>presentations[]</code> (<code>company_product_presentation_id</code>, <code>code</code>, <code>name</code>, <code>sku</code>, <code>is_sellable</code>, <code>base_quantity_factor</code>, <code>price</code>) y <code>stock</code> (existencias de la sucursal; <code>null</code> si el producto no controla inventario o la fuente no respondió, en cuyo caso <code>partial: true</code> y <code>partial_reason</code>). Paginación por <code>cursor</code> y <code>has_next</code>. El <code>price</code> mostrado corresponde a <strong>una</strong> lista; las alternativas se obtienen con la funcionalidad 4.</p>
+<h2 id="3-y-4-consultar-las-listas-y-los-precios-vigentes-de-una-presentacion">3 y 4. Consultar las listas y los precios vigentes de una presentación<a class="headerlink" href="#3-y-4-consultar-las-listas-y-los-precios-vigentes-de-una-presentacion" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Ver todas las opciones de precio de la presentación elegida (mostrador, mayorista, convenio) y escoger una.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong></p>
+<ol>
+<li>Listas vigentes (una vez por sesión y moneda): <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists?status=ACTIVE&amp;currency_code=COP</code> (permiso <code>perm:commercial-relationship:price_lists:read</code>). Conserva <code>id</code>, <code>name</code>, <code>valid_from</code>, <code>valid_to</code>, <code>is_default</code>; descarta las que no estén vigentes ahora (<a href="../../parametros/price-list-id/">price_list_id</a>).</li>
+<li>Precios de la presentación: <code>GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-list-items?company_product_presentation_id=&lt;id&gt;&amp;status=ACTIVE&amp;applicable_at=&lt;ahora en ISO 8601&gt;</code> (permiso <code>perm:commercial-relationship:price_list_items:read</code>).</li>
+</ol>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>items[]</code>, un elemento por lista vigente con precio: <code>price_list_id</code>, <code>unit_price</code>, <code>currency_code</code>, <code>valid_from</code>, <code>valid_to</code>, <code>origin</code>. El frontend los ordena por <code>unit_price</code> descendente, les pone el <code>name</code> de la lista y preselecciona el primero. Si <code>items</code> llega vacío, la presentación no tiene precio vigente y no puede venderse hasta registrarlo (<a href="../productos-y-precios/#12-registrar-un-precio-manual-por-presentación">Productos y precios §12</a>).</p>
+<h2 id="5-elegir-el-metodo-de-pago">5. Elegir el método de pago<a class="headerlink" href="#5-elegir-el-metodo-de-pago" title="Permanent link">&para;</a></h2>
+<p><code>GET https://sio-payment-reference-dev.onrender.com/global-payment-methods?status=ACTIVE</code> (permiso <code>perm:payment-reference:global_payment_methods:read</code>). Responde <code>200</code> con <code>items[]</code> (<code>id</code>, <code>code</code>, <code>name</code>, <code>status</code>); el valor para la venta es <code>items[].id</code> (<a href="../../parametros/payment-method-id/">payment_method_id</a>). Es un catálogo global: puede cargarse una vez por sesión.</p>
+<h2 id="6-crear-la-venta-en-borrador">6. Crear la venta en borrador<a class="headerlink" href="#6-crear-la-venta-en-borrador" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Abrir una venta para un cliente en la sucursal actual, con o sin líneas iniciales.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales</code>. Permiso <code>perm:sales:sales:create</code>. Cuerpo <code>SaleCreateIn</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Obligatorio</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>branch_id</code></td>
+<td>Sí</td>
+<td>Sucursal de la venta (<a href="../../parametros/branch-id/">branch_id</a>)</td>
+</tr>
+<tr>
+<td><code>company_customer_id</code></td>
+<td>Sí</td>
+<td>Cliente (<a href="../../parametros/customer-id/">customer-id</a>)</td>
+</tr>
+<tr>
+<td><code>payment_method_id</code></td>
+<td>Sí</td>
+<td>Método de pago (<a href="../../parametros/payment-method-id/">payment_method_id</a>)</td>
+</tr>
+<tr>
+<td><code>observations</code></td>
+<td>No</td>
+<td>≤ 2000</td>
+</tr>
+<tr>
+<td><code>lines[]</code></td>
+<td>No</td>
+<td>Líneas iniciales con la misma estructura de la funcionalidad 7 (sin <code>version</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"branch_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7c9e6679-7425-40de-944b-e07fc1f90ae7"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_customer_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"payment_method_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b7c8d9e0-f1a2-4b3c-8d4e-5f6a7b8c9d05"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"observations"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Entrega en mostrador"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"lines"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"price_list_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"discount_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"tax_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> Los identificadores de las funcionalidades 1 a 5 y la sucursal asignada al vendedor.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>201</code> con <code>SaleResponse</code>: <code>id</code> (<a href="../../parametros/sale-id/">sale_id</a>), <code>status: "DRAFT"</code>, <code>number: null</code> (se asigna al confirmar), <code>version: 1</code>, instantáneas del cliente y del método de pago, totales (<code>subtotal</code>, <code>discount_total</code>, <code>tax_total</code>, <code>total</code>) y <code>lines[]</code> con el precio ya resuelto (<code>unit_price</code>, <code>price_list_id</code>, <code>price_list_item_id</code>, <code>price_source</code>). Errores: <code>403 BRANCH_ACCESS_DENIED</code>, <code>409 REFERENCES_NOT_ELIGIBLE</code> con <code>errors[]</code> por campo (<code>field</code>, <code>code</code>, <code>message</code>: cliente inactivo, presentación no vendible, <code>PRICE_LIST_NOT_APPLICABLE</code>, <code>NO_PRICE_IN_LIST</code>), <code>422 UNIT_PRICE_NOT_ALLOWED</code> si se envió <code>unit_price</code>, <code>422 VALIDATION_ERROR</code>, <code>503 DEPENDENCY_UNAVAILABLE</code>.</p>
+<h2 id="7-8-y-9-agregar-modificar-y-eliminar-lineas">7, 8 y 9. Agregar, modificar y eliminar líneas<a class="headerlink" href="#7-8-y-9-agregar-modificar-y-eliminar-lineas" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Añadir productos a la venta, corregir cantidades, descuentos o la lista de precios de una línea, y quitar líneas, mientras la venta está en <code>DRAFT</code>.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Método y URL</th>
+<th>Cuerpo / parámetros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agregar</td>
+<td><code>POST https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details</code></td>
+<td><code>LineCreateIn</code>: <code>company_product_id</code>, <code>company_product_presentation_id</code>, <code>price_list_id</code>, <code>quantity</code>, <code>discount_amount</code> (por defecto <code>0</code>), <code>tax_amount</code> (por defecto <code>0</code>), <code>version</code> (de la venta)</td>
+</tr>
+<tr>
+<td>Modificar</td>
+<td><code>PUT https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}</code></td>
+<td>El mismo <code>LineCreateIn</code> completo con la <code>version</code> actual de la venta</td>
+</tr>
+<tr>
+<td>Eliminar</td>
+<td><code>DELETE https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}?version=&lt;n&gt;</code></td>
+<td>Sin cuerpo</td>
+</tr>
+</tbody>
+</table>
+<p>Permisos: <code>perm:sales:sale_details:create</code>, <code>…:update</code>, <code>…:delete</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"company_product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"company_product_presentation_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"price_list_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"discount_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tax_amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> El <a href="../../parametros/sale-id/">sale_id</a> y la <code>version</code> actual de la venta; para modificar o eliminar, el <code>lines[].id</code> (<code>detail_id</code>) de la última lectura.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> Las tres responden <code>200</code> con la <strong>venta completa</strong> (<code>SaleResponse</code>) recalculada: nuevas <code>lines[]</code>, totales y <code>version</code> incrementada. El frontend reemplaza su copia local con esa respuesta. Errores: <code>409 VERSION_CONFLICT</code> (otro usuario cambió la venta: vuelve a leerla), <code>409 INVALID_STATUS</code> (ya no está en <code>DRAFT</code>), <code>409 REFERENCES_NOT_ELIGIBLE</code>, <code>404 NOT_FOUND</code> (venta o línea inexistente en la empresa).</p>
+<h2 id="10-consultar-la-venta-con-lineas-y-totales">10. Consultar la venta con líneas y totales<a class="headerlink" href="#10-consultar-la-venta-con-lineas-y-totales" title="Permanent link">&para;</a></h2>
+<p><code>GET https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}</code> (permiso <code>perm:sales:sales:read</code>). Responde <code>200</code> con <code>SaleResponse</code>: cabecera, <code>status</code>, <code>number</code>, totales, <code>version</code>, <code>inventory_operation_id</code> (tras confirmar) y <code>lines[]</code> con <code>line_number</code>, instantáneas del producto y la presentación, <code>quantity</code>, <code>base_quantity</code>, <code>unit_price</code>, <code>discount_amount</code>, <code>tax_amount</code>, <code>subtotal</code>, <code>total</code>, <code>unit_cost_snapshot</code> y margen (<code>gross_margin_amount</code>, <code>gross_margin_percentage</code>, <code>cost_known</code>). Solo las líneas: <code>GET …/sales/{sale_id}/details</code> (Sales 8).</p>
+<h2 id="11-verificar-disponibilidad-antes-de-confirmar">11. Verificar disponibilidad antes de confirmar<a class="headerlink" href="#11-verificar-disponibilidad-antes-de-confirmar" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Saber si la sucursal tiene existencias para todas las líneas antes de intentar confirmar.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>GET https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/availability</code> (permiso <code>perm:sales:sales:read</code>). No reserva existencias.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>all_available</code> y <code>products[]</code> (<code>company_product_id</code>, <code>line_numbers[]</code>, <code>required_base_quantity</code>, <code>available_base_quantity</code>, <code>is_available</code>). Las cantidades se expresan en unidad base (cantidad × <code>base_quantity_factor</code>). Si Inventory no responde, <code>503 DEPENDENCY_UNAVAILABLE</code>.</p>
+<h2 id="12-confirmar-la-venta">12. Confirmar la venta<a class="headerlink" href="#12-confirmar-la-venta" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Cerrar la venta: asignar el número de documento y descontar las existencias de la sucursal.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/confirmation</code>. Permiso <code>perm:sales:sales:update</code> (<code>HIGH_RISK</code>). Cabecera <strong><code>Idempotency-Key</code></strong> obligatoria (UUID generado por el frontend; el mismo valor en los reintentos). Cuerpo <code>{"version": n}</code>.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sales/9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a/confirmation'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Idempotency-Key: 0b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"version": 3}'</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> Venta en <code>DRAFT</code> con al menos una línea, la <code>version</code> actual, secuencia configurada y existencias suficientes.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>SaleResponse</code> en <code>status: "CONFIRMED"</code>, <code>number</code> asignado (por ejemplo <code>V-000123</code>), <code>sequence_value</code>, <code>inventory_operation_id</code> (la salida registrada en Inventory) y <code>version</code> incrementada. Reglas verificadas en <code>confirmation_service.py</code>: Sales vuelve a resolver los precios y, si alguno cambió desde que se agregó la línea, responde <code>409 PRICES_CHANGED</code> con <code>errors[]</code> (precio, lista o ítem guardado frente al vigente) <strong>sin confirmar</strong>; el frontend debe mostrar el cambio, releer la venta y, si el vendedor acepta, volver a guardar las líneas afectadas y reintentar. Otros errores: <code>422 SALE_WITHOUT_LINES</code>, <code>409 SEQUENCE_NOT_CONFIGURED</code> / <code>SEQUENCE_EXHAUSTED</code>, <code>409 INSUFFICIENT_STOCK</code> (con el detalle por producto), <code>409 VERSION_CONFLICT</code>, <code>409 INVALID_STATUS</code>, <code>409 OPERATION_IN_PROGRESS</code> (hay una confirmación en curso: reintenta con la misma <code>Idempotency-Key</code>), <code>409 IDEMPOTENCY_KEY_CONFLICT</code> (misma clave con otro cuerpo), <code>503 DEPENDENCY_UNAVAILABLE</code>. Si Inventory no responde durante la confirmación, la operación queda <code>PENDING</code> y se concilia después: consulta <code>GET …/sales/{sale_id}/operations</code> (Sales 13) hasta ver <code>SUCCEEDED</code> o <code>FAILED</code>.</p>
+<h2 id="13-listar-ventas">13. Listar ventas<a class="headerlink" href="#13-listar-ventas" title="Permanent link">&para;</a></h2>
+<p><code>GET https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales</code> (permiso <code>perm:sales:sales:read</code>). Consulta: <code>status</code> (<code>DRAFT</code>, <code>CONFIRMED</code>, <code>CANCELLED</code>), <code>branch_id</code>, <code>company_customer_id</code>, <code>operation_date_from</code>, <code>operation_date_to</code>, <code>number</code>, <code>page</code>, <code>page_size</code>. Responde <code>200</code> con <code>PaginatedResponse[SaleResponse]</code> (sin líneas en cada elemento: para verlas usa la funcionalidad 10). Detalle en <a href="../../parametros/sale-id/">sale_id</a>.</p>
+<h2 id="14-anular-una-venta">14. Anular una venta<a class="headerlink" href="#14-anular-una-venta" title="Permanent link">&para;</a></h2>
+<p><strong>¿Qué puede hacer el usuario?</strong> Dejar sin efecto una venta, en borrador o ya confirmada, indicando el motivo. Si estaba confirmada, la mercancía vuelve al inventario de la sucursal.</p>
+<p><strong>¿Qué API debe consumir el frontend?</strong> <code>POST https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/cancellation</code>. Permiso <code>perm:sales:sales:delete</code>. Clasificación <strong><code>HIGH_RISK</code></strong>: pedir confirmación al usuario. Cabecera <strong><code>Idempotency-Key</code></strong> obligatoria (1–150 caracteres ASCII, generada por el frontend y reutilizada en los reintentos). Cuerpo <code>CancelIn</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cliente desistió de la compra"</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sales/9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a/cancellation'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Idempotency-Key: 2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"version": 4, "reason": "Cliente desistió de la compra"}'</span>
+</code></pre></div>
+<p><strong>¿Qué necesita antes?</strong> El <a href="../../parametros/sale-id/">sale_id</a>, su <code>version</code> actual, la sucursal asignada al usuario y un motivo no vacío. Estados permitidos (verificados en <code>cancellation_service.py</code>): <code>DRAFT</code> y <code>CONFIRMED</code>; una venta <code>CANCELLED</code> responde <code>409 INVALID_STATUS</code>.</p>
+<p><strong>¿Cómo sabe que funcionó?</strong> <code>200</code> con <code>SaleResponse</code> en <code>status: "CANCELLED"</code>, <code>cancelled_at</code>, <code>cancelled_by_user_id</code> y <code>cancellation_reason</code>; el <code>number</code> se conserva. Efectos sobre Inventory:</p>
+<ul>
+<li>Venta en <code>DRAFT</code>: se anula en una transacción local, sin tocar Inventory.</li>
+<li>Venta <code>CONFIRMED</code>: Sales abre una operación <code>CANCEL</code> (<code>PENDING</code>) y pide a Inventory el <strong>reverso exacto</strong> de la salida <code>inventory_operation_id</code>; cuando el reverso se aplica, la venta pasa a <code>CANCELLED</code> y la operación a <code>SUCCEEDED</code> con el <code>inventory_operation_id</code> del reverso (en el kardex aparece como <code>OUTPUT_REVERSAL</code>, <code>origin_type: SALE</code>). Si el reverso falla, la operación queda <code>FAILED</code> y la venta <strong>sigue <code>CONFIRMED</code></strong>.</li>
+<li>La anulación no revalida cliente ni productos: funciona aunque estén inactivos.</li>
+</ul>
+<p>Errores: <code>422 REASON_REQUIRED</code>, <code>422 IDEMPOTENCY_KEY_REQUIRED</code>, <code>409 IDEMPOTENCY_KEY_CONFLICT</code> (misma clave con otro cuerpo), <code>409 VERSION_CONFLICT</code>, <code>409 INVALID_STATUS</code>, <code>409 OPERATION_IN_PROGRESS</code> (otra confirmación o anulación en curso: reintenta con la misma clave), <code>409 INVENTORY_REJECTED</code> (Inventory rechazó el reverso, por ejemplo <code>ALREADY_REVERSED</code> o <code>REVERSAL_NOT_ALLOWED</code>; el detalle llega en <code>errors[]</code>), <code>403 BRANCH_ACCESS_DENIED</code>, <code>404</code>, <code>503 DEPENDENCY_UNAVAILABLE</code> (la operación queda <code>PENDING</code> y se concilia; consulta <code>GET …/sales/{sale_id}/operations</code>, Sales 13). La anulación queda registrada en Audit como <code>CANCEL_SALE</code> (<a href="../administracion-empresarial/#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto">Administración empresarial §17</a>).</p>
+<h2 id="dependencias-con-otros-modulos">Dependencias con otros módulos<a class="headerlink" href="#dependencias-con-otros-modulos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../gestion-de-clientes/">Gestión de clientes</a>: el cliente de la venta.</li>
+<li><a href="../productos-y-precios/">Productos y precios</a>: presentaciones vendibles, listas vigentes y precios; sin precio vigente no hay venta.</li>
+<li><a href="../inventario/">Inventario</a>: la disponibilidad consultada, la salida registrada al confirmar y el reverso al anular (<code>inventory_operation_id</code>; kardex con <code>origin_type=SALE</code>).</li>
+<li><a href="../administracion-empresarial/">Administración empresarial</a>: asignación del vendedor a la sucursal y secuencias de numeración.</li>
+<li><a href="../reportes/">Reportes</a>: productos más vendidos y ventas por sucursal se calculan sobre las ventas <code>CONFIRMED</code>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
