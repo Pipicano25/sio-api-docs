@@ -34,6 +34,11 @@ theme:
 
 plugins:
   - search
+  - git-revision-date-localized:
+      enable_creation_date: false
+      type: date
+      locale: es
+      fallback_to_build_date: true
 
 markdown_extensions:
   - admonition
