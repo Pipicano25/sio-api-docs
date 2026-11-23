@@ -1,5 +1,7 @@
 # Product Inventory Query API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -32,10 +34,10 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 
 | Consulta | Permiso | Grupos de la plantilla que lo tienen |
 |---|---|---|
-| Productos (`product-overviews`) | `perm:product-inventory-query:product_overviews:read` | `administradores`, `supervisores`, `ventas`, `inventario` |
-| Existencias (`inventory-overviews`) | `perm:product-inventory-query:inventory_overviews:read` | `administradores`, `supervisores`, `ventas`, `inventario` |
-| Bajo mínimo (`low-stock-products`) | `perm:product-inventory-query:low_stock_products:read` **más** `perm:product-inventory-query:stock:read` y `perm:inventory:product-policies:read` | `administradores`, `supervisores`, `inventario` |
-| Resumen (`inventory-summary`) | `perm:product-inventory-query:inventory_summary:read` | `administradores`, `supervisores`, `inventario` |
+| Productos (`product-overviews`) | `perm:product-inventory-query:product_overviews:read` | `superadmin`, `admin`, `Ventas`, `Inventario` |
+| Existencias (`inventory-overviews`) | `perm:product-inventory-query:inventory_overviews:read` | `superadmin`, `admin`, `Ventas`, `Inventario` |
+| Bajo mínimo (`low-stock-products`) | `perm:product-inventory-query:low_stock_products:read` **más** `perm:product-inventory-query:stock:read` y `perm:inventory:product-policies:read` | `superadmin`, `admin`, `Inventario` |
+| Resumen (`inventory-summary`) | `perm:product-inventory-query:inventory_summary:read` | `superadmin`, `admin`, `Inventario` |
 
 ### Bloques opcionales de la respuesta
 
@@ -45,7 +47,7 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 | Existencias | `perm:product-inventory-query:stock:read` | `stock` (total, por sucursal y equivalencias) | `stock_state` |
 | Mínimos | `perm:inventory:product-policies:read` | `stock.branches[].minimum_stock` y `minimum_state` | `minimum_state` |
 
-Sin el permiso de un bloque, el campo se omite o es `null` y la consulta responde `200`. Usar un **filtro** de un bloque no autorizado produce `403 PRODUCT_INVENTORY_QUERY.FORBIDDEN`. El grupo `ventas` ve precios y existencias pero no mínimos; `inventario` ve existencias y mínimos pero no precios (según la plantilla del realm).
+Sin el permiso de un bloque, el campo se omite o es `null` y la consulta responde `200`. Usar un **filtro** de un bloque no autorizado produce `403 PRODUCT_INVENTORY_QUERY.FORBIDDEN`. `superadmin`, `admin` e `Inventario` ven precios, existencias y mínimos; `Ventas` ve productos y existencias; `Compras` no tiene permisos de este servicio (según la plantilla del realm).
 
 ## Alcance de datos
 
@@ -234,6 +236,7 @@ Respuesta `200` (`CursorPage[ProductOverview]`; valores ilustrativos; token con 
           "status": "ACTIVE",
           "is_sellable": true,
           "base_quantity_factor": "1.0000",
+          "stock": {"whole_units": 800, "remainder_base_quantity": "0.0000"},
           "price": {
             "price_list_id": "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b",
             "price_list_item_id": "6f7a8b9c-0d1e-4f2a-9b3c-4d5e6f7a8b9c",
@@ -286,6 +289,7 @@ Campos destacados de `ProductOverview`:
 | `stock.branches[].balance_state` | `REGISTERED` (hay saldo registrado, aunque sea cero) o `NOT_REGISTERED` |
 | `stock.branches[].minimum_state` | `NO_POLICY`, `BELOW_MINIMUM`, `AT_MINIMUM`, `ABOVE_MINIMUM` |
 | `stock.equivalences[]` | Cuántas unidades enteras de cada presentación caben en el total y el resto en unidad base |
+| `presentations[].stock` | Lo mismo dentro de cada presentación: `whole_units` y `remainder_base_quantity`. Es la misma existencia vista en esa presentación y no se suma entre presentaciones; solo aparece si se ve el bloque `stock` |
 
 Errores: `403 FORBIDDEN` (sin permiso funcional o filtro de bloque no autorizado), `404 NOT_FOUND` (empresa sin membresía o `branch_id` de otra empresa), `422 VALIDATION_ERROR` / `INVALID_CURSOR`, `503 DEPENDENCY_UNAVAILABLE` (una dependencia no respondió en 3 s por llamada u 8 s en total, o respondió algo inválido; nunca hay resultados parciales sin `partial: true`).
 
@@ -423,7 +427,8 @@ Respuesta `200` (`CursorPage[InventoryOverview]`): mismo objeto que `ProductOver
       "internal_code": "PRD-0001-C",
       "status": "ACTIVE",
       "is_sellable": true,
-      "base_quantity_factor": "100.0000"
+      "base_quantity_factor": "100.0000",
+      "stock": {"whole_units": 2, "remainder_base_quantity": "50.0000"}
     }
   ],
   "stock": {
@@ -632,7 +637,7 @@ Ejemplo de respuesta `200` (`CursorPage_LowStockPair_`; valores ilustrativos):
 | Permiso | `perm:product-inventory-query:inventory_summary:read` |
 | Parámetros | `company_id` (ruta); `branch_id` (query, repetible, máx. 100) **o** `scope=COMPANY` (por defecto) |
 
-Sin paginación. 
+Sin paginación.
 
 Ejemplo de solicitud (sin cuerpo):
 

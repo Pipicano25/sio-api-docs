@@ -1,5 +1,7 @@
 # Business Reporting API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -29,12 +31,12 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 
 | Reporte | Permiso del reporte | Permiso del propietario | Grupos de la plantilla que tienen ambos |
 |---|---|---|---|
-| Productos más vendidos | `perm:business-reporting:top_selling_products:read` | `perm:sales:sales:read` (Sales) | `administradores`, `supervisores`, `ventas`, `reportes` |
-| Ventas por sucursal | `perm:business-reporting:sales_by_branch:read` | `perm:sales:sales:read` | `administradores`, `supervisores`, `reportes` |
-| Compras | `perm:business-reporting:purchases:read` | `perm:purchase:purchases:read` (Purchase) | `administradores`, `supervisores`, `compras`, `reportes` |
-| Evolución de existencias | `perm:business-reporting:stock_evolution:read` | `perm:inventory:stock_evolution:read` (Inventory) | `administradores`, `supervisores`, `inventario`, `reportes` |
+| Productos más vendidos | `perm:business-reporting:top_selling_products:read` | `perm:sales:sales:read` (Sales) | `superadmin`, `admin`, `Ventas` |
+| Ventas por sucursal | `perm:business-reporting:sales_by_branch:read` | `perm:sales:sales:read` | `superadmin`, `admin` |
+| Compras | `perm:business-reporting:purchases:read` | `perm:purchase:purchases:read` (Purchase) | `superadmin`, `admin`, `Compras` |
+| Evolución de existencias | `perm:business-reporting:stock_evolution:read` | `perm:inventory:stock_evolution:read` (Inventory) | `superadmin`, `admin`, `Inventario` |
 
-El grupo `consulta` no tiene permisos de Business Reporting en la plantilla.
+Ningún grupo de área (`Compras`, `Ventas`, `Inventario`) tiene el reporte de ventas por sucursal en la plantilla.
 
 ## Alcance de datos
 
@@ -375,7 +377,7 @@ Respuesta `200` (`PurchasesOut`; paginada; valores ilustrativos):
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "branch_name": "Sucursal Centro",
       "supplier_name": "Distribuidora Ejemplo S.A.S.",
-      "supplier_identification": "900123456-7",
+      "supplier_identification": "900123456-8",
       "number": "C-000045",
       "supplier_document_number": "FV-8891",
       "status": "CONFIRMED",
@@ -442,7 +444,7 @@ Ejemplo de respuesta `200` (`PurchasesOut`; valores ilustrativos):
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "branch_name": "Sucursal Centro",
       "supplier_name": "Distribuidora Farma S.A.S.",
-      "supplier_identification": "NIT 900123456-7",
+      "supplier_identification": "NIT 900123456-8",
       "number": null,
       "supplier_document_number": null,
       "status": "CONFIRMED",

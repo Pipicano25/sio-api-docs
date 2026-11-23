@@ -1,5 +1,7 @@
 # Parámetro `sale_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Sales](../servicios/sales.md)
 
 | Propiedad | Valor |
@@ -10,7 +12,7 @@
 | Obligatorio | Sí en todas las operaciones de una venta existente |
 | Ejemplo (ficticio) | `9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a` |
 | Quién lo genera | Sales, al crear el borrador (`id` de la respuesta `201`) |
-| Alcance | Empresa: se consulta con membresía `ACTIVE`; para escribir se necesita además asignación `ACTIVE` a la sucursal de la venta |
+| Alcance | Empresa: se consulta con membresía `ACTIVE`; para escribir se necesita además que la sucursal de la venta y la empresa estén activas (no se exige asignación a la sucursal) |
 
 ## Cómo obtenerlo
 
@@ -120,7 +122,7 @@ Respuesta `201` (`SaleResponse` con `lines`; valores ilustrativos):
 }
 ```
 
-**Campo exacto:** `id`. Guárdalo junto con `version` (`1` al crear), que es el valor que se envía en la siguiente escritura.
+**Campo exacto:** `id`. Guárdalo junto con `version` (`1` al crear), que puedes enviar (opcional) en la siguiente escritura para detectar cambios simultáneos.
 
 **Posibles errores de esta API:**
 
@@ -128,7 +130,7 @@ Respuesta `201` (`SaleResponse` con `lines`; valores ilustrativos):
 |---|---|---|---|
 | `401` | `{"detail": "Se requiere un token de acceso Bearer"}` | Token ausente, vencido o inválido | Renovar la sesión y reintentar; si falla, volver al login |
 | `403` | `SALES.FORBIDDEN` | Falta `perm:sales:sales:create`, o se enviaron líneas sin `perm:sales:sale_details:create`, o el token es de una cuenta de servicio | Mostrar que faltan permisos y el `trace_id` |
-| `403` | `SALES.BRANCH_ACCESS_DENIED` | El usuario no tiene asignación `ACTIVE` a la sucursal, o la sucursal o la empresa están inactivas | Pedir la asignación al administrador de la empresa |
+| `403` | `SALES.BRANCH_ACCESS_DENIED` | La sucursal o la empresa están inactivas (ya no se exige asignación a la sucursal) | Elegir una sucursal con `allowed: true` o pedir al administrador que la reactive |
 | `403` | `SALES.OPERATIONAL_ACCESS_DENIED` | Operational Context no permite al usuario consultar su acceso operativo | Pedir `perm:operational-context:application_users:read` |
 | `404` | `SALES.NOT_FOUND` | Sin membresía `ACTIVE` en la empresa, empresa inexistente o sucursal de otra empresa | Volver a leer el contexto operativo |
 | `409` | `SALES.REFERENCES_NOT_ELIGIBLE` | Cliente, método de pago, producto, presentación o lista de precios existen pero no se pueden usar (`errors[].code` lo indica, p. ej. `CUSTOMER_NOT_ELIGIBLE`, `PRICE_NOT_IN_LIST`) | Mostrar cada `errors[].message` y corregir la referencia |
@@ -205,7 +207,7 @@ Respuesta `200` (`SalePage`; cada elemento es un `SaleResponse` sin `lines`; val
 }
 ```
 
-**Campo exacto:** `items[].id`. `number` es el número legible del documento (`null` mientras la venta está en `DRAFT`), `version` el valor que debe enviarse en la siguiente escritura y `status` el estado actual.
+**Campo exacto:** `items[].id`. `number` es el número legible del documento (`null` mientras la venta está en `DRAFT`), `version` el valor que puede enviarse (opcional) en la siguiente escritura y `status` el estado actual.
 
 **Posibles errores de esta API:**
 
@@ -221,9 +223,9 @@ Respuesta `200` (`SalePage`; cada elemento es un `SaleResponse` sin `lines`; val
 ## Cómo usarlo después
 
 - Consultar la venta con líneas y totales: [API 10 de Ventas](../principales/ventas.md#10-consultar-la-venta-con-sus-líneas-y-totales).
-- Agregar, modificar o eliminar líneas, siempre con `version`: [API 7](../principales/ventas.md#7-agregar-una-línea-a-la-venta), [API 8](../principales/ventas.md#8-modificar-una-línea-de-la-venta) y [API 9 de Ventas](../principales/ventas.md#9-eliminar-una-línea-de-la-venta).
+- Agregar, modificar o eliminar líneas, con `version` opcional: [API 7](../principales/ventas.md#7-agregar-una-línea-a-la-venta), [API 8](../principales/ventas.md#8-modificar-una-línea-de-la-venta) y [API 9 de Ventas](../principales/ventas.md#9-eliminar-una-línea-de-la-venta).
 - Verificar existencias antes de confirmar: [API 11 de Ventas](../principales/ventas.md#11-verificar-la-disponibilidad-antes-de-confirmar).
-- Confirmar con `{"version": n}` y el encabezado `Idempotency-Key`: [API 12 de Ventas](../principales/ventas.md#12-confirmar-la-venta). Anular con `version` y `reason`: [API 14 de Ventas](../principales/ventas.md#14-anular-una-venta).
+- Confirmar con `{"version": n}` (`version` opcional; también `{}`) y el encabezado `Idempotency-Key`: [API 12 de Ventas](../principales/ventas.md#12-confirmar-la-venta). Anular con `reason` (obligatorio) y `version` (opcional): [API 14 de Ventas](../principales/ventas.md#14-anular-una-venta).
 - Historial de la venta: `{entity_id}` de la [API 17 de Administración empresarial](../principales/administracion-empresarial.md#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto) con `entity_type=Sale`.
 - Movimientos de inventario de la venta: filtro `origin_id` (con `origin_type=SALE`) del kardex de un producto en la sucursal de la venta, `GET https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/kardex/{company_product_id}?origin_type=SALE&origin_id={sale_id}` (permiso `perm:inventory:movements:read`; ficha [Inventory 10](../servicios/inventory.md#10-get-companiescompany_idbranchesbranch_idkardexcompany_product_id); guía principal [Inventario](../principales/inventario.md)).
 
@@ -237,4 +239,4 @@ Los pasos completos están en [Crear una venta](../ejemplos/crear-venta.md) y en
 | `409 SALES.VERSION_CONFLICT` | La `version` enviada no es la actual; volver a consultar la venta |
 | `409 SALES.INVALID_STATUS` | Se intentó editar o confirmar una venta que ya no está en `DRAFT`, o anular una ya `CANCELLED`; el campo `status` del cuerpo trae el estado de la venta |
 | `409 SALES.OPERATION_IN_PROGRESS` | La venta tiene una confirmación o anulación en curso (`pending_operation_id`) |
-| `403 SALES.BRANCH_ACCESS_DENIED` al escribir | El usuario puede ver la venta pero no tiene asignación `ACTIVE` a su sucursal |
+| `403 SALES.BRANCH_ACCESS_DENIED` al escribir | El usuario puede ver la venta pero su sucursal o la empresa están inactivas |

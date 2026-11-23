@@ -1,5 +1,7 @@
 # Commercial Relationship API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -22,7 +24,7 @@ Commercial Relationship guarda **lo que cada empresa decide comercialmente**: qu
 | Salud | `https://sio-commercial-relationship-dev.onrender.com/health/live`, `/health/ready` |
 | Swagger / OpenAPI | [/docs](https://sio-commercial-relationship-dev.onrender.com/docs) · [/openapi.json](https://sio-commercial-relationship-dev.onrender.com/openapi.json) |
 | Formato de error | Problem Details con `code` `COMMERCIAL_RELATIONSHIP.*` y `trace_id` |
-| Operaciones en el contrato desplegado | 76 (74 de negocio + 2 de salud) |
+| Operaciones en el contrato desplegado | 76 (74 de negocio + 2 de salud); el código local suma 2 para la compra con cualquier proveedor (fichas 77 y 78) y 2 para la venta a cualquier cliente (fichas 79 y 80), aún sin desplegar |
 | Verificación | OpenAPI de Render del 2026-10-19 cruzado con `services/commercial-relationship-service` |
 
 ## Autenticación y permisos
@@ -31,22 +33,22 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 
 | Recurso | Operaciones | Grupos con lectura (plantilla) | Grupos con escritura |
 |---|---|---|---|
-| `company_products` | 3–10, resumen de empresas (25) | Todos los grupos | `administradores`, `supervisores` (salvo `delete`) |
-| `company_product_purchase_taxes` (`update`) | Tasa de impuesto de compra (11, 12) | — | `administradores` (`perm:all:all:all`), `supervisores` (`perm:all:all:update`) |
-| `company_customers` | 13–18 | Todos | `administradores`, `supervisores` (salvo `delete`) |
-| `company_suppliers` | 19–24 | Todos | Ídem (`block` usa `delete`: solo `administradores`) |
-| `company_product_presentations` | 26–33 | Todos | `administradores`, `supervisores` (salvo `delete`) |
+| `company_products` | 3–10, resumen de empresas (25) | Todos los grupos | `superadmin`, `admin` (incluido `delete`) |
+| `company_product_purchase_taxes` (`update`) | Tasa de impuesto de compra (11, 12) | — | `superadmin` (`perm:all:all:all`), `admin` (`perm:commercial-relationship:all:update`) |
+| `company_customers` | 13–18 | Todos | `superadmin`, `admin`; `Ventas` lee y crea (`company_customers:create`); `Compras` solo lee |
+| `company_suppliers` | 19–24 | Todos | `superadmin`, `admin` (incluido `block`, que usa `delete`) |
+| `company_product_presentations` | 26–33 | Todos | `superadmin`, `admin` |
 | `supplier_products` | 34–39 | Todos | Ídem |
 | `supplier_payment_conditions` | 40–45 | Todos | Ídem |
 | `price_lists` | 46–51 | Todos | Ídem |
 | `price_list_items` | 52–58, resolución de precio (59) | Todos | Ídem |
-| `pricing_policy_coverage` (`read`) | Cobertura (60) | `administradores`, `supervisores` (comodines) | — |
-| `pricing_policies` | 61–70 | `administradores`, `supervisores` | `administradores`; `supervisores` (incluye `delete` explícito) |
+| `pricing_policy_coverage` (`read`) | Cobertura (60) | `superadmin`, `admin` (comodines) | — |
+| `pricing_policies` | 61–70 | `superadmin`, `admin` | `superadmin`, `admin` (incluido `delete`) |
 | `automatic_price_update_requests` (`submit`) | 71 | — | Solo identidad técnica de Purchase |
-| `automatic_price_applications` (`read`, `resolve`) | 72–74 | `administradores`, `supervisores` | `resolve`: `administradores`, `supervisores` |
+| `automatic_price_applications` (`read`, `resolve`) | 72–74 | `superadmin`, `admin` | `resolve`: `superadmin`, `admin` (explícito) |
 | `platform:lookup` | Lecturas por UUID sin membresía | Cuentas técnicas | — |
 
-Los grupos `compras`, `ventas`, `reportes` y `consulta` solo leen; `inventario` lee productos empresariales.
+Los grupos de área leen los recursos de la empresa que necesita su área (salvo políticas de ganancia, su cobertura y las actualizaciones automáticas de precio); solo `Ventas` escribe, al crear clientes.
 
 ## Alcance de datos
 
@@ -61,12 +63,21 @@ Los grupos `compras`, `ventas`, `reportes` y `consulta` solo leen; `inventario` 
 ## Convenciones comunes
 
 - Listas paginadas (`page` ≥ 1, `page_size` 1–100, por defecto 20) con `items`, `page`, `page_size`, `total_records`, `total_pages`. Filtro `status`: `ACTIVE`, `INACTIVE`, `ALL` (proveedores también `BLOCKED`); sin filtro, todas las listas aplican `ACTIVE` por defecto (verificado en el repositorio base del servicio: `status` nulo se sustituye por `ACTIVE`).
-- Escrituras con `version` (≥ 1): `409 VERSION_CONFLICT`. Inactivar/reactivar reciben `{"version": n}` (`VersionRequest`); transición inválida → `409 INVALID_STATUS_TRANSITION`.
-- `PUT` es reemplazo completo «en cualquier estado» y nunca cambia `status`.
+- `version` (≥ 1) es **opcional** en todas las escrituras (`PUT`, acciones de estado, impuesto de compra, cambio de precio, acciones de políticas y resolución de aplicaciones): si se envía y no coincide → `409 VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. Inactivar/reactivar/desbloquear (`VersionRequest`) aceptan `{"version": n}`, `{}` o ningún cuerpo; transición inválida → `409 INVALID_STATUS_TRANSITION`.
+- `PUT` es **parcial**, se admite en cualquier estado y nunca cambia `status`: el cuerpo lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`. Las validaciones (vigencias, unicidad, predeterminados, referencias) se aplican sobre el registro combinado; si nada cambia, no se escribe ni sube la versión.
 - Todos los modelos rechazan campos adicionales (`422`); `422 IMMUTABLE_FIELD` para campos inmutables.
 - Importes y porcentajes son cadenas decimales en las respuestas; en las solicitudes se aceptan número o texto.
 - Referencias a otros servicios: inexistentes o de otra empresa → `422` (`GLOBAL_PRODUCT_NOT_FOUND`, `PERSON_IDENTITY_NOT_FOUND`, `ORGANIZATION_IDENTITY_NOT_FOUND`, `COMPANY_PRODUCT_NOT_FOUND`, `COMPANY_SUPPLIER_NOT_FOUND`, `PRESENTATION_NOT_FOUND`, `PAYMENT_CONDITION_TYPE_NOT_FOUND`, `PRICE_LIST_NOT_FOUND`…); existentes pero inactivas o no elegibles → `422` (`*_INACTIVE`, `GLOBAL_PRODUCT_NOT_ELIGIBLE`, `COMPANY_SUPPLIER_BLOCKED`, `PRESENTATION_OF_OTHER_PRODUCT`, `PRESENTATION_NOT_PURCHASABLE`, `PRESENTATION_NOT_SELLABLE`, `CURRENCY_NOT_SUPPORTED`…).
 - `503 DEPENDENCY_UNAVAILABLE` con `dependency` (`operational-context`, `product-catalog`, `party-identity`, `payment-reference`, `database`).
+
+Ejemplo de `PUT` parcial (solo cambia `display_name`, sin `version`):
+
+```bash
+curl -sS -X PUT 'https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"display_name": "Acetaminofén 500 mg x 10 tabletas"}'
+```
 
 ## Tabla de endpoints
 
@@ -148,8 +159,12 @@ Los grupos `compras`, `ventas`, `reportes` y `consulta` solo leen; `inventario` 
 | 74 | `POST` | `/companies/{company_id}/automatic-price-applications/{application_id}/resolution` | Resolver administrativamente | `automatic_price_applications:resolve` | `WRITE` | [Ver](#74-post-companiescompany_idautomatic-price-applicationsapplication_idresolution) |
 | 75 | `POST` | `/company-suppliers/{company_supplier_id}/block` | Bloquear proveedor | `company_suppliers:delete` | `HIGH_RISK` | [Ver](#75-post-company-supplierscompany_supplier_idblock) |
 | 76 | `POST` | `/company-suppliers/{company_supplier_id}/unblock` | Desbloquear proveedor | `company_suppliers:update` | `WRITE` | [Ver](#76-post-company-supplierscompany_supplier_idunblock) |
+| 77 | `GET` | `/companies/{company_id}/supplier-candidates` | Organizaciones que pueden ser proveedoras y si ya están asociadas | `company_suppliers:read` | `READ` | [Ver](#77-get-companiescompany_idsupplier-candidates) |
+| 78 | `POST` | `/companies/{company_id}/company-suppliers/ensure` | Asegurar el proveedor de una compra (Purchase) | `company_suppliers:ensure` + identidad técnica | `WRITE` | [Ver](#78-post-companiescompany_idcompany-suppliersensure) |
+| 79 | `GET` | `/companies/{company_id}/customer-candidates` | Personas u organizaciones que pueden ser clientes y si ya lo son | `company_customers:read` | `READ` | [Ver](#79-get-companiescompany_idcustomer-candidates) |
+| 80 | `POST` | `/companies/{company_id}/company-customers/ensure` | Asegurar el cliente de una venta (Sales) | `company_customers:ensure` + identidad técnica | `WRITE` | [Ver](#80-post-companiescompany_idcompany-customersensure) |
 
-Las operaciones 75 y 76 (bloqueo y desbloqueo del proveedor) se numeran al final para no alterar las referencias a las demás; con las dos de salud la tabla cubre las 76 operaciones del contrato.
+Las operaciones 75 y 76 (bloqueo y desbloqueo del proveedor) se numeran al final para no alterar las referencias a las demás; con las dos de salud la tabla cubre las 76 operaciones del contrato. Las 77 y 78 (compra con cualquier proveedor) y las 79 y 80 (venta a cualquier cliente) están en el código y aún no en el contrato desplegado.
 
 ## Operaciones
 
@@ -181,7 +196,7 @@ Ejemplo de respuesta `200` (`None`; valores ilustrativos):
 
 ### 3. `GET /companies/{company_id}/company-products`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products`; permiso `company_products:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status` (`ACTIVE`, `INACTIVE`, `ALL`), `is_purchasable`, `is_sellable`, `inventory_control_enabled` (boolean), `global_product_id` (UUID). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products`; permiso `company_products:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status` (`ACTIVE`, `INACTIVE`, `ALL`), `is_purchasable`, `is_sellable`, `inventory_control_enabled` (boolean), `global_product_id` (UUID).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -230,7 +245,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_CompanyProductResponse_`; valores
 
 ### 4. `POST /companies/{company_id}/company-products`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products`; permiso `company_products:create`. Cuerpo `CompanyProductCreate` y ejemplo en [company_product_id](../parametros/company-product-id.md) (`global_product_id`, `internal_code` 1–60 único por empresa, `display_name` 1–200, `currency_code` 1–10, banderas de inventario y comerciales). Reglas: el producto global debe existir, estar activo y ser elegible (`422 GLOBAL_PRODUCT_NOT_FOUND` / `_INACTIVE` / `_NOT_ELIGIBLE`); una adopción por producto global y empresa (`409 DUPLICATE_ADOPTION`); `409 DUPLICATE_INTERNAL_CODE`; moneda admitida (`422 CURRENCY_NOT_SUPPORTED`); banderas de inventario coherentes (`422 INVENTORY_FLAGS_INVALID`). Al adoptar, el servicio registra el «primer uso» del producto global en Product Catalog con su cuenta técnica. 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products`; permiso `company_products:create`. Cuerpo `CompanyProductCreate` y ejemplo en [company_product_id](../parametros/company-product-id.md) (`global_product_id`, `internal_code` 1–60 único por empresa, `display_name` 1–200, `currency_code` 1–10, banderas de inventario y comerciales). Reglas: el producto global debe existir, estar activo y ser elegible (`422 GLOBAL_PRODUCT_NOT_FOUND` / `_INACTIVE` / `_NOT_ELIGIBLE`); una adopción por producto global y empresa (`409 DUPLICATE_ADOPTION`); `409 DUPLICATE_INTERNAL_CODE`; moneda admitida (`422 CURRENCY_NOT_SUPPORTED`); banderas de inventario coherentes (`422 INVENTORY_FLAGS_INVALID`). Al adoptar, el servicio registra el «primer uso» del producto global en Product Catalog con su cuenta técnica.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -282,7 +297,7 @@ Ejemplo de respuesta `201` (`CompanyProductResponse`; valores ilustrativos):
 
 ### 5. `POST /companies/{company_id}/company-products/search`
 
-`READ` (consulta por `POST`, para paginar sin conteo; la usa Product Inventory Query). URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products/search`; permiso `company_products:read`. Cuerpo (`CompanyProductSearchRequest`): `search` (≤ 200; también SKU de presentaciones), `internal_code` (exacto, ≤ 60), `sku` (exacto, ≤ 80), `status` (`ACTIVE` por defecto), `is_purchasable`, `is_sellable`, `inventory_control_enabled`, `company_product_ids` / `global_product_ids` (modo evaluador, hasta 100), `sort` (`{"key": "display_name"|"internal_code"|"created_at", "direction": "asc"|"desc"}`), `after` (posición `{"k": ["…"], "id": "…"}` devuelta en el elemento anterior), `limit` (1–100, obligatorio). 
+`READ` (consulta por `POST`, para paginar sin conteo; la usa Product Inventory Query). URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products/search`; permiso `company_products:read`. Cuerpo (`CompanyProductSearchRequest`): `search` (≤ 200; también SKU de presentaciones), `internal_code` (exacto, ≤ 60), `sku` (exacto, ≤ 80), `status` (`ACTIVE` por defecto), `is_purchasable`, `is_sellable`, `inventory_control_enabled`, `company_product_ids` / `global_product_ids` (modo evaluador, hasta 100), `sort` (`{"key": "display_name"|"internal_code"|"created_at", "direction": "asc"|"desc"}`), `after` (posición `{"k": ["…"], "id": "…"}` devuelta en el elemento anterior), `limit` (1–100, obligatorio).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -356,7 +371,7 @@ Ejemplo de respuesta `200` (`CompanyProductSearchResponse`; valores ilustrativos
 
 ### 6. `POST /company-products/batch-lookup`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/batch-lookup`; permiso `company_products:read`. Cuerpo `{"ids": [...]}` (≥ 1). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/batch-lookup`; permiso `company_products:read`. Cuerpo `{"ids": [...]}` (≥ 1).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -438,7 +453,7 @@ Ejemplo de respuesta `200` (`CompanyProductResponse`; valores ilustrativos):
 
 ### 8. `PUT /company-products/{company_product_id}`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}`; permiso `company_products:update`. Cuerpo (`CompanyProductUpdate`): `version`, `internal_code`, `display_name`, `currency_code` y las cinco banderas **obligatorias**; `reference_code`, `short_name` opcionales. `global_product_id` no se modifica. Cambiar la moneda afecta la resolución de precios (la lista predeterminada se busca por la moneda del producto).
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}`; permiso `company_products:update`. Cuerpo (`CompanyProductUpdate`, parcial): `internal_code`, `display_name`, `currency_code` y las cinco banderas (todos opcionales; no admiten `null`); `reference_code`, `short_name` (`null` los borra); `version` opcional. `global_product_id` no se modifica. Cambiar la moneda afecta la resolución de precios (la lista predeterminada se busca por la moneda del producto).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -489,7 +504,7 @@ Ejemplo de respuesta `200` (`CompanyProductResponse`; valores ilustrativos):
 
 ### 9. `POST /company-products/{company_product_id}/deactivate`
 
-`HIGH_RISK`: el producto deja de ser elegible en ventas y compras (`409 REFERENCES_NOT_ELIGIBLE`) y desaparece de los listados `ACTIVE`; las existencias se conservan. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/deactivate`; permiso `company_products:delete`; cuerpo `{"version": n}`.
+`HIGH_RISK`: el producto deja de ser elegible en ventas y compras (`409 REFERENCES_NOT_ELIGIBLE`) y desaparece de los listados `ACTIVE`; las existencias se conservan. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/deactivate`; permiso `company_products:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -531,7 +546,7 @@ Ejemplo de respuesta `200` (`CompanyProductResponse`; valores ilustrativos):
 
 ### 10. `POST /company-products/{company_product_id}/reactivate`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/reactivate`; permiso `company_products:update`; cuerpo `{"version": n}`.
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/reactivate`; permiso `company_products:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -573,7 +588,7 @@ Ejemplo de respuesta `200` (`CompanyProductResponse`; valores ilustrativos):
 
 ### 11. `PUT /company-products/{company_product_id}/purchase-tax`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/purchase-tax`; permiso `company_product_purchase_taxes:update` (propio, distinto del `PUT` del producto). Cuerpo (`PurchaseTaxUpdate`): `version` y `purchase_tax_percentage` (0 a 100, hasta 4 decimales; `422 TAX_PERCENTAGE_OUT_OF_RANGE`; `null` no se admite una vez configurada: `422 PURCHASE_TAX_REQUIRED`). `0` es válido. 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-products/{company_product_id}/purchase-tax`; permiso `company_product_purchase_taxes:update` (propio, distinto del `PUT` del producto). Cuerpo (`PurchaseTaxUpdate`): `version` (opcional) y `purchase_tax_percentage` (obligatorio; 0 a 100, hasta 4 decimales; `422 TAX_PERCENTAGE_OUT_OF_RANGE`; `null` no se admite una vez configurada: `422 PURCHASE_TAX_REQUIRED`). `0` es válido.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -597,7 +612,7 @@ Respuesta `200` con el producto. Efecto: Purchase usa esta tasa por defecto en l
 
 ### 12. `POST /companies/{company_id}/company-products/purchase-taxes/batch`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products/purchase-taxes/batch`; mismo permiso. Cuerpo (`PurchaseTaxBatch`): `items[]` (1 a 100) de `{"company_product_id", "version", "purchase_tax_percentage"}`. **Todo o nada**: valida todo, bloquea en orden y confirma en una transacción. 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-products/purchase-taxes/batch`; mismo permiso. Cuerpo (`PurchaseTaxBatch`): `items[]` (1 a 100) de `{"company_product_id", "version", "purchase_tax_percentage"}` (`version` opcional en cada elemento). **Todo o nada**: valida todo, bloquea en orden y confirma en una transacción.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -659,7 +674,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_CompanyCustomerResponse_`; valore
 
 ### 14. `POST /companies/{company_id}/company-customers`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers`; permiso `company_customers:create`. Cuerpo `CompanyCustomerCreate` (ver [company_customer_id](../parametros/customer-id.md)). Reglas: `customer_kind` coherente con el identificador enviado (`422 CUSTOMER_IDENTITY_MISMATCH`); identidad existente y activa en Party Identity; `preferred_contact_person_id` solo para organizaciones y debe ser un contacto de esa organización (`422 CONTACT_PERSON_NOT_ALLOWED` / `CONTACT_PERSON_INVALID`); la empresa no puede ser cliente de sí misma (`422 SELF_RELATIONSHIP_NOT_ALLOWED`); `409 DUPLICATE_CUSTOMER` (misma identidad) y `409 DUPLICATE_INTERNAL_CODE`. 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers`; permiso `company_customers:create`. Cuerpo `CompanyCustomerCreate` (ver [company_customer_id](../parametros/customer-id.md)). Reglas: `customer_kind` coherente con el identificador enviado (`422 CUSTOMER_IDENTITY_MISMATCH`); identidad existente y activa en Party Identity; `preferred_contact_person_id` solo para organizaciones y debe ser un contacto de esa organización (`422 CONTACT_PERSON_NOT_ALLOWED` / `CONTACT_PERSON_INVALID`); la empresa no puede ser cliente de sí misma (`422 SELF_RELATIONSHIP_NOT_ALLOWED`); `409 DUPLICATE_CUSTOMER` (misma identidad) y `409 DUPLICATE_INTERNAL_CODE`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -731,7 +746,7 @@ Ejemplo de respuesta `200` (`CompanyCustomerResponse`; valores ilustrativos):
 
 ### 16. `PUT /company-customers/{company_customer_id}`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}`; permiso `company_customers:update`. Cuerpo (`CompanyCustomerUpdate`): `version`, `internal_code`, `display_name`, `preferred_contact_person_id`. La identidad y el tipo no cambian.
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}`; permiso `company_customers:update`. Cuerpo (`CompanyCustomerUpdate`, parcial): `internal_code`, `display_name` (no admiten `null`), `preferred_contact_person_id` (`null` lo borra), todos opcionales; `version` opcional. La identidad y el tipo no cambian.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -769,7 +784,7 @@ Ejemplo de respuesta `200` (`CompanyCustomerResponse`; valores ilustrativos):
 
 ### 17. `POST /company-customers/{company_customer_id}/deactivate`
 
-`HIGH_RISK` (el cliente deja de ser elegible para ventas nuevas). URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}/deactivate`; permiso `company_customers:delete`; cuerpo `{"version": n}`.
+`HIGH_RISK` (un borrador de venta con el cliente inactivo no se puede confirmar; una venta nueva o la edición del borrador lo reactiva por [80](#80-post-companiescompany_idcompany-customersensure)). URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}/deactivate`; permiso `company_customers:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -805,7 +820,7 @@ Ejemplo de respuesta `200` (`CompanyCustomerResponse`; valores ilustrativos):
 
 ### 18. `POST /company-customers/{company_customer_id}/reactivate`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}/reactivate`; permiso `company_customers:update`; cuerpo `{"version": n}`. Revalida la identidad en Party Identity.
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-customers/{company_customer_id}/reactivate`; permiso `company_customers:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo). Revalida la identidad en Party Identity.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -880,7 +895,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_CompanySupplierResponse_`; valore
 
 ### 20. `POST /companies/{company_id}/company-suppliers`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-suppliers`; permiso `company_suppliers:create`. Cuerpo `CompanySupplierCreate` (ver [company_supplier_id](../parametros/supplier-id.md)). Reglas: organización activa en Party Identity; no la propia empresa (`422 SELF_RELATIONSHIP_NOT_ALLOWED`); `409 DUPLICATE_SUPPLIER`, `409 DUPLICATE_INTERNAL_CODE`. 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-suppliers`; permiso `company_suppliers:create`. Cuerpo `CompanySupplierCreate` (ver [company_supplier_id](../parametros/supplier-id.md)). Reglas: organización activa en Party Identity; no la propia empresa (`422 SELF_RELATIONSHIP_NOT_ALLOWED`); `409 DUPLICATE_SUPPLIER`, `409 DUPLICATE_INTERNAL_CODE`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -949,7 +964,7 @@ Ejemplo de respuesta `200` (`CompanySupplierResponse`; valores ilustrativos):
 
 ### 22. `PUT /company-suppliers/{company_supplier_id}`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-suppliers/{company_supplier_id}`; permiso `company_suppliers:update`. Cuerpo (`CompanySupplierUpdate`): `version`, `internal_code`, `display_name`, `preferred_contact_person_id`. Nunca cambia `status` ni `block_reason`.
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-suppliers/{company_supplier_id}`; permiso `company_suppliers:update`. Cuerpo (`CompanySupplierUpdate`, parcial): `internal_code`, `display_name` (no admiten `null`), `preferred_contact_person_id` (`null` lo borra), todos opcionales; `version` opcional. Nunca cambia `status` ni `block_reason`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -998,9 +1013,9 @@ Ejemplo de respuesta `200` (`CompanySupplierResponse`; valores ilustrativos):
 |---|---|---|---|---|
 | `company_supplier_id` | ruta | UUID | Sí | [company_supplier_id](../parametros/supplier-id.md) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, obligatorio).
+Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, opcional); se acepta `{}` o ningún cuerpo.
 
-Efecto: `INACTIVE`: no elegible en compras nuevas. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
+Efecto: `INACTIVE`: no elegible en compras nuevas. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` enviada y distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1047,9 +1062,9 @@ Ejemplo de respuesta `200` (`CompanySupplierResponse`; valores ilustrativos):
 |---|---|---|---|---|
 | `company_supplier_id` | ruta | UUID | Sí | [company_supplier_id](../parametros/supplier-id.md) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, obligatorio).
+Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, opcional); se acepta `{}` o ningún cuerpo.
 
-Efecto: Vuelve a `ACTIVE`; revalida la organización en Party Identity. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
+Efecto: Vuelve a `ACTIVE`; revalida la organización en Party Identity. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` enviada y distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1086,7 +1101,7 @@ Las operaciones de bloqueo y desbloqueo del proveedor son la [75](#75-post-compa
 
 ### 25. `GET /company-summaries`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-summaries`; permiso `company_products:read`. Sin `company_id`: devuelve las **empresas con membresía del usuario**. Parámetros: `page`, `page_size` (1–100, por defecto **1**). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-summaries`; permiso `company_products:read`. Sin `company_id`: devuelve las **empresas con membresía del usuario**. Parámetros: `page`, `page_size` (1–100, por defecto **1**).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1162,7 +1177,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_CompanyProductPresentationRespons
 
 ### 27. `POST /companies/{company_id}/company-product-presentations`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations`; permiso `company_product_presentations:create`. Cuerpo `CompanyProductPresentationCreate` (ver la guía del parámetro). Reglas: producto empresarial de la empresa y activo (`422 COMPANY_PRODUCT_NOT_FOUND` / `_INACTIVE`); presentación global del mismo producto global, activa y elegible (`422 GLOBAL_PRESENTATION_NOT_FOUND` / `_INACTIVE` / `_NOT_ELIGIBLE` / `_OF_OTHER_PRODUCT`); una adopción por presentación global y empresa (`409 DUPLICATE_PRESENTATION_ADOPTION`); `sku` único por empresa (`409 DUPLICATE_SKU`); las banderas `is_default_purchase`/`is_default_sale` exigen que la presentación sea comprable/vendible y activa (`422 DEFAULT_FLAG_INVALID`, `DEFAULT_REQUIRES_ACTIVE`). 
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations`; permiso `company_product_presentations:create`. Cuerpo `CompanyProductPresentationCreate` (ver la guía del parámetro). Reglas: producto empresarial de la empresa y activo (`422 COMPANY_PRODUCT_NOT_FOUND` / `_INACTIVE`); presentación global del mismo producto global, activa y elegible (`422 GLOBAL_PRESENTATION_NOT_FOUND` / `_INACTIVE` / `_NOT_ELIGIBLE` / `_OF_OTHER_PRODUCT`); una adopción por presentación global y empresa (`409 DUPLICATE_PRESENTATION_ADOPTION`); `sku` único por empresa (`409 DUPLICATE_SKU`); las banderas `is_default_purchase`/`is_default_sale` exigen que la presentación sea comprable/vendible y activa (`422 DEFAULT_FLAG_INVALID`, `DEFAULT_REQUIRES_ACTIVE`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1209,7 +1224,7 @@ Ejemplo de respuesta `201` (`CompanyProductPresentationResponse`; valores ilustr
 
 ### 28. `POST /companies/{company_id}/company-product-presentations/by-products`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations/by-products`; permiso `company_product_presentations:read`. Cuerpo: `company_product_ids` (1–100) y `status` (`ALL` por defecto). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations/by-products`; permiso `company_product_presentations:read`. Cuerpo: `company_product_ids` (1–100) y `status` (`ALL` por defecto).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1329,7 +1344,7 @@ Ejemplo de respuesta `200` (`CompanyProductPresentationResponse`; valores ilustr
 
 ### 31. `PUT /company-product-presentations/{presentation_id}`
 
-`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-product-presentations/{presentation_id}`; permiso `company_product_presentations:update`. Cuerpo (`CompanyProductPresentationUpdate`): `version`, `internal_code`, `sku`, `reference_code` (opcionales) y las cuatro banderas obligatorias. Producto y presentación global no cambian.
+`WRITE`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-product-presentations/{presentation_id}`; permiso `company_product_presentations:update`. Cuerpo (`CompanyProductPresentationUpdate`, parcial): `internal_code`, `sku`, `reference_code` (`null` los borra) y las cuatro banderas (no admiten `null`), todos opcionales; `version` opcional. Producto y presentación global no cambian.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1374,7 +1389,7 @@ Ejemplo de respuesta `200` (`CompanyProductPresentationResponse`; valores ilustr
 
 ### 32. `POST /company-product-presentations/{presentation_id}/deactivate`
 
-`HIGH_RISK` (las líneas nuevas de venta y compra con esa presentación fallan con `409 REFERENCES_NOT_ELIGIBLE`; las aplicaciones automáticas de precio la omiten). URL `…/company-product-presentations/{presentation_id}/deactivate`; permiso `company_product_presentations:delete`; cuerpo `{"version": n}`.
+`HIGH_RISK` (las líneas nuevas de venta y compra con esa presentación fallan con `409 REFERENCES_NOT_ELIGIBLE`; las aplicaciones automáticas de precio la omiten). URL `…/company-product-presentations/{presentation_id}/deactivate`; permiso `company_product_presentations:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1413,7 +1428,7 @@ Ejemplo de respuesta `200` (`CompanyProductPresentationResponse`; valores ilustr
 
 ### 33. `POST /company-product-presentations/{presentation_id}/reactivate`
 
-`WRITE`. URL `…/company-product-presentations/{presentation_id}/reactivate`; permiso `company_product_presentations:update`; cuerpo `{"version": n}`.
+`WRITE`. URL `…/company-product-presentations/{presentation_id}/reactivate`; permiso `company_product_presentations:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1452,7 +1467,7 @@ Ejemplo de respuesta `200` (`CompanyProductPresentationResponse`; valores ilustr
 
 ### 34. `GET /companies/{company_id}/supplier-products`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-products`; permiso `supplier_products:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status`, `company_supplier_id`, `company_product_id`, `company_product_presentation_id` (UUID), `is_preferred` (boolean). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-products`; permiso `supplier_products:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status`, `company_supplier_id`, `company_product_id`, `company_product_presentation_id` (UUID), `is_preferred` (boolean).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1518,7 +1533,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_SupplierProductResponse_`; valore
 | `priority` | integer \| null | No | 0–32767 | — |
 | `is_preferred` | boolean | No (`false`) | — | — |
 
-Reglas: una relación por proveedor, producto y presentación (`409 DUPLICATE_SUPPLIER_PRODUCT`). 
+Reglas: una relación por proveedor, producto y presentación (`409 DUPLICATE_SUPPLIER_PRODUCT`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1608,7 +1623,7 @@ Ejemplo de respuesta `200` (`SupplierProductResponse`; valores ilustrativos):
 
 ### 37. `PUT /supplier-products/{supplier_product_id}`
 
-`WRITE`. URL `…/supplier-products/{supplier_product_id}`; permiso `supplier_products:update`. Cuerpo (`SupplierProductUpdate`): `version`, `purchase_unit_id`, `minimum_order_quantity`, `pack_quantity`, `currency_code`, `is_preferred` (obligatorios); `company_product_presentation_id`, `supplier_product_code`, `negotiated_unit_cost`, `expected_supplier_lead_time_hours`, `priority` (opcionales). Proveedor y producto no cambian.
+`WRITE`. URL `…/supplier-products/{supplier_product_id}`; permiso `supplier_products:update`. Cuerpo (`SupplierProductUpdate`, parcial; todos opcionales): `purchase_unit_id`, `minimum_order_quantity`, `pack_quantity`, `currency_code`, `is_preferred` (no admiten `null`); `company_product_presentation_id`, `supplier_product_code`, `negotiated_unit_cost`, `expected_supplier_lead_time_hours`, `priority` (`null` los borra); `version` opcional. Proveedor y producto no cambian.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1658,7 +1673,7 @@ Ejemplo de respuesta `200` (`SupplierProductResponse`; valores ilustrativos):
 
 ### 38. `POST /supplier-products/{supplier_product_id}/deactivate`
 
-`WRITE`. URL `…/supplier-products/{supplier_product_id}/deactivate`; permiso `supplier_products:delete`; cuerpo `{"version": n}`.
+`WRITE`. URL `…/supplier-products/{supplier_product_id}/deactivate`; permiso `supplier_products:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1700,7 +1715,7 @@ Ejemplo de respuesta `200` (`SupplierProductResponse`; valores ilustrativos):
 
 ### 39. `POST /supplier-products/{supplier_product_id}/reactivate`
 
-`WRITE`. URL `…/supplier-products/{supplier_product_id}/reactivate`; permiso `supplier_products:update`; cuerpo `{"version": n}`.
+`WRITE`. URL `…/supplier-products/{supplier_product_id}/reactivate`; permiso `supplier_products:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1742,7 +1757,7 @@ Ejemplo de respuesta `200` (`SupplierProductResponse`; valores ilustrativos):
 
 ### 40. `GET /companies/{company_id}/supplier-payment-conditions`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-payment-conditions`; permiso `supplier_payment_conditions:read`. Parámetros: `page`, `page_size`, `status`, `company_supplier_id`, `payment_condition_type_id` (UUID de Payment Reference), `currency_code` (3 letras), `is_default`, `applicable_at` (date-time; vigentes en ese instante). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-payment-conditions`; permiso `supplier_payment_conditions:read`. Parámetros: `page`, `page_size`, `status`, `company_supplier_id`, `payment_condition_type_id` (UUID de Payment Reference), `currency_code` (3 letras), `is_default`, `applicable_at` (date-time; vigentes en ese instante).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1787,7 +1802,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_SupplierPaymentConditionResponse_
 
 ### 41. `POST /companies/{company_id}/supplier-payment-conditions`
 
-`WRITE`. URL `…/companies/{company_id}/supplier-payment-conditions`; permiso `supplier_payment_conditions:create`. Cuerpo (`SupplierPaymentConditionCreate`): `company_supplier_id` (proveedor `ACTIVE`), `payment_condition_type_id` (tipo activo en [Payment Reference](payment-reference.md); `422 PAYMENT_CONDITION_TYPE_NOT_FOUND` / `_INACTIVE`), `currency_code` (1–10), `payment_terms_days` (0–3650; coherente con el tipo: `422 PAYMENT_TERMS_INCONSISTENT`), `credit_limit`, `interest_rate_percentage`, `cash_discount_percentage` (opcionales), `is_default` (`false`), `valid_from`, `valid_to` (`422 VALIDITY_INVALID`). El `code` del tipo se lee de Payment Reference en cada validación. 
+`WRITE`. URL `…/companies/{company_id}/supplier-payment-conditions`; permiso `supplier_payment_conditions:create`. Cuerpo (`SupplierPaymentConditionCreate`): `company_supplier_id` (proveedor `ACTIVE`), `payment_condition_type_id` (tipo activo en [Payment Reference](payment-reference.md); `422 PAYMENT_CONDITION_TYPE_NOT_FOUND` / `_INACTIVE`), `currency_code` (1–10), `payment_terms_days` (0–3650; coherente con el tipo: `422 PAYMENT_TERMS_INCONSISTENT`), `credit_limit`, `interest_rate_percentage`, `cash_discount_percentage` (opcionales), `is_default` (`false`), `valid_from`, `valid_to` (`422 VALIDITY_INVALID`). El `code` del tipo se lee de Payment Reference en cada validación.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1869,7 +1884,7 @@ Ejemplo de respuesta `200` (`SupplierPaymentConditionResponse`; valores ilustrat
 
 ### 43. `PUT /supplier-payment-conditions/{condition_id}`
 
-`WRITE`. URL `…/supplier-payment-conditions/{condition_id}`; permiso `supplier_payment_conditions:update`. Cuerpo (`SupplierPaymentConditionUpdate`): `version`, `payment_condition_type_id`, `currency_code`, `payment_terms_days`, `is_default`, `valid_from` obligatorios; `credit_limit`, `interest_rate_percentage`, `cash_discount_percentage`, `valid_to` opcionales. El proveedor no cambia.
+`WRITE`. URL `…/supplier-payment-conditions/{condition_id}`; permiso `supplier_payment_conditions:update`. Cuerpo (`SupplierPaymentConditionUpdate`, parcial; todos opcionales): `payment_condition_type_id`, `currency_code`, `payment_terms_days`, `is_default`, `valid_from` (no admiten `null`); `credit_limit`, `interest_rate_percentage`, `cash_discount_percentage`, `valid_to` (`null` los borra); `version` opcional. El proveedor no cambia.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1914,7 +1929,7 @@ Ejemplo de respuesta `200` (`SupplierPaymentConditionResponse`; valores ilustrat
 
 ### 44. `POST /supplier-payment-conditions/{condition_id}/deactivate`
 
-`WRITE`. URL `…/supplier-payment-conditions/{condition_id}/deactivate`; permiso `supplier_payment_conditions:delete`; cuerpo `{"version": n}`.
+`WRITE`. URL `…/supplier-payment-conditions/{condition_id}/deactivate`; permiso `supplier_payment_conditions:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1954,7 +1969,7 @@ Ejemplo de respuesta `200` (`SupplierPaymentConditionResponse`; valores ilustrat
 
 ### 45. `POST /supplier-payment-conditions/{condition_id}/reactivate`
 
-`WRITE`. URL `…/supplier-payment-conditions/{condition_id}/reactivate`; permiso `supplier_payment_conditions:update`; cuerpo `{"version": n}`; exige proveedor `ACTIVE`.
+`WRITE`. URL `…/supplier-payment-conditions/{condition_id}/reactivate`; permiso `supplier_payment_conditions:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo); exige proveedor `ACTIVE`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1994,7 +2009,7 @@ Ejemplo de respuesta `200` (`SupplierPaymentConditionResponse`; valores ilustrat
 
 ### 46. `GET /companies/{company_id}/price-lists`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists`; permiso `price_lists:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status`, `currency_code` (3 letras), `is_default` (boolean). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-lists`; permiso `price_lists:read`. Parámetros: `page`, `page_size`, `search` (≤ 100), `status`, `currency_code` (3 letras), `is_default` (boolean).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2036,7 +2051,7 @@ Respuesta `200`: `PaginatedResponse[PriceListResponse]`.
 
 ### 47. `POST /companies/{company_id}/price-lists`
 
-`WRITE`. URL `…/companies/{company_id}/price-lists`; permiso `price_lists:create`. Cuerpo (`PriceListCreate`): `code` (1–50; único por empresa: `409 DUPLICATE_PRICE_LIST_CODE`), `name` (1–120), `currency_code` (1–10; **inmutable** después), `description`, `valid_from`, `valid_to`, `is_default` (`false`). Regla: la lista predeterminada es **única por empresa y moneda** entre las `ACTIVE`; crear otra predeterminada en la misma moneda **reemplaza** a la anterior (le retira `is_default`; verificado en el código), y desactivar la predeterminada le retira también esa marca. 
+`WRITE`. URL `…/companies/{company_id}/price-lists`; permiso `price_lists:create`. Cuerpo (`PriceListCreate`): `code` (1–50; único por empresa: `409 DUPLICATE_PRICE_LIST_CODE`), `name` (1–120), `currency_code` (1–10; **inmutable** después), `description`, `valid_from`, `valid_to`, `is_default` (`false`). Regla: la lista predeterminada es **única por empresa y moneda** entre las `ACTIVE`; crear otra predeterminada en la misma moneda **reemplaza** a la anterior (le retira `is_default`; verificado en el código), y desactivar la predeterminada le retira también esa marca.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2112,7 +2127,7 @@ Ejemplo de respuesta `200` (`PriceListResponse`; valores ilustrativos):
 
 ### 49. `PUT /price-lists/{price_list_id}`
 
-`WRITE`. URL `…/price-lists/{price_list_id}`; permiso `price_lists:update`. Cuerpo (`PriceListUpdate`): `version`, `code`, `name`, `is_default` obligatorios; `description`, `valid_from`, `valid_to` opcionales. La moneda no se envía (inmutable).
+`WRITE`. URL `…/price-lists/{price_list_id}`; permiso `price_lists:update`. Cuerpo (`PriceListUpdate`, parcial; todos opcionales): `code`, `name`, `is_default` (no admiten `null`); `description`, `valid_from`, `valid_to` (`null` los borra); `version` opcional. La moneda no se envía (inmutable).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2154,7 +2169,7 @@ Ejemplo de respuesta `200` (`PriceListResponse`; valores ilustrativos):
 
 ### 50. `POST /price-lists/{price_list_id}/deactivate`
 
-`HIGH_RISK`: una lista inactiva deja de resolver precios (las ventas que la pidan fallan con `PRICE_LIST_NOT_APPLICABLE`; si era la predeterminada, con `NO_APPLICABLE_PRICE_LIST`). URL `…/price-lists/{price_list_id}/deactivate`; permiso `price_lists:delete`; cuerpo `{"version": n}`.
+`HIGH_RISK`: una lista inactiva deja de resolver precios (las ventas que la pidan fallan con `PRICE_LIST_NOT_APPLICABLE`; si era la predeterminada, con `NO_APPLICABLE_PRICE_LIST`). URL `…/price-lists/{price_list_id}/deactivate`; permiso `price_lists:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2191,7 +2206,7 @@ Ejemplo de respuesta `200` (`PriceListResponse`; valores ilustrativos):
 
 ### 51. `POST /price-lists/{price_list_id}/reactivate`
 
-`WRITE`. URL `…/price-lists/{price_list_id}/reactivate`; permiso `price_lists:update`; cuerpo `{"version": n}`.
+`WRITE`. URL `…/price-lists/{price_list_id}/reactivate`; permiso `price_lists:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2228,7 +2243,7 @@ Ejemplo de respuesta `200` (`PriceListResponse`; valores ilustrativos):
 
 ### 52. `GET /companies/{company_id}/price-list-items`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-list-items`; permiso `price_list_items:read`. Parámetros: `page`, `page_size`, `status`, `price_list_id`, `company_product_id`, `company_product_presentation_id` (UUID), `applicable_at` (date-time; vigentes en ese instante). 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/price-list-items`; permiso `price_list_items:read`. Parámetros: `page`, `page_size`, `status`, `price_list_id`, `company_product_id`, `company_product_presentation_id` (UUID), `applicable_at` (date-time; vigentes en ese instante).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2375,7 +2390,7 @@ Ejemplo de respuesta `200` (`PriceListItemResponse`; valores ilustrativos):
 
 ### 55. `PUT /price-list-items/{price_list_item_id}`
 
-`WRITE`. URL `…/price-list-items/{price_list_item_id}`; permiso `price_list_items:update`. Cuerpo (`PriceListItemUpdate`): `version`, `unit_price`, `valid_from` obligatorios; `valid_to` opcional. Regla: un precio **futuro** se puede cambiar en valor y vigencia; un precio **en vigencia** solo admite posponer o fijar su fin (`422 PRICE_IN_EFFECT_NOT_MODIFIABLE`, `422 PRICE_CHANGE_OUT_OF_PERIOD`). Para cambiar el valor vigente use la operación 56.
+`WRITE`. URL `…/price-list-items/{price_list_item_id}`; permiso `price_list_items:update`. Cuerpo (`PriceListItemUpdate`, parcial; todos opcionales): `unit_price`, `valid_from` (no admiten `null`); `valid_to` (`null` lo borra); `version` opcional. Regla: un precio **futuro** se puede cambiar en valor y vigencia; un precio **en vigencia** solo admite posponer o fijar su fin (`422 PRICE_IN_EFFECT_NOT_MODIFIABLE`, `422 PRICE_CHANGE_OUT_OF_PERIOD`). Para cambiar el valor vigente use la operación 56.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2417,7 +2432,7 @@ Ejemplo de respuesta `200` (`PriceListItemResponse`; valores ilustrativos):
 
 ### 56. `POST /price-list-items/{price_list_item_id}/change-price`
 
-`HIGH_RISK` (cambia el precio de venta vigente). URL `…/price-list-items/{price_list_item_id}/change-price`; permiso `price_list_items:update`. Cuerpo (`PriceChangeRequest`): `unit_price` (obligatorio), `effective_from` (date-time; por defecto ahora), `version`. Cierra el precio vigente en `effective_from` y crea el nuevo en una sola transacción. 
+`HIGH_RISK` (cambia el precio de venta vigente). URL `…/price-list-items/{price_list_item_id}/change-price`; permiso `price_list_items:update`. Cuerpo (`PriceChangeRequest`): `unit_price` (obligatorio), `effective_from` (date-time; por defecto ahora), `version` (opcional). Cierra el precio vigente en `effective_from` y crea el nuevo en una sola transacción.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2434,7 +2449,7 @@ Respuesta `201` (`PriceChangeResponse`): `{"item": <nuevo PriceListItemResponse>
 
 ### 57. `POST /price-list-items/{price_list_item_id}/deactivate`
 
-`HIGH_RISK` (la presentación queda sin precio en esa lista: `NO_PRICE_IN_LIST`). URL `…/price-list-items/{price_list_item_id}/deactivate`; permiso `price_list_items:delete`; cuerpo `{"version": n}`.
+`HIGH_RISK` (la presentación queda sin precio en esa lista: `NO_PRICE_IN_LIST`). URL `…/price-list-items/{price_list_item_id}/deactivate`; permiso `price_list_items:delete`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2474,7 +2489,7 @@ Ejemplo de respuesta `200` (`PriceListItemResponse`; valores ilustrativos):
 
 ### 58. `POST /price-list-items/{price_list_item_id}/reactivate`
 
-`WRITE`. URL `…/price-list-items/{price_list_item_id}/reactivate`; permiso `price_list_items:update`; cuerpo `{"version": n}`; `409 PRICE_PERIOD_OVERLAP` si otro precio ocupa la vigencia.
+`WRITE`. URL `…/price-list-items/{price_list_item_id}/reactivate`; permiso `price_list_items:update`; cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo); `409 PRICE_PERIOD_OVERLAP` si otro precio ocupa la vigencia.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2577,7 +2592,7 @@ Orden de resolución (verificado): (1) lista: la indicada si es de la empresa, `
 
 ### 60. `POST /companies/{company_id}/pricing-policies/coverage`
 
-`READ`. URL `…/companies/{company_id}/pricing-policies/coverage`; permiso `pricing_policy_coverage:read`. Cuerpo (`CoverageRequest`): `currency_code` (1–10) y `company_product_presentation_ids` (≥ 1). 
+`READ`. URL `…/companies/{company_id}/pricing-policies/coverage`; permiso `pricing_policy_coverage:read`. Cuerpo (`CoverageRequest`): `currency_code` (1–10) y `company_product_presentation_ids` (≥ 1).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2613,7 +2628,7 @@ Ejemplo de respuesta `200` (`CoverageResponse`; valores ilustrativos):
 
 ### 61. `GET /companies/{company_id}/price-lists/{price_list_id}/pricing-policies`
 
-`READ`. URL `…/companies/{company_id}/price-lists/{price_list_id}/pricing-policies`; permiso `pricing_policies:read`. Parámetros: `status` (`ACTIVE`, `INACTIVE`, `ALL`), `search` (≤ 100), `page`, `page_size`. 
+`READ`. URL `…/companies/{company_id}/price-lists/{price_list_id}/pricing-policies`; permiso `pricing_policies:read`. Parámetros: `status` (`ACTIVE`, `INACTIVE`, `ALL`), `search` (≤ 100), `page`, `page_size`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2654,7 +2669,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_PricingPolicyResponse_`; valores 
 
 ### 62. `POST /companies/{company_id}/price-lists/{price_list_id}/pricing-policies`
 
-`WRITE` (no modifica precios). URL `…/companies/{company_id}/price-lists/{price_list_id}/pricing-policies`; permiso `pricing_policies:create`. Cuerpo (`PricingPolicyCreate`): `name` (1–120; único en la lista: `409 POLICY_NAME_DUPLICATE`), `markup_percentage` (0 a 1000; `422 MARKUP_PERCENTAGE_OUT_OF_RANGE`), `company_product_presentation_ids` (hasta 1000; cada presentación pertenece a lo sumo a una política de la misma lista: `409 PRESENTATION_ALREADY_IN_POLICY`). 
+`WRITE` (no modifica precios). URL `…/companies/{company_id}/price-lists/{price_list_id}/pricing-policies`; permiso `pricing_policies:create`. Cuerpo (`PricingPolicyCreate`): `name` (1–120; único en la lista: `409 POLICY_NAME_DUPLICATE`), `markup_percentage` (0 a 1000; `422 MARKUP_PERCENTAGE_OUT_OF_RANGE`), `company_product_presentation_ids` (hasta 1000; cada presentación pertenece a lo sumo a una política de la misma lista: `409 PRESENTATION_ALREADY_IN_POLICY`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2714,7 +2729,7 @@ Ejemplo de respuesta `200` (`PricingPolicyResponse`; valores ilustrativos):
 
 ### 64. `PUT /pricing-policies/{policy_id}`
 
-`WRITE`. URL `…/pricing-policies/{policy_id}`; permiso `pricing_policies:update`. Cuerpo (`PricingPolicyRename`): `version`, `name`. Solo renombra.
+`WRITE`. URL `…/pricing-policies/{policy_id}`; permiso `pricing_policies:update`. Cuerpo (`PricingPolicyRename`): `name` (obligatorio), `version` (opcional). Solo renombra.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2751,7 +2766,7 @@ Ejemplo de respuesta `200` (`PricingPolicyResponse`; valores ilustrativos):
 
 ### 65. `GET /pricing-policies/{policy_id}/terms`
 
-`READ`. URL `…/pricing-policies/{policy_id}/terms`. 
+`READ`. URL `…/pricing-policies/{policy_id}/terms`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2778,7 +2793,7 @@ Ejemplo de respuesta `200` (`None`; valores ilustrativos):
 
 ### 66. `GET /pricing-policies/{policy_id}/presentations`
 
-`READ`. URL `…/pricing-policies/{policy_id}/presentations`; `include_closed` (boolean), `page`, `page_size`. 
+`READ`. URL `…/pricing-policies/{policy_id}/presentations`; `include_closed` (boolean), `page`, `page_size`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2811,7 +2826,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_PolicyPresentationResponse_`; val
 
 ### 67. `POST /pricing-policies/{policy_id}/presentations`
 
-`WRITE`. URL `…/pricing-policies/{policy_id}/presentations`; permiso `pricing_policies:update`. Cuerpo (`PresentationsChange`): `version`, `company_product_presentation_ids` (límite efectivo **1000** por solicitud, `max_length=1000` en el modelo, verificado en el código; el resumen del contrato de creación dice «hasta 100», que es el límite al crear la política). Abre una vigencia por presentación; `409 PRESENTATION_ALREADY_IN_POLICY`, `409 POLICY_INACTIVE`. 
+`WRITE`. URL `…/pricing-policies/{policy_id}/presentations`; permiso `pricing_policies:update`. Cuerpo (`PresentationsChange`): `version` (opcional), `company_product_presentation_ids` (límite efectivo **1000** por solicitud, `max_length=1000` en el modelo, verificado en el código; el resumen del contrato de creación dice «hasta 100», que es el límite al crear la política). Abre una vigencia por presentación; `409 PRESENTATION_ALREADY_IN_POLICY`, `409 POLICY_INACTIVE`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2851,7 +2866,7 @@ Ejemplo de respuesta `200` (`PricingPolicyResponse`; valores ilustrativos):
 
 ### 68. `POST /pricing-policies/{policy_id}/percentage`
 
-`HIGH_RISK` (desde la siguiente recepción cambian los precios de venta calculados). URL `…/pricing-policies/{policy_id}/percentage`; permiso `pricing_policies:update`. Cuerpo (`PercentageChange`): `version`, `markup_percentage` (0–1000). Cierra el término vigente y abre otro; no modifica precios existentes.
+`HIGH_RISK` (desde la siguiente recepción cambian los precios de venta calculados). URL `…/pricing-policies/{policy_id}/percentage`; permiso `pricing_policies:update`. Cuerpo (`PercentageChange`): `version` (opcional), `markup_percentage` (obligatorio, 0–1000). Cierra el término vigente y abre otro; no modifica precios existentes.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2927,7 +2942,7 @@ Ejemplo de respuesta `200` (`PricingPolicyResponse`; valores ilustrativos):
 
 ### 70. `POST /pricing-policies/{policy_id}/deactivate`
 
-`HIGH_RISK` · estado final (no se reactiva); las presentaciones quedan sin política y las recepciones posteriores se omiten (`SKIPPED_NO_POLICY`). URL `…/pricing-policies/{policy_id}/deactivate`; permiso `pricing_policies:delete`. Cuerpo (`PolicyDeactivation`): `version`, `reason` (1–500). Cierra el término y las asignaciones.
+`HIGH_RISK` · estado final (no se reactiva); las presentaciones quedan sin política y las recepciones posteriores se omiten (`SKIPPED_NO_POLICY`). URL `…/pricing-policies/{policy_id}/deactivate`; permiso `pricing_policies:delete`. Cuerpo (`PolicyDeactivation`): `version` (opcional), `reason` (obligatorio, 1–500). Cierra el término y las asignaciones.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2964,7 +2979,7 @@ Ejemplo de respuesta `200` (`PricingPolicyResponse`; valores ilustrativos):
 
 ### 71. `POST /companies/{company_id}/automatic-price-update-requests`
 
-`WRITE`. URL `…/companies/{company_id}/automatic-price-update-requests`; permiso `automatic_price_update_requests:submit` **y** identidad técnica (cuenta de servicio de Purchase). **No usar desde el frontend.** Cuerpo (`PriceUpdateRequestIn`): `contract_version` (1), `purchase_detail_id`, `purchase_id`, `branch_id`, `company_product_id`, `company_product_presentation_id`, `sequence` (> 0), `previous_sequence`, `currency_code`, `line_total` (≥ 0), `quantity` (> 0), `previous_purchase_detail_id`, `previous_line_total`, `previous_quantity`, `received_at`, `received_by_user_id`. 
+`WRITE`. URL `…/companies/{company_id}/automatic-price-update-requests`; permiso `automatic_price_update_requests:submit` **y** identidad técnica (cuenta de servicio de Purchase). **No usar desde el frontend.** Cuerpo (`PriceUpdateRequestIn`): `contract_version` (1), `purchase_detail_id`, `purchase_id`, `branch_id`, `company_product_id`, `company_product_presentation_id`, `sequence` (> 0), `previous_sequence`, `currency_code`, `line_total` (≥ 0), `quantity` (> 0), `previous_purchase_detail_id`, `previous_line_total`, `previous_quantity`, `received_at`, `received_by_user_id`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3006,7 +3021,7 @@ Ejemplo de respuesta `202` (`PriceUpdateRequestAccepted`; valores ilustrativos):
 
 ### 72. `GET /companies/{company_id}/automatic-price-applications`
 
-`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/automatic-price-applications`; permiso `automatic_price_applications:read` (administradores y supervisores). Parámetros: `status` (`PENDING`, `FAILED`, `APPLIED`, `UNCHANGED`, `SKIPPED_NO_POLICY`, `SKIPPED_LIST_NOT_EFFECTIVE`, `SKIPPED_CURRENCY_MISMATCH`, `SKIPPED_PRESENTATION_INACTIVE`, `SKIPPED_ZERO_COST`, `RESOLVED`), `price_list_id`, `company_product_presentation_id`, `purchase_id`, `page`, `page_size`. 
+`READ`. URL `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/automatic-price-applications`; permiso `automatic_price_applications:read` (grupos `superadmin` y `admin`). Parámetros: `status` (`PENDING`, `FAILED`, `APPLIED`, `UNCHANGED`, `SKIPPED_NO_POLICY`, `SKIPPED_LIST_NOT_EFFECTIVE`, `SKIPPED_CURRENCY_MISMATCH`, `SKIPPED_PRESENTATION_INACTIVE`, `SKIPPED_ZERO_COST`, `RESOLVED`), `price_list_id`, `company_product_presentation_id`, `purchase_id`, `page`, `page_size`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -3123,7 +3138,7 @@ Ejemplo de respuesta `200` (`AutomaticPriceApplicationResponse`; valores ilustra
 
 ### 74. `POST /companies/{company_id}/automatic-price-applications/{application_id}/resolution`
 
-`WRITE` (no modifica precios). URL `…/companies/{company_id}/automatic-price-applications/{application_id}/resolution`; permiso `automatic_price_applications:resolve` (administradores y supervisores). Cuerpo (`ApplicationResolution`): `version`, `reason` (10–500). Marca como `RESOLVED` una aplicación `PENDING` o `FAILED` para que deje de reintentarse; `409 APPLICATION_ALREADY_FINAL` si ya terminó. 
+`WRITE` (no modifica precios). URL `…/companies/{company_id}/automatic-price-applications/{application_id}/resolution`; permiso `automatic_price_applications:resolve` (grupos `superadmin` y `admin`). Cuerpo (`ApplicationResolution`): `version` (opcional), `reason` (obligatorio, 10–500). Marca como `RESOLVED` una aplicación `PENDING` o `FAILED` para que deje de reintentarse; `409 APPLICATION_ALREADY_FINAL` si ya terminó.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3193,9 +3208,9 @@ Ejemplo de respuesta `200` (`AutomaticPriceApplicationResponse`; valores ilustra
 |---|---|---|---|---|
 | `company_supplier_id` | ruta | UUID | Sí | [company_supplier_id](../parametros/supplier-id.md) |
 
-Cuerpo (`SupplierBlockRequest`; rechaza campos adicionales): `block_reason` (string 1–500, obligatorio) y `version` (integer ≥ 1, obligatorio).
+Cuerpo (`SupplierBlockRequest`; rechaza campos adicionales): `block_reason` (string 1–500, obligatorio) y `version` (integer ≥ 1, opcional).
 
-Efecto: `BLOCKED` con motivo; no elegible en compras (`422 COMPANY_SUPPLIER_BLOCKED` al registrar condiciones o productos del proveedor). Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
+Efecto: `BLOCKED` con motivo; no elegible en compras (`422 COMPANY_SUPPLIER_BLOCKED` al registrar condiciones o productos del proveedor). Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` enviada y distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3243,9 +3258,9 @@ Ejemplo de respuesta `200` (`CompanySupplierResponse`; valores ilustrativos):
 |---|---|---|---|---|
 | `company_supplier_id` | ruta | UUID | Sí | [company_supplier_id](../parametros/supplier-id.md) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, obligatorio).
+Cuerpo (`VersionRequest`; rechaza campos adicionales): `version` (integer ≥ 1, opcional); se acepta `{}` o ningún cuerpo.
 
-Efecto: Vuelve a `ACTIVE`; revalida la organización en Party Identity. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
+Efecto: Vuelve a `ACTIVE`; revalida la organización en Party Identity. Transición no permitida desde el estado actual → `409 COMMERCIAL_RELATIONSHIP.INVALID_STATUS_TRANSITION`; `version` enviada y distinta → `409 COMMERCIAL_RELATIONSHIP.VERSION_CONFLICT`; proveedor inexistente o de una empresa sin membresía → `404`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3275,6 +3290,234 @@ Ejemplo de respuesta `200` (`CompanySupplierResponse`; valores ilustrativos):
   "display_name": "Distribuidora Farma S.A.S.",
   "preferred_contact_person_id": null,
   "block_reason": null
+}
+```
+
+### 77. `GET /companies/{company_id}/supplier-candidates`
+
+| | |
+|---|---|
+| Clasificación | `READ` · Organizaciones que pueden ser proveedoras y si ya están asociadas |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-candidates` |
+| Permiso | `perm:commercial-relationship:company_suppliers:read` |
+| Alcance | Empresa (membresía `ACTIVE` evaluada en Operational Context) |
+| Cabeceras | `Authorization` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | [company_id](../parametros/company-id.md) |
+| `search` | query | string 1–100 | No | Texto del usuario; busca en razón social, nombre comercial y número de identificación |
+| `page`, `page_size` | query | integer (`page` ≥ 1; `page_size` 1–100, por defecto 20) | No | Interfaz |
+
+Efecto: ninguno (lectura). Lista las organizaciones `ACTIVE` de Party Identity ordenadas por razón social, sin la de la propia empresa, con `association`: `NOT_ASSOCIATED` o el estado del proveedor (`ACTIVE`, `INACTIVE`, `BLOCKED`), y su `company_supplier_id`, `internal_code` y `display_name` si ya está asociada. Cualquiera sirve para una compra ([Purchase 3](purchase.md#3-post-companiescompany_idpurchases)). Sin membresía → `404`; sin permiso de lectura de organizaciones en Party Identity → `403 PARTY_IDENTITY_ACCESS_DENIED`.
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X GET 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/supplier-candidates?search=farma&page=1&page_size=20' \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+Ejemplo de respuesta `200` (`PaginatedResponse[SupplierCandidateResponse]`; valores ilustrativos):
+
+```json
+{
+  "items": [
+    {
+      "organization_identity_id": "0f1e2d3c-4b5a-4968-8776-655443322111",
+      "identification_type": "NIT",
+      "identification_number": "890300546-6",
+      "legal_name": "Distribuidora Farma S.A.S.",
+      "trade_name": "Farma",
+      "association": "ACTIVE",
+      "company_supplier_id": "d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f60",
+      "internal_code": "PRV-0001",
+      "display_name": "Distribuidora Farma S.A.S."
+    },
+    {
+      "organization_identity_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+      "identification_type": "NIT",
+      "identification_number": "900111111-1",
+      "legal_name": "Farmacéutica del Valle S.A.",
+      "trade_name": null,
+      "association": "NOT_ASSOCIATED",
+      "company_supplier_id": null,
+      "internal_code": null,
+      "display_name": null
+    }
+  ],
+  "page": 1,
+  "page_size": 20,
+  "total_records": 2,
+  "total_pages": 1
+}
+```
+
+### 78. `POST /companies/{company_id}/company-suppliers/ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · Asegurar el proveedor de una compra |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-suppliers/ensure` |
+| Permiso | `perm:commercial-relationship:company_suppliers:ensure` y **identidad técnica**: solo la cuenta de servicio `purchase-service`; un usuario humano recibe `403` aunque tenga el rol |
+| Alcance | Empresa (sin membresía: la llama Purchase después de validar el acceso del usuario a la empresa y la sucursal) |
+| Cabeceras | `Authorization` (token `client_credentials` de Purchase), `Content-Type: application/json` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | La empresa de la compra |
+
+Cuerpo (`SupplierEnsureRequest`; rechaza campos adicionales): `organization_identity_id` (UUID, obligatorio) y `on_behalf_of` (string 1–255, opcional: el `sub` del usuario que compra, que queda como autor; sin él, la cuenta técnica).
+
+Efecto: deja la organización como proveedor `ACTIVE` de la empresa y responde cómo lo logró en `outcome`:
+
+- `CREATED` (`201` con `Location`): no estaba asociada; se asocia con `internal_code` `PRV-<número sin dígito de verificación>` (o `-2`…`-9` si ese código ya está en uso) y `display_name` la razón social;
+- `REACTIVATED` (`200`): estaba `INACTIVE`;
+- `UNBLOCKED` (`200`): estaba `BLOCKED`;
+- `EXISTING` (`200`): ya estaba `ACTIVE`; no cambia nada.
+
+Es idempotente y no crea copias. Cada cambio se audita como el alta, la reactivación o el desbloqueo manual. Errores: organización inexistente → `422 ORGANIZATION_IDENTITY_NOT_FOUND`; no activa → `422 ORGANIZATION_IDENTITY_INACTIVE`; la de la propia empresa → `422 SELF_RELATIONSHIP_NOT_ALLOWED`; sin el permiso o sin identidad técnica → `403 FORBIDDEN`. El frontend no la llama.
+
+Ejemplo de solicitud (valores ilustrativos; la envía Purchase):
+
+```bash
+curl -sS -X POST 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/company-suppliers/ensure' \
+  -H "Authorization: Bearer $PURCHASE_SERVICE_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organization_identity_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "on_behalf_of": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"
+  }'
+```
+
+Ejemplo de respuesta `201` (`SupplierEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+  "company_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "ACTIVE",
+  "version": 1,
+  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+  "created_at": "2026-11-22T15:04:05Z",
+  "updated_at": "2026-11-22T15:04:05Z",
+  "organization_identity_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+  "internal_code": "PRV-900111111",
+  "display_name": "Farmacéutica del Valle S.A.",
+  "preferred_contact_person_id": null,
+  "block_reason": null,
+  "outcome": "CREATED"
+}
+```
+
+### 79. `GET /companies/{company_id}/customer-candidates`
+
+| | |
+|---|---|
+| Clasificación | `READ` · Personas u organizaciones que pueden ser clientes y si ya lo son |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/customer-candidates` |
+| Permiso | `perm:commercial-relationship:company_customers:read` |
+| Alcance | Empresa (membresía `ACTIVE` evaluada en Operational Context) |
+| Cabeceras | `Authorization` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | [company_id](../parametros/company-id.md) |
+| `customer_kind` | query | `PERSON` (por defecto) u `ORGANIZATION` | No | Interfaz |
+| `search` | query | string 1–100 | No | Texto del usuario; en personas busca en número de identificación, nombres y apellidos; en organizaciones, en razón social, nombre comercial y número |
+| `page`, `page_size` | query | integer (`page` ≥ 1; `page_size` 1–100, por defecto 20) | No | Interfaz |
+
+Efecto: ninguno (lectura). Lista las personas (o, con `customer_kind=ORGANIZATION`, las organizaciones, sin la de la propia empresa) `ACTIVE` de Party Identity, de todo SIO, con `association`: `NOT_ASSOCIATED` (aún no es cliente de la empresa) o el estado del cliente (`ACTIVE`, `INACTIVE`), y su `company_customer_id`, `internal_code` y `display_name` si ya lo es. `name` es el nombre completo de la persona o la razón social; `trade_name` solo aplica a organizaciones. Cualquiera sirve para una venta ([Sales 2](sales.md#2-post-companiescompany_idsales)): se registra o se reactiva al crear el borrador. Sin membresía → `404`; sin permiso de lectura de personas u organizaciones en Party Identity → `403 PARTY_IDENTITY_ACCESS_DENIED`.
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X GET 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/customer-candidates?customer_kind=PERSON&search=1099000048&page=1&page_size=20' \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+Ejemplo de respuesta `200` (`PaginatedResponse[CustomerCandidateResponse]`; valores ilustrativos):
+
+```json
+{
+  "items": [
+    {
+      "customer_kind": "PERSON",
+      "person_identity_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+      "organization_identity_id": null,
+      "identification_type": "CC",
+      "identification_number": "1099000048",
+      "name": "Carlos Alberto Mendoza Ramírez",
+      "trade_name": null,
+      "association": "NOT_ASSOCIATED",
+      "company_customer_id": null,
+      "internal_code": null,
+      "display_name": null
+    }
+  ],
+  "page": 1,
+  "page_size": 20,
+  "total_records": 1,
+  "total_pages": 1
+}
+```
+
+### 80. `POST /companies/{company_id}/company-customers/ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · Asegurar el cliente de una venta |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers/ensure` |
+| Permiso | `perm:commercial-relationship:company_customers:ensure` y **identidad técnica**: solo la cuenta de servicio `sales-service`; un usuario humano recibe `403` aunque tenga el rol |
+| Alcance | Empresa (sin membresía: la llama Sales después de validar el acceso del usuario a la empresa y la sucursal) |
+| Cabeceras | `Authorization` (token `client_credentials` de Sales), `Content-Type: application/json` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | La empresa de la venta |
+
+Cuerpo (`CustomerEnsureRequest`; rechaza campos adicionales): `person_identity_id` u `organization_identity_id` (UUID; exactamente uno, si no `422`) y `on_behalf_of` (string 1–255, opcional: el `sub` del usuario que vende, que queda como autor; sin él, la cuenta técnica).
+
+Efecto: deja la persona u organización como cliente `ACTIVE` de la empresa y responde cómo lo logró en `outcome`:
+
+- `CREATED` (`201` con `Location`): no era cliente; se registra con `internal_code` `CLI-<número de documento>` (en un NIT, sin dígito de verificación; `-2`…`-9` si ese código ya está en uso) y `display_name` el nombre completo de la persona o la razón social;
+- `REACTIVATED` (`200`): estaba `INACTIVE`;
+- `EXISTING` (`200`): ya estaba `ACTIVE`; no cambia nada.
+
+Es idempotente y no crea copias. Cada cambio se audita como el alta o la reactivación manual. Confirmar una venta no la llama. Errores: identidad inexistente → `422 PERSON_IDENTITY_NOT_FOUND` / `ORGANIZATION_IDENTITY_NOT_FOUND`; no activa → `422 PERSON_IDENTITY_INACTIVE` / `ORGANIZATION_IDENTITY_INACTIVE`; la organización de la propia empresa → `422 SELF_RELATIONSHIP_NOT_ALLOWED`; sin el permiso o sin identidad técnica → `403 FORBIDDEN`. El frontend no la llama.
+
+Ejemplo de solicitud (valores ilustrativos; la envía Sales):
+
+```bash
+curl -sS -X POST 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/company-customers/ensure' \
+  -H "Authorization: Bearer $SALES_SERVICE_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "person_identity_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "on_behalf_of": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"
+  }'
+```
+
+Ejemplo de respuesta `201` (`CustomerEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "id": "a4b5c6d7-e8f9-4a0b-9c1d-2e3f4a5b6c7d",
+  "company_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "ACTIVE",
+  "version": 1,
+  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+  "created_at": "2026-11-22T15:04:05Z",
+  "updated_at": "2026-11-22T15:04:05Z",
+  "customer_kind": "PERSON",
+  "person_identity_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "organization_identity_id": null,
+  "internal_code": "CLI-1099000048",
+  "display_name": "Carlos Alberto Mendoza Ramírez",
+  "preferred_contact_person_id": null,
+  "outcome": "CREATED"
 }
 ```
 

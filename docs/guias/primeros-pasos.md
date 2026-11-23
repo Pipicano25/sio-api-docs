@@ -1,5 +1,7 @@
 # Primeros pasos
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Volver al índice](../index.md) · [Autenticación](autenticacion.md) · [Permisos](permisos.md) · [Errores](errores.md) · [Parámetros](../parametros/README.md)
 
 Esta guía resume lo que un desarrollador frontend necesita para hacer la primera llamada correcta a SIO y entender las convenciones comunes a los 12 microservicios. Entorno: desarrollo `siodev`, servicios desplegados en Render.
@@ -11,7 +13,7 @@ Esta guía resume lo que un desarrollador frontend necesita para hacer la primer
 | Servidor Keycloak y realm | `https://fastapi-postgrest-online-keycloak.onrender.com`, realm `siodev` | [Autenticación](autenticacion.md) |
 | Cliente público | `sio-web` (Authorization Code + PKCE S256) | [Autenticación](autenticacion.md) |
 | Audiencia del token | `sio-api` | [Autenticación](autenticacion.md) |
-| Usuario de prueba con membresía | Lo entrega el administrador. La contraseña no se publica | [Autenticación §12](autenticacion.md#12-usuarios-y-grupos-de-prueba-del-realm) |
+| Usuario de prueba con membresía | Lo entrega el administrador. La contraseña no se publica | [Autenticación](autenticacion.md) |
 | URL base de cada servicio | Tabla siguiente | Esta guía |
 | Empresa y sucursal activas | Se obtienen de Operational Context después del login | [company_id](../parametros/company-id.md), [branch_id](../parametros/branch-id.md) |
 

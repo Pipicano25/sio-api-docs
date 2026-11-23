@@ -1,5 +1,7 @@
 # Parámetro `company_product_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Commercial Relationship](../servicios/commercial-relationship.md)
 
 | Propiedad | Valor |

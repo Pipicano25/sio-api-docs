@@ -1,5 +1,7 @@
 # Parámetro `person_identity_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Party Identity](../servicios/party-identity.md)
 
 | Propiedad | Valor |
@@ -96,3 +98,4 @@ Respuesta `200` (modelo `PaginatedResponse[PersonIdentityResponse]`; valores ilu
 - En [Administración empresarial](../principales/administracion-empresarial.md): campo `person_identity_id` del cuerpo de la [API 10 (crear membresía)](../principales/administracion-empresarial.md#10-asociar-un-usuario-a-una-empresa-crear-membresía); filtro de la API 9.
 - `POST /companies/{company_id}/company-customers` con `customer_kind: "PERSON"` → `person_identity_id` ([company_customer_id](customer-id.md)).
 - Filtro `?person_identity_id=` al listar clientes y usuarios de aplicación.
+- En [Ventas](../principales/ventas.md#6-crear-la-venta-en-borrador): campo `person_identity_id` del cuerpo de la venta, en lugar de `company_customer_id`, para venderle a una persona aún no registrada como cliente de la empresa (el borrador la registra); se toma de `items[].person_identity_id` de `GET /companies/{company_id}/customer-candidates` ([Ventas, API 1](../principales/ventas.md#1-buscar-el-cliente-de-la-venta)).

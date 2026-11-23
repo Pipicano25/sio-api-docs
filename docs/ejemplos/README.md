@@ -1,5 +1,7 @@
 # Flujos de integración
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md)
 
 Recorridos completos, paso a paso, con las rutas reales de Render y enlaces a la ficha de cada operación y a la guía de cada parámetro. Los identificadores de los ejemplos son ficticios.

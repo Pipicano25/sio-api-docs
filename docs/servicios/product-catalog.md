@@ -1,5 +1,7 @@
 # Product Catalog API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -26,18 +28,18 @@ Product Catalog es el **catálogo global de productos** de SIO, compartido por t
 
 ## Autenticación y permisos
 
-Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`. Permisos `perm:product-catalog:{recurso}:{accion}`. Este servicio usa la acción **`deactivate`** (no `delete`) para inactivar y reactivar; los comodines `perm:all:all:read|create|update` de `supervisores` **no** la cubren.
+Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`. Permisos `perm:product-catalog:{recurso}:{accion}`. Este servicio usa la acción **`deactivate`** (no `delete`) para inactivar y reactivar; los comodines `perm:product-catalog:all:read|create|update` del grupo `admin` **no** la cubren: inactivar y reactivar es solo de `superadmin`.
 
 | Recurso | Operaciones | Acciones usadas | Grupos con lectura (plantilla) | Grupos con escritura |
 |---|---|---|---|---|
-| `units-of-measure` | 3–9 | `read`, `create`, `update`, `deactivate` | Todos (`compras`, `ventas`, `inventario` vía `perm:product-catalog:all:read`; `reportes`, `consulta` por recurso) | `administradores`; `supervisores` solo `create` y `update` |
+| `units-of-measure` | 3–9 | `read`, `create`, `update`, `deactivate` | Todos (`admin`, `Compras`, `Ventas` e `Inventario` vía `perm:product-catalog:all:read`) | `superadmin`; `admin` solo `create` y `update` |
 | `packaging-types` | 10–15 | ídem | Todos | ídem |
 | `brands` | 16–21 | ídem | Todos | ídem |
 | `categories` | 22–35 | `read`, `update` (crear, modificar, asociar atributos), `deactivate` | Todos | ídem |
 | `attribute-definitions` | 36–46 | `read`, `update` (crear, opciones), `deactivate` | Todos | ídem |
-| `products` | 47–58, 59–62, 63–65, 66–72, 73–77, 78–81, 92–98 (subrecursos) | `read`, `create`, `update`, `deactivate`, `delete` (solo borrar un valor de atributo) | Todos | `administradores`; `supervisores` sin `deactivate` ni `delete` |
+| `products` | 47–58, 59–62, 63–65, 66–72, 73–77, 78–81, 92–98 (subrecursos) | `read`, `create`, `update`, `deactivate`, `delete` (solo borrar un valor de atributo) | Todos | `superadmin`; `admin` sin `deactivate` ni `delete` |
 | `group-types` | 82–91 (tipos y grupos) | `read`, `create`, `update`, `deactivate` | Todos | ídem |
-| `first-use` | 99–100 | `register` (cuentas técnicas), `register-manual` (administradores) | — | Cuenta técnica de Commercial Relationship (`register`); `administradores` (`register-manual` vía `perm:all:all:all`) |
+| `first-use` | 99–100 | `register` (cuentas técnicas), `register-manual` (`superadmin` y `admin`) | — | Cuenta técnica de Commercial Relationship (`register`); `superadmin` (`perm:all:all:all`) y `admin` (`register-manual` explícito) |
 
 Los subrecursos de producto (categorías, atributos, presentaciones, identificadores, grupos, activos) usan el recurso `products`: crear o modificar exige `products:update`; inactivar o reactivar, `products:deactivate`.
 
@@ -49,12 +51,22 @@ Global: cualquier usuario con el permiso ve todo el catálogo; no hay membresía
 
 - Listas paginadas (`page` ≥ 1, `page_size` 1–100, por defecto 20) con `items`, `page`, `page_size`, `total_records`, `total_pages`. Filtros comunes: `status` (`ACTIVE` o `INACTIVE`; sin filtro, ambos), `code` (exacto, ≤ 100), `search` (≤ 200).
 - Todos los registros tienen `id`, `status`, `version`, `created_at`, `updated_at`, `created_by`, `updated_by`.
-- Escrituras con `version` (≥ 1) → `409 PRODUCT_CATALOG.VERSION_CONFLICT`. `deactivate`/`reactivate` reciben `{"version": n}` (`VersionRequest`).
+- `PUT` es **parcial**: el cuerpo lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`. Las validaciones (unicidad, jerarquías, referencias) se aplican sobre el registro combinado; si nada cambia, no se escribe ni sube la versión.
+- `version` (≥ 1) es **opcional** en todas las escrituras (`PUT`, `deactivate`/`reactivate` con `VersionRequest`, acciones sobre subrecursos y el `?version=` de `DELETE …/attribute-values/{definition_id}`): si se envía y no coincide → `409 PRODUCT_CATALOG.VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. `deactivate`/`reactivate` aceptan `{"version": n}`, `{}` o ningún cuerpo.
 - `code` se normaliza y es único por catálogo (`409 DUPLICATE_CODE`); además, los códigos de unidades de medida y tipos de empaque no pueden coincidir entre sí (`409 CODE_USED_BY_PACKAGING_TYPE` / `CODE_USED_BY_UNIT_OF_MEASURE`). `code` es inmutable en los `PUT` (no se envía).
 - Jerarquías (categorías, grupos): el padre debe existir y estar activo (`422 PARENT_INACTIVE`), no formar ciclos (`422 HIERARCHY_CYCLE`); inactivar con hijos activos → `409 HAS_ACTIVE_CHILDREN`; los grupos deben ser del mismo tipo que su padre (`422 PARENT_OF_OTHER_TYPE`).
 - Referencias a otros registros: `422 REFERENCE_NOT_FOUND` / `REFERENCE_INACTIVE`; producto inactivo → `422 PRODUCT_INACTIVE`.
 - Todos los modelos rechazan campos adicionales; `422 IMMUTABLE_FIELD` para campos inmutables.
 - `503 DEPENDENCY_UNAVAILABLE` con `dependency` (`database`, `party-identity`, almacenamiento de objetos).
+
+Ejemplo de `PUT` parcial (solo cambia `name`, sin `version`):
+
+```bash
+curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/brands/82bfda79-62fd-42f5-8163-ae45886c4c62' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Genfar"}'
+```
 
 ## Tabla de endpoints
 
@@ -514,7 +526,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo: `version`, `name`, `symbol`. `code`, `measurement_type` y `allows_decimals` son inmutables
+Notas: Cuerpo parcial: `name`, `symbol` y `version` (opcional). `code`, `measurement_type` y `allows_decimals` son inmutables
 
 Parámetros:
 
@@ -522,13 +534,13 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 4 |
 
-Cuerpo (`UnitOfMeasureUpdate`; rechaza campos adicionales):
+Cuerpo (`UnitOfMeasureUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 160 car. |
-| `symbol` | string | Sí | ≤ 32 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 160 car.; no admite `null` |
+| `symbol` | string | No | ≤ 32 car.; no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -570,7 +582,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -585,7 +597,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: los productos que la usan como unidad base no pueden actualizarse ni adoptarse (`422 REFERENCE_INACTIVE`). Cuerpo `{"version": n}`
+Notas: los productos que la usan como unidad base no pueden actualizarse ni adoptarse (`422 REFERENCE_INACTIVE`). Cuerpo `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -593,11 +605,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 4 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -637,7 +649,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -652,7 +664,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo `{"version": n}`
+Notas: Cuerpo `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -660,11 +672,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 4 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -704,7 +716,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -905,7 +917,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo: `version`, `name`, `description`
+Notas: Cuerpo parcial: `name`, `description` y `version` (opcional)
 
 Parámetros:
 
@@ -913,12 +925,12 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 10 |
 
-Cuerpo (`PackagingTypeUpdate`; rechaza campos adicionales):
+Cuerpo (`PackagingTypeUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -959,7 +971,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -974,7 +986,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -982,11 +994,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 10 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1024,7 +1036,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1039,7 +1051,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -1047,11 +1059,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 10 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1089,7 +1101,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1290,7 +1302,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`
+Notas: Cuerpo parcial: `name`, `description` y `version` (opcional)
 
 Parámetros:
 
@@ -1298,12 +1310,12 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 16 |
 
-Cuerpo (`BrandUpdate`; rechaza campos adicionales):
+Cuerpo (`BrandUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -1344,7 +1356,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1359,7 +1371,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -1367,11 +1379,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 16 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1409,7 +1421,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1424,7 +1436,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -1432,11 +1444,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 16 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1474,7 +1486,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1821,7 +1833,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `is_required`, `is_filterable`, `display_order` obligatorios
+Notas: Cuerpo parcial: `is_required`, `is_filterable`, `display_order` (opcionales; no admiten `null`) y `version` (opcional)
 
 Parámetros:
 
@@ -1830,14 +1842,14 @@ Parámetros:
 | `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
 | `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
 
-Cuerpo (`CategoryAttributeUpdate`; rechaza campos adicionales):
+Cuerpo (`CategoryAttributeUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `is_required` | boolean | Sí | — |
-| `is_filterable` | boolean | Sí | — |
-| `display_order` | integer | Sí | ≥ 0; ≤ 32767 |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `is_required` | boolean | No | no admite `null` |
+| `is_filterable` | boolean | No | no admite `null` |
+| `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1880,7 +1892,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1895,7 +1907,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -1904,11 +1916,11 @@ Parámetros:
 | `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
 | `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1948,7 +1960,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -1963,7 +1975,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -1972,11 +1984,11 @@ Parámetros:
 | `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
 | `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2016,7 +2028,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2221,7 +2233,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`, `parent_category_id` (cambiar el padre valida ciclos)
+Notas: Cuerpo parcial: `name`, `description`, `parent_category_id` y `version` (opcional) (cambiar el padre valida ciclos)
 
 Parámetros:
 
@@ -2229,12 +2241,12 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 30 |
 
-Cuerpo (`CategoryUpdate`; rechaza campos adicionales):
+Cuerpo (`CategoryUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `parent_category_id` | UUID \| null | No | — |
 
@@ -2279,7 +2291,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2302,11 +2314,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 30 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2345,7 +2357,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2368,11 +2380,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 30 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2411,7 +2423,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2563,7 +2575,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`, `display_order`
+Notas: Cuerpo parcial: `name`, `description`, `display_order` y `version` (opcional)
 
 Parámetros:
 
@@ -2572,14 +2584,14 @@ Parámetros:
 | `definition_id` | ruta | UUID | Sí | — | Campo `id` de una definición de atributo (operación 41) |
 | `option_id` | ruta | UUID | Sí | — | Campo `id` de una opción (operación 36) |
 
-Cuerpo (`OptionUpdate`; rechaza campos adicionales):
+Cuerpo (`OptionUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
 | `description` | string \| null | No | — |
-| `display_order` | integer | Sí | ≥ 0; ≤ 32767 |
+| `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2622,7 +2634,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2637,7 +2649,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -2646,11 +2658,11 @@ Parámetros:
 | `definition_id` | ruta | UUID | Sí | — | Campo `id` de una definición de atributo (operación 41) |
 | `option_id` | ruta | UUID | Sí | — | Campo `id` de una opción (operación 36) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2690,7 +2702,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2705,7 +2717,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -2714,11 +2726,11 @@ Parámetros:
 | `definition_id` | ruta | UUID | Sí | — | Campo `id` de una definición de atributo (operación 41) |
 | `option_id` | ruta | UUID | Sí | — | Campo `id` de una opción (operación 36) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2758,7 +2770,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -2968,7 +2980,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`. `data_type` y unidad son inmutables
+Notas: Cuerpo parcial: `name`, `description` y `version` (opcional). `data_type` y unidad son inmutables
 
 Parámetros:
 
@@ -2976,13 +2988,13 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 41 |
 
-Cuerpo (`AttributeDefinitionUpdate`; rechaza campos adicionales):
+Cuerpo (`AttributeDefinitionUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
-| `description` | string | Sí | — |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `description` | string | No | no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3024,7 +3036,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -3039,7 +3051,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -3047,11 +3059,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 41 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3091,7 +3103,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -3106,7 +3118,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -3114,11 +3126,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 41 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -3158,7 +3170,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -3775,7 +3787,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`ProductUpdate`): `version`, `canonical_name`, `base_unit_id` obligatorios; `description`, `global_brand_id`, `manufacturer_organization_id`. `product_type` inmutable; `base_unit_id` bloqueada tras el primer uso
+Notas: Cuerpo (`ProductUpdate`, parcial): `canonical_name`, `base_unit_id` (no admiten `null`), `description`, `global_brand_id`, `manufacturer_organization_id`, todos opcionales, y `version` (opcional). `product_type` inmutable; `base_unit_id` bloqueada tras el primer uso
 
 Parámetros:
 
@@ -3783,16 +3795,16 @@ Parámetros:
 |---|---|---|---|---|---|
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 
-Cuerpo (`ProductUpdate`; rechaza campos adicionales):
+Cuerpo (`ProductUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `canonical_name` | string | Sí | ≤ 400 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `canonical_name` | string | No | ≤ 400 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `global_brand_id` | UUID \| null | No | — |
 | `manufacturer_organization_id` | UUID \| null | No | — |
-| `base_unit_id` | UUID | Sí | — |
+| `base_unit_id` | UUID | No | no admite `null` |
 
 Cómo obtener los identificadores del cuerpo: `global_brand_id`: Operación 16; `manufacturer_organization_id`: [organization_identity_id](../parametros/organization-identity-id.md); `base_unit_id`: Operación 4.
 
@@ -3851,7 +3863,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -3975,7 +3987,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: las empresas no podrán adoptarlo ni operar presentaciones nuevas; los productos empresariales ya adoptados muestran `global_status: INACTIVE`. Sin cascada sobre subrecursos. `{"version": n}`
+Notas: las empresas no podrán adoptarlo ni operar presentaciones nuevas; los productos empresariales ya adoptados muestran `global_status: INACTIVE`. Sin cascada sobre subrecursos. `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -3983,11 +3995,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -4039,7 +4051,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4054,7 +4066,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -4062,11 +4074,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -4118,7 +4130,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4262,7 +4274,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`. Respuesta: **array** con todas las categorías del producto
+Notas: `{"version": n}` (`version` opcional). Respuesta: **array** con todas las categorías del producto
 
 Parámetros:
 
@@ -4271,11 +4283,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 59) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -4315,7 +4327,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4330,7 +4342,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`ProductCategoryDeactivate`): `version` y `new_primary_association_id` (obligatorio si se retira la principal y quedan otras: `422 NEW_PRIMARY_REQUIRED`)
+Notas: Cuerpo (`ProductCategoryDeactivate`): `version` (opcional) y `new_primary_association_id` (obligatorio si se retira la principal y quedan otras: `422 NEW_PRIMARY_REQUIRED`)
 
 Parámetros:
 
@@ -4343,7 +4355,7 @@ Cuerpo (`ProductCategoryDeactivate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 | `new_primary_association_id` | UUID \| null | No | — |
 
 Cómo obtener los identificadores del cuerpo: `new_primary_association_id`: Operación 59.
@@ -4384,7 +4396,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4466,7 +4478,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`AttributeValuePut`): exactamente el campo de valor que corresponde al `data_type` (`option_id` para `OPTION`, `text_value`, `integer_value`, `decimal_value`, `boolean_value` o `date_value`; `422 VALUE_TYPE_MISMATCH`, `OPTION_NOT_IN_DEFINITION`) y `version` (obligatoria si el valor ya existe). El atributo debe aplicar al producto (`422 ATTRIBUTE_NOT_APPLICABLE`). `201` al crear, `200` al reemplazar
+Notas: Cuerpo (`AttributeValuePut`): exactamente el campo de valor que corresponde al `data_type` (`option_id` para `OPTION`, `text_value`, `integer_value`, `decimal_value`, `boolean_value` o `date_value`; `422 VALUE_TYPE_MISMATCH`, `OPTION_NOT_IN_DEFINITION`) y `version` (opcional; si se envía y el valor ya existe con otra versión → `409 VERSION_CONFLICT`). El atributo debe aplicar al producto (`422 ATTRIBUTE_NOT_APPLICABLE`). `201` al crear, `200` al reemplazar
 
 Parámetros:
 
@@ -4532,7 +4544,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4555,7 +4567,7 @@ Parámetros:
 |---|---|---|---|---|---|
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `definition_id` | ruta | UUID | Sí | — | Campo `id` de una definición de atributo (operación 41) |
-| `version` | query | integer | Sí | ≥ 1 | — |
+| `version` | query | integer | No | ≥ 1; si se envía y no coincide → `409 VERSION_CONFLICT` | Campo `version` del valor (operación 63) |
 
 Esta operación no recibe cuerpo.
 
@@ -4878,7 +4890,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `display_order`, `base_quantity` obligatorios; `packaging_type_id`, `content_quantity`, `content_unit_id`, `is_base`. Tras el primer uso la presentación queda bloqueada en sus campos de cantidad (`422 PRESENTATION_LOCKED_BY_FIRST_USE`)
+Notas: Cuerpo parcial: `name`, `display_order`, `base_quantity`, `is_base` (no admiten `null`), `packaging_type_id`, `content_quantity`, `content_unit_id`, todos opcionales, y `version` (opcional). Tras el primer uso la presentación queda bloqueada en sus campos de cantidad (`422 PRESENTATION_LOCKED_BY_FIRST_USE`)
 
 Parámetros:
 
@@ -4886,18 +4898,18 @@ Parámetros:
 |---|---|---|---|---|---|
 | `presentation_id` | ruta | UUID | Sí | — | Campo `id` de una presentación del producto (operación 67); es el `global_product_presentation_id` de otros servicios |
 
-Cuerpo (`PresentationUpdate`; rechaza campos adicionales):
+Cuerpo (`PresentationUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 320 car. |
-| `display_order` | integer | Sí | ≥ 0; ≤ 32767 |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 320 car.; no admite `null` |
+| `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 | `packaging_type_id` | UUID \| null | No | — |
-| `base_quantity` | number \| string | Sí | — |
+| `base_quantity` | number \| string | No | no admite `null` |
 | `content_quantity` | number \| string \| null | No | — |
 | `content_unit_id` | UUID \| null | No | — |
-| `is_base` | boolean | No | por defecto `false` |
+| `is_base` | boolean | No | no admite `null` |
 
 Cómo obtener los identificadores del cuerpo: `packaging_type_id`: Operación 10; `content_unit_id`: Operación 4.
 
@@ -4951,7 +4963,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -4966,7 +4978,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: las presentaciones empresariales derivadas dejan de ser elegibles para líneas nuevas. `{"version": n}`
+Notas: las presentaciones empresariales derivadas dejan de ser elegibles para líneas nuevas. `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -4974,11 +4986,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `presentation_id` | ruta | UUID | Sí | — | Campo `id` de una presentación del producto (operación 67); es el `global_product_presentation_id` de otros servicios |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5025,7 +5037,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5040,7 +5052,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -5048,11 +5060,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `presentation_id` | ruta | UUID | Sí | — | Campo `id` de una presentación del producto (operación 67); es el `global_product_presentation_id` de otros servicios |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5099,7 +5111,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5255,7 +5267,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Principal de su tipo y contexto (producto o presentación). `{"version": n}`
+Notas: Principal de su tipo y contexto (producto o presentación). `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -5264,11 +5276,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `identifier_id` | ruta | UUID | Sí | — | Campo `id` de un identificador (operación 73) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5309,7 +5321,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5324,7 +5336,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: El código no se libera para otros productos. `{"version": n}`
+Notas: El código no se libera para otros productos. `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -5333,11 +5345,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `identifier_id` | ruta | UUID | Sí | — | Campo `id` de un identificador (operación 73) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5378,7 +5390,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5393,7 +5405,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -5402,11 +5414,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `identifier_id` | ruta | UUID | Sí | — | Campo `id` de un identificador (operación 73) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5447,7 +5459,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5591,7 +5603,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -5600,11 +5612,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `assignment_id` | ruta | UUID | Sí | — | Campo `id` de una asignación (operación 78) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5642,7 +5654,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5657,7 +5669,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`; `409 MULTIPLE_ASSIGNMENTS_EXIST` si violaría la unicidad del tipo
+Notas: `{"version": n}` (`version` opcional); `409 MULTIPLE_ASSIGNMENTS_EXIST` si violaría la unicidad del tipo
 
 Parámetros:
 
@@ -5666,11 +5678,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `assignment_id` | ruta | UUID | Sí | — | Campo `id` de una asignación (operación 78) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -5708,7 +5720,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -5929,7 +5941,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`, `parent_group_id`
+Notas: Cuerpo parcial: `name`, `description`, `parent_group_id` y `version` (opcional)
 
 Parámetros:
 
@@ -5937,12 +5949,12 @@ Parámetros:
 |---|---|---|---|---|---|
 | `group_id` | ruta | UUID | Sí | — | Campo `id` de un grupo (operaciones 82 u 84) |
 
-Cuerpo (`GroupUpdate`; rechaza campos adicionales):
+Cuerpo (`GroupUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 320 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 320 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `parent_group_id` | UUID \| null | No | — |
 
@@ -5988,7 +6000,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6131,11 +6143,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `group_id` | ruta | UUID | Sí | — | Campo `id` de un grupo (operaciones 82 u 84) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6175,7 +6187,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6196,11 +6208,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `group_id` | ruta | UUID | Sí | — | Campo `id` de un grupo (operaciones 82 u 84) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6240,7 +6252,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6447,7 +6459,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `name`, `description`, `allows_multiple`, `display_order`
+Notas: Cuerpo parcial: `name`, `description`, `allows_multiple`, `display_order` y `version` (opcional)
 
 Parámetros:
 
@@ -6455,15 +6467,15 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 90 |
 
-Cuerpo (`GroupTypeUpdate`; rechaza campos adicionales):
+Cuerpo (`GroupTypeUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `name` | string | Sí | ≤ 240 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `name` | string | No | ≤ 240 car.; no admite `null` |
 | `description` | string \| null | No | — |
-| `allows_multiple` | boolean | Sí | — |
-| `display_order` | integer | Sí | ≥ 0; ≤ 32767 |
+| `allows_multiple` | boolean | No | no admite `null` |
+| `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6507,7 +6519,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6528,11 +6540,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 90 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6572,7 +6584,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6593,11 +6605,11 @@ Parámetros:
 |---|---|---|---|---|---|
 | `item_id` | ruta | UUID | Sí | — | Campo `id` de un elemento de la operación 90 |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6637,7 +6649,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6840,7 +6852,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `version`, `file_name`, `storage_uri`, `mime_type`. `asset_type` inmutable
+Notas: Cuerpo parcial: `file_name`, `storage_uri` (no admiten `null`), `mime_type` y `version` (opcional). `asset_type` inmutable
 
 Parámetros:
 
@@ -6849,13 +6861,13 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `asset_id` | ruta | UUID | Sí | — | Campo `id` de un activo (operación 96) |
 
-Cuerpo (`AssetUpdate`; rechaza campos adicionales):
+Cuerpo (`AssetUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
-| `file_name` | string | Sí | ≤ 510 car. |
-| `storage_uri` | string | Sí | ≤ 4000 car. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
+| `file_name` | string | No | ≤ 510 car.; no admite `null` |
+| `storage_uri` | string | No | ≤ 4000 car.; no admite `null` |
 | `mime_type` | string \| null | No | ≤ 240 car. |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -6899,7 +6911,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6914,7 +6926,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Principal de su tipo. `{"version": n}`
+Notas: Principal de su tipo. `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -6923,11 +6935,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `asset_id` | ruta | UUID | Sí | — | Campo `id` de un activo (operación 96) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -6968,7 +6980,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -6983,7 +6995,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: El archivo externo no se borra. `{"version": n}`
+Notas: El archivo externo no se borra. `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -6992,11 +7004,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `asset_id` | ruta | UUID | Sí | — | Campo `id` de un activo (operación 96) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -7037,7 +7049,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -7052,7 +7064,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: `{"version": n}`
+Notas: `{"version": n}` (`version` opcional)
 
 Parámetros:
 
@@ -7061,11 +7073,11 @@ Parámetros:
 | `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
 | `asset_id` | ruta | UUID | Sí | — | Campo `id` de un activo (operación 96) |
 
-Cuerpo (`VersionRequest`; rechaza campos adicionales):
+Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `version` | integer | Sí | ≥ 1 — Versión esperada del registro. |
+| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -7106,7 +7118,7 @@ Códigos HTTP:
 | `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` distinta de la actual |
+| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -7303,7 +7315,7 @@ curl -sS 'https://sio-product-catalog-dev.onrender.com/api/v1/products/f4a5b6c7-
 | Permiso | `perm:product-catalog:products:update` |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Cuerpo (`PresentationImageUpdate`): `version` (entero ≥ 1, obligatorio) y `file_name` (1–255, obligatorio). Cualquier otro campo (`storage_uri`, `mime_type`, `is_primary`, `status`, la presentación…) → `422 IMMUTABLE_FIELD`. `409 VERSION_CONFLICT` con versión desactualizada; `422 PRODUCT_INACTIVE` / `PRESENTATION_INACTIVE`.
+Cuerpo (`PresentationImageUpdate`, parcial): `file_name` (1–255; no admite `null`) y `version` (entero ≥ 1, opcional). Cualquier otro campo (`storage_uri`, `mime_type`, `is_primary`, `status`, la presentación…) → `422 IMMUTABLE_FIELD`. `409 VERSION_CONFLICT` si se envía una versión desactualizada; `422 PRODUCT_INACTIVE` / `PRESENTATION_INACTIVE`.
 
 ```bash
 curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/products/f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72/presentations/e6d7d0c7-a0be-4f4b-8bca-631867ff85c8/assets/4c8291aa-edb7-46e7-8e38-83d456610944' \
@@ -7448,7 +7460,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Permiso `first-use:register-manual` (administradores). Mismo cuerpo; no exige elegibilidad. Tras el primer uso quedan bloqueadas la unidad base del producto y las cantidades de la presentación
+Notas: Permiso `first-use:register-manual` (grupos `superadmin` y `admin`). Mismo cuerpo; no exige elegibilidad. Tras el primer uso quedan bloqueadas la unidad base del producto y las cantidades de la presentación
 
 Parámetros:
 
@@ -7500,7 +7512,7 @@ Códigos HTTP:
 
 | Respuesta | Causa | Qué hacer |
 |---|---|---|
-| `403 PRODUCT_CATALOG.FORBIDDEN` en inactivar/reactivar | Falta la acción `deactivate` (los supervisores no la tienen por comodín) | Solo administradores |
+| `403 PRODUCT_CATALOG.FORBIDDEN` en inactivar/reactivar | Falta la acción `deactivate` (el grupo `admin` no la tiene por comodín) | Solo `superadmin` |
 | `409 PRODUCT_CATALOG.DUPLICATE_CODE` / `CODE_USED_BY_*` | Código repetido | Elegir otro código |
 | `409 …IDENTIFIER_COLLISION` | El código de barras ya pertenece a otro producto o presentación | Buscar con la operación 52 |
 | `422 …INVALID_GTIN_FORMAT` / `INVALID_CHECK_DIGIT` | GTIN/EAN/UPC inválido | Verificar el dígito de control |
@@ -7508,7 +7520,7 @@ Códigos HTTP:
 | `422 …BASE_UNIT_LOCKED_BY_FIRST_USE` / `PRESENTATION_LOCKED_BY_FIRST_USE` | El producto ya fue adoptado | Crear una presentación nueva en lugar de modificar |
 | `409 …BASE_PRESENTATION_EXISTS` / `422 BASE_QUANTITY_MUST_BE_ONE` | Reglas de la presentación base | Una sola base con cantidad 1 |
 | `409 …HAS_ACTIVE_CHILDREN` / `422 HIERARCHY_CYCLE` / `PARENT_INACTIVE` | Jerarquías | Revisar padre e hijos |
-| `409 …VERSION_CONFLICT` | Versión desactualizada | Recargar |
+| `409 …VERSION_CONFLICT` | `version` enviada desactualizada | Recargar, o enviar sin `version` |
 | `422 …IMAGE_REQUIRES_PRESENTATION` / `409 …IMAGE_MIGRATION_IN_PROGRESS` | Imagen gestionada por la ruta del producto (spec 024) | Usar las rutas por presentación (I-1 a I-8) |
 | `409 …DUPLICATE_ASSET_CONTENT` | La misma imagen ya está en la presentación (`existing_asset_id`) | Usar la imagen existente |
 | `413 …FILE_TOO_LARGE` / `415 …UNSUPPORTED_MEDIA_TYPE` / `422 …INVALID_IMAGE` / `IMAGE_DIMENSIONS_EXCEEDED` | Archivo de más de 5 MiB, que no es JPEG/PNG/WebP, corrupto o de más de 40 megapíxeles | Reducir o convertir la imagen |

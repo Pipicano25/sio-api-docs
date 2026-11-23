@@ -1,5 +1,7 @@
 # Autenticación de SIO con Keycloak
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Volver al índice de las API](../index.md) · [Primeros pasos](primeros-pasos.md) · [Permisos de usuario](permisos.md) · [Errores](errores.md) · [Operational Context](../servicios/operational-context.md)
 
 > **Entorno de esta guía:** `siodev`, servicios publicados en Render. Explica cómo una aplicación cliente obtiene una sesión de usuario, llama a las API de SIO, renueva la sesión y cierra sesión, y qué comprueban exactamente las API al recibir el token. **No incluye contraseñas, tokens ni secretos reales.**
@@ -140,7 +142,7 @@ Scopes por defecto de `sio-web`: `web-origins`, `acr`, `roles`, `profile`, `basi
 
 La plantilla del realm toma estos valores de variables de entorno (`SIO_WEB_REDIRECT_URI`, `SIO_WEB_ORIGIN`). En el entorno local valen `http://localhost:3000/*` y `http://localhost:3000`.
 
-La plantilla del realm del repositorio define estos tres campos a partir de variables de entorno del despliegue de Keycloak: `redirectUris` y `post.logout.redirect.uris` toman `SIO_WEB_REDIRECT_URI`, y `webOrigins` y `rootUrl` toman `SIO_WEB_ORIGIN`. 
+La plantilla del realm del repositorio define estos tres campos a partir de variables de entorno del despliegue de Keycloak: `redirectUris` y `post.logout.redirect.uris` toman `SIO_WEB_REDIRECT_URI`, y `webOrigins` y `rootUrl` toman `SIO_WEB_ORIGIN`.
 
 ## 4. Inicio de sesión: Authorization Code + PKCE S256
 
@@ -385,10 +387,10 @@ Payload decodificado de un Access Token de `sio-web` (**ejemplo ilustrativo**; l
   },
   "email_verified": true,
   "name": "Nombre Apellido",
-  "preferred_username": "ventas.test",
+  "preferred_username": "operario.dao",
   "given_name": "Nombre",
   "family_name": "Apellido",
-  "email": "ventas.test@ejemplo.test"
+  "email": "operario.dao@ejemplo.test"
 }
 ```
 
@@ -398,10 +400,10 @@ Payload decodificado de un Access Token de `sio-web` (**ejemplo ilustrativo**; l
 | `aud` | Debe incluir `sio-api` | Keycloak (mapper de audiencia de `sio-web`) |
 | `sub` | Identificador estable del usuario (`keycloak_user_id`). Es la clave con la que Operational Context asocia membresías y sucursales | Keycloak |
 | `exp` | Vencimiento. No hay tolerancia de reloj: un token vencido por un segundo es rechazado | Keycloak |
-| `resource_access["sio-api"].roles` | Roles de negocio (`administrador`, `supervisor`, `compras`, `ventas`, `inventario`, `reportes`, `consulta`) y permisos `perm:*`. **Solo los que empiezan por `perm:` conceden acceso a operaciones** | Keycloak (client scope `roles`) |
+| `resource_access["sio-api"].roles` | Roles de perfil (`superadmin`, `admin`; los grupos de área `Compras`, `Ventas` e `Inventario` no traen rol de nombre) y permisos `perm:*`. **Solo los que empiezan por `perm:` conceden acceso a operaciones** | Keycloak (client scope `roles`) |
 | `preferred_username`, `email` | Informativos; algunos servicios los registran en auditoría | Keycloak |
 
-Los permisos tienen la forma `perm:{servicio}:{recurso}:{accion}` y admiten el comodín `all` en cualquier segmento. Por ejemplo, `perm:sales:sales:create` permite solicitar la creación de ventas **si las demás validaciones del endpoint también se cumplen**. Los roles simples, como `ventas`, representan perfiles, no permisos suficientes por sí solos. Un `perm:` con un número de segmentos distinto de cuatro se ignora.
+Los permisos tienen la forma `perm:{servicio}:{recurso}:{accion}` y admiten el comodín `all` en cualquier segmento. Por ejemplo, `perm:sales:sales:create` permite solicitar la creación de ventas **si las demás validaciones del endpoint también se cumplen**. Los roles simples, como `admin`, representan perfiles, no permisos suficientes por sí solos. Un `perm:` con un número de segmentos distinto de cuatro se ignora.
 
 El frontend puede leer `resource_access["sio-api"].roles` para mostrar u ocultar opciones, pero **la autorización definitiva la hace cada API**. No use `realm_access`, `groups` ni el ID Token para decidir permisos.
 
@@ -596,7 +598,7 @@ Los detalles de errores y JSON de cada operación se documentan en [Errores](err
 - Mantén los tokens en memoria cuando sea viable; evita `localStorage` para Access Tokens, Refresh Tokens y permisos derivados de ellos.
 - No envíes tokens mediante parámetros de URL ni los imprimas en consola, capturas, analíticas o logs.
 - Nunca envíes el `refresh_token` ni el `id_token` a las API de SIO. Solo el `access_token`.
-- No asumas acceso por tener un rol de perfil (`ventas`, `supervisor`): comprueba `perm:*` y deja la decisión final al backend.
+- No asumas acceso por tener un rol de perfil (`admin`) o un grupo (`/Ventas`): comprueba `perm:*` y deja la decisión final al backend.
 - No inventes `company_id` ni `branch_id`: consulta los valores permitidos en Operational Context.
 - Trata `401` como «renovar y reintentar una vez» y `403` como «sin permiso: mostrar mensaje y `trace_id`».
 - Cada operación sensible (`WRITE`, `HIGH_RISK`) debe confirmarse con el usuario antes de enviarse; las API no piden confirmación.

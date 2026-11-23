@@ -1,5 +1,7 @@
 # Parámetro `company_supplier_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Commercial Relationship](../servicios/commercial-relationship.md)
 
 > El nombre exacto del parámetro en las rutas y cuerpos es **`company_supplier_id`** (proveedor de la empresa). El archivo se llama `supplier-id` por brevedad.
@@ -128,6 +130,10 @@ La respuesta `201` devuelve el proveedor; el `company_supplier_id` es su campo `
 | `503` | `COMMERCIAL_RELATIONSHIP.DEPENDENCY_UNAVAILABLE` | Operational Context o Party Identity no responden (`dependency` lo indica) | Reintentar más tarde |
 
 Documentación completa con cURL, cuerpo y ejemplos de error: [Gestión de proveedores, API 1](../principales/gestion-de-proveedores.md#1-registrar-un-proveedor-de-la-empresa).
+
+## Comprar sin asociarlo antes
+
+No hace falta tener el `company_supplier_id` para comprar: en la compra se puede enviar `organization_identity_id` y Purchase asocia el proveedor, o lo reactiva o desbloquea, al crear el borrador ([Compras, API 1 y 4](../principales/compras.md#1-buscar-el-proveedor)). La compra responde con el `company_supplier_id` resultante.
 
 ## Cómo usarlo después
 

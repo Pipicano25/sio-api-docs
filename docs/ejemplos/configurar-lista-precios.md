@@ -1,8 +1,10 @@
 # Configurar una lista de precios con política de ganancia
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Flujos](README.md) · [← Índice](../index.md) · Ficha: [Commercial Relationship](../servicios/commercial-relationship.md) · Módulo: [Productos y precios](../principales/productos-y-precios.md)
 
-Cómo una empresa crea su lista de precios, define un porcentaje de ganancia sobre el costo de compra, asocia las presentaciones y obtiene precios actualizados automáticamente cuando recibe mercancía. Perfil típico: grupos `administradores` o `supervisores`. Identificadores ficticios; cuerpos y respuestas según los modelos reales.
+Cómo una empresa crea su lista de precios, define un porcentaje de ganancia sobre el costo de compra, asocia las presentaciones y obtiene precios actualizados automáticamente cuando recibe mercancía. Perfil típico: grupo `admin` (o `superadmin`). Identificadores ficticios; cuerpos y respuestas según los modelos reales.
 
 **Conceptos verificados en el código de Commercial Relationship:**
 
@@ -56,7 +58,7 @@ Vigencias: la lista aplica desde `valid_from` (o desde siempre si es `null`) has
 
 ## 3. Identificar las presentaciones que tendrán precio
 
-`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations?status=ACTIVE&is_sellable=true` ([operación 26](../servicios/commercial-relationship.md#26-get-companiescompany_idcompany-product-presentations)); permiso `perm:commercial-relationship:company_product_presentations:read`. Tomar `items[].id` ([company_product_presentation_id](../parametros/company-product-presentation-id.md)) y `company_product_id`. Si el producto o la presentación aún no están adoptados, ver [Productos y precios §5 y 7](../principales/productos-y-precios.md#5-adoptar-un-producto-global-en-la-empresa).
+`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-product-presentations?status=ACTIVE&is_sellable=true` ([operación 26](../servicios/commercial-relationship.md#26-get-companiescompany_idcompany-product-presentations)); permiso `perm:commercial-relationship:company_product_presentations:read`. Tomar `items[].id` ([company_product_presentation_id](../parametros/company-product-presentation-id.md)) y `company_product_id`. Si el producto o la presentación aún no están adoptados, ver [Productos y precios §8 y 11](../principales/productos-y-precios.md#8-adoptar-un-producto-global-en-la-empresa).
 
 ## 4. Crear la política de porcentaje de ganancia
 
@@ -156,8 +158,8 @@ Vigencias del precio: `valid_from` (si se omite, el instante de creación) y `va
 Para que la política produzca precios hace falta una compra **confirmada y recibida** de la presentación, con `unit_cost` real. El flujo completo está en [Registrar una compra](registrar-compra.md); resumido:
 
 1. `POST https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases` con la línea (`company_product_presentation_id`, `quantity`, `unit_cost: "500.00"`).
-2. `POST …/purchases/{purchase_id}/confirmation` con `Idempotency-Key` y `{"version": n}`. La confirmación valida que la presentación tenga política en alguna lista vigente de la moneda (`409 PRICING_POLICY_NOT_CONFIGURED` si no) y que el impuesto de compra esté configurado.
-3. `POST …/purchases/{purchase_id}/receipt` con `Idempotency-Key` y `{"version": n, "full_receipt_confirmed": true}`. La respuesta `200` trae `receipt_status: "RECEIVED"`. En ese momento Purchase envía a Commercial Relationship los costos recibidos (llamada interna, no del frontend).
+2. `POST …/purchases/{purchase_id}/confirmation` con `Idempotency-Key` y `{"version": n}` (`version` opcional). La confirmación valida que la presentación tenga política en alguna lista vigente de la moneda (`409 PRICING_POLICY_NOT_CONFIGURED` si no) y que el impuesto de compra esté configurado.
+3. `POST …/purchases/{purchase_id}/receipt` con `Idempotency-Key` y `{"version": n, "full_receipt_confirmed": true}` (`version` opcional). La respuesta `200` trae `receipt_status: "RECEIVED"`. En ese momento Purchase envía a Commercial Relationship los costos recibidos (llamada interna, no del frontend).
 
 ## 8. Comprobar la aplicación automática y el precio actualizado
 

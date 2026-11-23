@@ -1,5 +1,7 @@
 # Documentación de las API de SIO
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 Documentación técnica de los 12 microservicios de SIO desplegados en Render (entorno de desarrollo `siodev`), dirigida al desarrollador frontend y a cualquier equipo que integre SIO mediante API HTTP. Esta carpeta Markdown se consulta directamente en GitHub y es la única ubicación oficial de la documentación de integración.
 
 ## Comienza aquí

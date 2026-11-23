@@ -1,5 +1,7 @@
 # Parámetro `company_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Operational Context](../servicios/operational-context.md)
 
 | Propiedad | Valor |
@@ -14,7 +16,7 @@
 
 ## Opción recomendada: contexto operativo del usuario
 
-**¿Qué hace?** Devuelve, para el usuario del token, sus membresías (una por empresa), el estado de cada una y las sucursales que tiene asignadas con el acceso efectivo (`allowed`). No pagina ni filtra. Es la consulta que debe hacerse justo después del login y la forma recomendada de obtener `company_id`; está descrita paso a paso en [Acceso y contexto operativo, API 5](../principales/acceso-y-contexto-operativo.md#5-consultar-las-empresas-y-sucursales-del-usuario).
+**¿Qué hace?** Devuelve, para el usuario del token, sus membresías (una por empresa), el estado de cada una y todas las sucursales de cada empresa con el acceso efectivo (`allowed`); la membresía `ACTIVE` da acceso a todas las sucursales activas. No pagina ni filtra. Es la consulta que debe hacerse justo después del login y la forma recomendada de obtener `company_id`; está descrita paso a paso en [Acceso y contexto operativo, API 5](../principales/acceso-y-contexto-operativo.md#5-consultar-las-empresas-y-sucursales-del-usuario).
 
 | | |
 |---|---|

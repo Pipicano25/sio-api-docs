@@ -1,5 +1,7 @@
 # Parámetro `organization_identity_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Party Identity](../servicios/party-identity.md)
 
 | Propiedad | Valor |
@@ -40,7 +42,7 @@ Respuesta `200` (modelo `PaginatedResponse[OrganizationIdentityResponse]`; valor
       "id": "0f1e2d3c-4b5a-4968-8776-655443322111",
       "country_id": "c0a80101-0000-4000-8000-000000000001",
       "identification_type": "NIT",
-      "identification_number": "900123456-7",
+      "identification_number": "900123456-8",
       "legal_name": "Distribuidora Ejemplo S.A.S.",
       "trade_name": "DistriEjemplo",
       "organization_type": null,
@@ -93,6 +95,8 @@ Respuesta `200` (modelo `PaginatedResponse[OrganizationIdentityResponse]`; valor
 
 - En [Administración empresarial](../principales/administracion-empresarial.md): campo `organization_identity_id` del cuerpo de la [API 1 (crear empresa)](../principales/administracion-empresarial.md#1-crear-empresa) y de la API 4; filtro de la API 2.
 - `POST /companies/{company_id}/company-suppliers` → `organization_identity_id` ([company_supplier_id](supplier-id.md)).
+- En [Compras](../principales/compras.md#4-crear-la-compra-en-borrador): campo `organization_identity_id` del cuerpo de la compra, en lugar de `company_supplier_id`, para comprarle a una organización aún no asociada como proveedor; se toma de `items[].organization_identity_id` de `GET /companies/{company_id}/supplier-candidates` ([Compras, API 1](../principales/compras.md#1-buscar-el-proveedor)).
+- En [Ventas](../principales/ventas.md#6-crear-la-venta-en-borrador): campo `organization_identity_id` del cuerpo de la venta, en lugar de `company_customer_id`, para venderle a una organización aún no registrada como cliente; se toma de `GET /companies/{company_id}/customer-candidates?customer_kind=ORGANIZATION` ([Ventas, API 1](../principales/ventas.md#1-buscar-el-cliente-de-la-venta)).
 - `POST /companies/{company_id}/company-customers` con `customer_kind: "ORGANIZATION"` → `organization_identity_id` ([company_customer_id](customer-id.md)).
 - Crear la empresa en Operational Context (vincula la identidad a una empresa de SIO): campo `organization_identity_id` del cuerpo; qué hace y sus errores en [Administración empresarial, API 1](../principales/administracion-empresarial.md#1-crear-empresa).
 - Filtros `?organization_identity_id=` al listar empresas, clientes y proveedores.

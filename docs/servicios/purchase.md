@@ -1,5 +1,7 @@
 # Purchase API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -31,22 +33,22 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 
 | Permiso | Operaciones | Grupos de la plantilla |
 |---|---|---|
-| `perm:purchase:purchases:create` | Crear compra | `administradores`, `supervisores`, `compras` |
-| `perm:purchase:purchases:read` | Listar, consultar, reporte del período | `administradores`, `supervisores`, `compras`, `reportes`, `consulta` |
-| `perm:purchase:purchases:update` | Editar cabecera, **confirmar**, **recibir** | `administradores`, `supervisores`, `compras` |
-| `perm:purchase:purchases:delete` | **Anular** | `administradores`, `compras` |
-| `perm:purchase:purchase_details:create` / `read` / `update` / `delete` | Líneas | `administradores`, `supervisores` (salvo `delete`), `compras`; lectura también `reportes` y `consulta` |
-| `perm:purchase:purchase_line_taxes:override` | Enviar `tax_percentage` en una línea (tasa distinta de la del producto) | `administradores`, `supervisores` (permiso explícito; los comodines CRUD **no** lo cubren). El grupo `compras` **no** lo tiene |
-| `perm:purchase:purchase_operations:read` | Operaciones de confirmación, recepción y anulación | `administradores`, `supervisores`, `compras`, `reportes`, `consulta` |
-| `perm:purchase:purchase_lifecycle_events:create` / `read` | Hitos logísticos | `administradores`, `supervisores`, `compras`; lectura también `reportes` y `consulta` |
-| `perm:purchase:purchase_sequences:create` / `read` / `update` | Secuencias | `administradores`, `supervisores`, `compras`; lectura también `reportes` y `consulta` |
+| `perm:purchase:purchases:create` | Crear compra | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchases:read` | Listar, consultar, reporte del período | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchases:update` | Editar cabecera, **confirmar**, **recibir** | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchases:delete` | **Anular** | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchase_details:create` / `read` / `update` / `delete` | Líneas | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchase_line_taxes:override` | Enviar `tax_percentage` en una línea (tasa distinta de la del producto) | `superadmin`, `admin` (vía `perm:purchase:all:all`; los comodines CRUD **no** lo cubren). Los grupos de área (`Compras`, `Ventas`, `Inventario`) **no** lo tiene |
+| `perm:purchase:purchase_operations:read` | Operaciones de confirmación, recepción y anulación | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchase_lifecycle_events:create` / `read` | Hitos logísticos | `superadmin`, `admin`, `Compras` |
+| `perm:purchase:purchase_sequences:create` / `read` / `update` | Secuencias | `superadmin`, `admin`, `Compras` |
 
 ## Alcance de datos
 
 | Regla | Detalle |
 |---|---|
 | Empresa | Membresía `ACTIVE` en `company_id` evaluada en Operational Context con el token del usuario; sin ella, `404 PURCHASE.NOT_FOUND`. Las lecturas y las secuencias solo exigen membresía |
-| Sucursal (escrituras sobre compras e hitos) | Además, acceso del usuario a la sucursal de la compra: `BRANCH_NOT_ASSIGNED`, `USER_BRANCH_INACTIVE`, `BRANCH_INACTIVE` o `COMPANY_INACTIVE` → `403 PURCHASE.BRANCH_ACCESS_DENIED`; sucursal de otra empresa → `404` |
+| Sucursal (escrituras sobre compras e hitos) | Además, acceso del usuario a la sucursal de la compra: `BRANCH_INACTIVE` o `COMPANY_INACTIVE` → `403 PURCHASE.BRANCH_ACCESS_DENIED`; sucursal de otra empresa → `404`. No exige asignación a la sucursal (enmienda 2026-11-19: la membresía `ACTIVE` da acceso a todas las sucursales activas; `BRANCH_NOT_ASSIGNED` y `USER_BRANCH_INACTIVE` ya no se producen) |
 | Operational Context con `403` | `403 PURCHASE.OPERATIONAL_ACCESS_DENIED` |
 
 ## Conceptos clave
@@ -54,7 +56,8 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Concepto | Detalle |
 |---|---|
 | Estados | `status`: `DRAFT`, `CONFIRMED`, `CANCELLED`. `receipt_status` (solo desde la confirmación): `PENDING` o `RECEIVED`. Una compra `CONFIRMED` con `receipt_status: PENDING` está **pendiente de recepción**: no es mercancía recibida |
-| `version` | Concurrencia optimista; toda escritura la exige; `409 PURCHASE.VERSION_CONFLICT` si no coincide |
+| `version` | Concurrencia optimista **opcional** en toda escritura (cuerpos de `PUT`, alta de línea, confirmación, recepción, anulación, secuencias y el `?version=` del `DELETE` de línea): si se envía y no coincide → `409 PURCHASE.VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. La confirmación y la (in)activación de secuencias aceptan `{}` o ningún cuerpo |
+| `PUT` parcial | El cuerpo de `PUT` (cabecera, línea, secuencia) lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`; campo desconocido → `422`. Las validaciones se hacen sobre el registro combinado; si nada cambia, no se escribe ni sube la versión |
 | Costos | El comprador envía `unit_cost` por presentación (cadena decimal, > 0). El servicio calcula `base_quantity` (`quantity × base_quantity_factor_snapshot`) e `inventory_unit_cost` (costo por unidad base), que es el que recibe Inventory |
 | Impuesto | `tax_amount` lo calcula el servidor con la tasa de la línea: por defecto la `purchase_tax_percentage` del producto empresarial (`tax_percentage_source: PRODUCT_DEFAULT`); con `perm:purchase:purchase_line_taxes:override` se puede enviar `tax_percentage` (0 a 100, hasta 4 decimales; `LINE_OVERRIDE`). Enviar `tax_amount` produce `422 UNKNOWN_FIELD` |
 | Descuentos | `discount_amount` por línea (≥ 0, 2 decimales) |
@@ -64,6 +67,15 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Numeración | Al confirmar se asigna `number` desde la secuencia activa de la sucursal o, si no hay, de la empresa |
 | Política de ganancia | Al confirmar, cada presentación debe tener una política de ganancia aplicable en Commercial Relationship; si no, `409 PRICING_POLICY_NOT_CONFIGURED`. Tras recibir, Purchase envía los costos reales a Commercial Relationship para la actualización automática de precios |
 
+Ejemplo de `PUT` parcial (solo cambia `observations`, sin `version`):
+
+```bash
+curl -sS -X PUT 'https://sio-purchase-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/purchases/4b5c6d7e-8f9a-4b0c-8d1e-2f3a4b5c6d7e' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"observations": "Entrega en bodega"}'
+```
+
 ## Tabla de endpoints
 
 | # | Método | Ruta relativa | Descripción | Permiso | Clase | Ficha |
@@ -71,7 +83,7 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | 1 | `GET` | `/health/live` (sin prefijo) | Proceso vivo | Ninguno | `READ` | [Ver](#1-get-healthlive) |
 | 2 | `GET` | `/health/ready` (sin prefijo) | Proceso y base de datos listos | Ninguno | `READ` | [Ver](#2-get-healthready) |
 | 3 | `POST` | `/companies/{company_id}/purchases` | Crear compra en borrador | `perm:purchase:purchases:create` | `WRITE` | [Ver](#3-post-companiescompany_idpurchases) |
-| 4 | `GET` | `/companies/{company_id}/purchases` | Listar compras | `perm:purchase:purchases:read` | `READ` | [Ver](#4-get-companiescompany_idpurchases) |
+| 4 | `GET` | `/companies/{company_id}/purchases` | Listar compras (una por documento del proveedor, con su último estado) | `perm:purchase:purchases:read` | `READ` | [Ver](#4-get-companiescompany_idpurchases) |
 | 5 | `GET` | `/companies/{company_id}/purchases/{purchase_id}` | Consultar compra con líneas | `perm:purchase:purchases:read` | `READ` | [Ver](#5-get-companiescompany_idpurchasespurchase_id) |
 | 6 | `PUT` | `/companies/{company_id}/purchases/{purchase_id}` | Editar cabecera del borrador | `perm:purchase:purchases:update` | `WRITE` | [Ver](#6-put-companiescompany_idpurchasespurchase_id) |
 | 7 | `POST` | `/companies/{company_id}/purchases/{purchase_id}/details` | Agregar línea | `perm:purchase:purchase_details:create` | `WRITE` | [Ver](#7-post-companiescompany_idpurchasespurchase_iddetails) |
@@ -92,6 +104,7 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | 22 | `POST` | `/companies/{company_id}/purchase-sequences/{sequence_id}/deactivate` | Desactivar secuencia | `perm:purchase:purchase_sequences:update` | `HIGH_RISK` | [Ver](#22-post-companiescompany_idpurchase-sequencessequence_iddeactivate) |
 | 23 | `POST` | `/companies/{company_id}/purchase-sequences/{sequence_id}/reactivate` | Activar secuencia | `perm:purchase:purchase_sequences:update` | `WRITE` | [Ver](#23-post-companiescompany_idpurchase-sequencessequence_idreactivate) |
 | 24 | `GET` | `/companies/{company_id}/purchase-reports/period` | Compras del período con totales por categoría | `perm:purchase:purchases:read` | `READ` | [Ver](#24-get-companiescompany_idpurchase-reportsperiod) |
+| 25 | `GET` | `/companies/{company_id}/purchase-history` | Historial de un documento del proveedor: todas sus compras | `perm:purchase:purchases:read` | `READ` | [Ver](#25-get-companiescompany_idpurchase-history) |
 
 ## Objetos
 
@@ -174,7 +187,8 @@ Cuerpo (`PurchaseCreateIn`; rechaza campos adicionales):
 | Campo | Tipo | Obligatorio | Validación | Cómo obtenerlo |
 |---|---|---|---|---|
 | `branch_id` | UUID | Sí | Sucursal con acceso | [branch_id](../parametros/branch-id.md) |
-| `company_supplier_id` | UUID | Sí | Proveedor `ACTIVE` (no `BLOCKED`) | [company_supplier_id](../parametros/supplier-id.md) |
+| `company_supplier_id` | UUID | Uno de los dos | Proveedor ya asociado; si está `INACTIVE` o `BLOCKED` se reactiva o desbloquea | [company_supplier_id](../parametros/supplier-id.md) |
+| `organization_identity_id` | UUID | Uno de los dos | Organización `ACTIVE` de Party Identity, asociada o no; se asocia como proveedor al crear el borrador. Con los dos campos o ninguno → `422 SUPPLIER_REQUIRED` | [organization_identity_id](../parametros/organization-identity-id.md); `supplier-candidates` en Commercial Relationship ([CR 77](commercial-relationship.md#77-get-companiescompany_idsupplier-candidates)) |
 | `operation_date` | date | Sí | Fecha de negocio | — |
 | `supplier_payment_condition_id` | UUID \| null | No | Condición del proveedor cuyo tipo sea de contado (`CASH`); otra → `409 PAYMENT_CONDITION_NOT_AVAILABLE` | `supplier-payment-conditions` en Commercial Relationship |
 | `payment_method_id` | UUID | Sí | Método `ACTIVE` | [payment_method_id](../parametros/payment-method-id.md) |
@@ -256,7 +270,7 @@ Respuesta `201` (`PurchaseResponse` con `lines`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": "FV-8891",
   "supplier_name_snapshot": "Distribuidora Ejemplo S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": null,
   "subtotal": "500000.00",
@@ -341,7 +355,9 @@ curl -sS 'https://sio-purchase-dev.onrender.com/api/v1/companies/550e8400-e29b-4
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
-Respuesta `200` (`PurchasePage`): `items[]` de `PurchaseResponse` sin `lines`, más la paginación. Orden: `operation_date` descendente, `created_at` descendente e `id` (verificado en el repositorio).
+Una fila por documento del proveedor: por cada `supplier_document_number`, sin importar el proveedor, sale solo la compra creada más recientemente entre las que cumplen los demás filtros; las compras sin documento salen cada una. `status` filtra por el estado de esa última compra. Todas las compras de un documento: ficha 25.
+
+Respuesta `200` (`PurchasePage`): `items[]` de `PurchaseSummaryResponse` (resumen: número, documento del proveedor, proveedor, estado, recepción, fecha, moneda, total, `created_by_user_id`, `created_by_name` y las fechas `created_at`, `confirmed_at`, `received_at` y `cancelled_at`), más la paginación. El detalle completo es la ficha 5. `created_by_name` se lee de `contract.v1_application_users` de Operational Context; si no responde queda en `null` y el listado igual se devuelve. Orden: `operation_date` descendente, `created_at` descendente e `id` (verificado en el repositorio).
 
 Ejemplo de respuesta `200` (`PurchasePage`; valores ilustrativos):
 
@@ -350,77 +366,20 @@ Ejemplo de respuesta `200` (`PurchasePage`; valores ilustrativos):
   "items": [
     {
       "id": "e6d7d0c7-a0be-4f4b-8bca-631867ff85c8",
-      "company_id": "550e8400-e29b-41d4-a716-446655440000",
-      "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-      "company_supplier_id": "d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f60",
-      "supplier_payment_condition_id": null,
-      "payment_condition_code_snapshot": "CASH",
-      "payment_terms_days_snapshot": 0,
-      "due_date": "2026-10-19",
-      "payment_method_id": "b7c8d9e0-f1a2-4b3c-8d4e-5f6a7b8c9d05",
-      "payment_method_code_snapshot": "CASH",
-      "payment_method_name_snapshot": "Efectivo",
-      "purchase_sequence_id": "4e5f6a7b-8c9d-4e0f-9a1b-2c3d4e5f6a7b",
       "number": "C-000045",
-      "sequence_value": 45,
-      "status": "CONFIRMED",
-      "operation_date": "2026-10-19",
-      "promised_delivery_at": null,
       "supplier_document_number": null,
-      "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-      "supplier_identification_snapshot": "NIT 900123456-7",
-      "currency_code": "COP",
-      "observations": "Entrega en mostrador",
-      "subtotal": "1600.00",
-      "discount_total": "0.00",
-      "tax_total": "0.00",
-      "total": "1600.00",
-      "inventory_operation_id": null,
+      "supplier_name": "Distribuidora Farma S.A.S.",
+      "status": "CONFIRMED",
       "receipt_status": "PENDING",
-      "received_at": null,
-      "received_by_user_id": null,
+      "operation_date": "2026-10-19",
+      "currency_code": "COP",
+      "total": "1600.00",
       "created_by_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
-      "cancelled_by_user_id": null,
-      "cancelled_at": null,
-      "cancellation_reason": null,
-      "pending_operation_id": null,
-      "version": 1,
+      "created_by_name": "Operario DAO",
       "created_at": "2026-10-19T15:04:05Z",
-      "updated_at": "2026-10-19T15:04:05Z",
-      "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-      "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-      "lines": [
-        {
-          "id": "ce488045-ed3f-4b6c-81d2-68ee8c3fe7a0",
-          "purchase_id": "4b5c6d7e-8f9a-4b0c-8d1e-2f3a4b5c6d7e",
-          "line_number": 1,
-          "company_product_id": "e3f4a5b6-c7d8-4e9f-8a0b-1c2d3e4f5a61",
-          "company_product_presentation_id": "a5b6c7d8-e9f0-4a1b-8c2d-3e4f5a6b7c83",
-          "supplier_product_id": null,
-          "supplier_lead_time_snapshot_hours": null,
-          "product_code_snapshot": "PRD-0001",
-          "product_name_snapshot": "Acetaminofén 500 mg",
-          "presentation_code_snapshot": "UN",
-          "presentation_name_snapshot": "Unidad",
-          "base_quantity_factor_snapshot": "1.00000000",
-          "unit_code_snapshot": "UN",
-          "quantity": "2",
-          "unit_cost": "500.00",
-          "discount_amount": "0",
-          "tax_amount": "0",
-          "tax_percentage": "19",
-          "tax_percentage_source": "PRODUCT_DEFAULT",
-          "warnings": [],
-          "subtotal": "1600.00",
-          "total": "1600.00",
-          "base_quantity": "2.0000",
-          "inventory_unit_cost": "500.00",
-          "created_at": "2026-10-19T15:04:05Z",
-          "updated_at": "2026-10-19T15:04:05Z",
-          "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-          "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c"
-        }
-      ]
+      "confirmed_at": "2026-10-19T15:10:00Z",
+      "received_at": null,
+      "cancelled_at": null
     }
   ],
   "page": 1,
@@ -432,7 +391,7 @@ Ejemplo de respuesta `200` (`PurchasePage`; valores ilustrativos):
 
 ### 5. `GET /companies/{company_id}/purchases/{purchase_id}`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}`; permiso `perm:purchase:purchases:read`. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}`; permiso `perm:purchase:purchases:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -465,7 +424,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -523,7 +482,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 
 ### 6. `PUT /companies/{company_id}/purchases/{purchase_id}`
 
-`WRITE`, solo en `DRAFT`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}`; permiso `perm:purchase:purchases:update`. Cuerpo (`PurchaseUpdateIn`): los campos de cabecera de la operación 3 (`branch_id`, `company_supplier_id`, `operation_date`, `payment_method_id` obligatorios; `supplier_payment_condition_id`, `promised_delivery_at`, `supplier_document_number`, `observations` opcionales) **más `version`**.
+`WRITE`, solo en `DRAFT`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}`; permiso `perm:purchase:purchases:update`. Cuerpo (`PurchaseUpdateIn`, parcial; todos opcionales): los campos de cabecera de la operación 3 (`branch_id`, `company_supplier_id`, `organization_identity_id`, `operation_date`, `payment_method_id` no admiten `null`; `company_supplier_id` y `organization_identity_id` no van juntos y cambiar el proveedor lo asocia, reactiva o desbloquea igual que al crear; `supplier_payment_condition_id`, `promised_delivery_at`, `supplier_document_number`, `observations` se borran con `null`) y `version` (opcional).
 
 ```json
 {
@@ -583,7 +542,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -641,7 +600,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 
 ### 7. `POST /companies/{company_id}/purchases/{purchase_id}/details`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details`; permiso `perm:purchase:purchase_details:create` (+ `override` si trae `tax_percentage`). Cuerpo (`LineCreateIn`): los campos de `lines[]` de la operación 3 **más `version`**.
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details`; permiso `perm:purchase:purchase_details:create` (+ `override` si trae `tax_percentage`). Cuerpo (`LineCreateIn`): los campos de `lines[]` de la operación 3 y `version` de la compra (opcional).
 
 ```json
 {
@@ -697,7 +656,7 @@ Ejemplo de respuesta `201` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -755,7 +714,7 @@ Ejemplo de respuesta `201` (`PurchaseResponse`; valores ilustrativos):
 
 ### 8. `GET /companies/{company_id}/purchases/{purchase_id}/details`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details`; permiso `perm:purchase:purchase_details:read`. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details`; permiso `perm:purchase:purchase_details:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -804,7 +763,7 @@ Ejemplo de respuesta `200` (`None`; valores ilustrativos):
 
 ### 9. `PUT /companies/{company_id}/purchases/{purchase_id}/details/{detail_id}`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details/{detail_id}`; permiso `perm:purchase:purchase_details:update` (+ `override`). Cuerpo: `LineCreateIn`. Reemplaza la línea y recalcula el impuesto con la tasa vigente. 
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details/{detail_id}`; permiso `perm:purchase:purchase_details:update` (+ `override`). Cuerpo (`LineUpdateIn`, parcial; todos opcionales): `company_product_id`, `company_product_presentation_id`, `quantity`, `unit_cost`, `discount_amount` (no admiten `null`), `supplier_product_id`, `tax_percentage` y `version` (opcional). Cambia solo los campos enviados y recalcula el impuesto con la tasa vigente.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -847,7 +806,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -905,7 +864,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 
 ### 10. `DELETE /companies/{company_id}/purchases/{purchase_id}/details/{detail_id}`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details/{detail_id}?version=3`; permiso `perm:purchase:purchase_details:delete`. `version` como parámetro de consulta (≥ 1). 
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/details/{detail_id}?version=3`; permiso `perm:purchase:purchase_details:delete`. `version` como parámetro de consulta (≥ 1), opcional: si se envía y no coincide → `409 VERSION_CONFLICT`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -938,7 +897,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -1003,7 +962,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 | Permiso | `perm:purchase:purchases:update` |
 | Cabeceras | `Authorization`, `Content-Type: application/json`, **`Idempotency-Key`** |
 
-Cuerpo (`VersionIn`): `{"version": 3}`.
+Cuerpo (`VersionIn`): `{"version": 3}`, con `version` opcional; se acepta `{}` o ningún cuerpo.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1042,7 +1001,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -1111,7 +1070,7 @@ Errores propios: `422 PURCHASE_WITHOUT_LINES`; `409 PURCHASE_TAX_NOT_CONFIGURED`
 | Permiso | `perm:purchase:purchases:update` |
 | Cabeceras | `Authorization`, `Content-Type: application/json`, **`Idempotency-Key`** |
 
-Cuerpo (`ReceiptIn`): `{"version": 4, "full_receipt_confirmed": true}`. `full_receipt_confirmed` declara que se recibió **toda** la compra; no hay recepciones parciales ni por línea. Enviar `false` se rechaza con `422 FULL_RECEIPT_NOT_CONFIRMED` (verificado en el código).
+Cuerpo (`ReceiptIn`): `{"version": 4, "full_receipt_confirmed": true}`; `version` es opcional y `full_receipt_confirmed` obligatorio. `full_receipt_confirmed` declara que se recibió **toda** la compra; no hay recepciones parciales ni por línea. Enviar `false` se rechaza con `422 FULL_RECEIPT_NOT_CONFIRMED` (verificado en el código).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1151,7 +1110,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -1207,7 +1166,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 }
 ```
 
-Reglas: la compra debe estar `CONFIRMED`, no recibida, sin operación en curso y con la versión vigente; los costos congelados deben ser positivos. No se revalidan proveedor ni productos (Inventory valida los productos al aplicar la entrada). Se registra la operación `RECEIVE` `PENDING` cuyo `id` es la clave de la entrada en Inventory; con la entrada aplicada se completa. Si Inventory no responde, la operación queda `PENDING` y la respuesta es `503` con el `operation_id`: reintente con la **misma** `Idempotency-Key` o consulte la operación (14/15); nunca habrá dos entradas. Tras la recepción, en la misma transacción se registran los costos reales para la actualización automática de precios en Commercial Relationship.
+Reglas: la compra debe estar `CONFIRMED`, no recibida, sin operación en curso y, si se envía `version`, con la versión vigente; los costos congelados deben ser positivos. No se revalidan proveedor ni productos (Inventory valida los productos al aplicar la entrada). Se registra la operación `RECEIVE` `PENDING` cuyo `id` es la clave de la entrada en Inventory; con la entrada aplicada se completa. Si Inventory no responde, la operación queda `PENDING` y la respuesta es `503` con el `operation_id`: reintente con la **misma** `Idempotency-Key` o consulte la operación (14/15); nunca habrá dos entradas. Tras la recepción, en la misma transacción se registran los costos reales para la actualización automática de precios en Commercial Relationship.
 
 Errores: `409 INVALID_STATUS` (no confirmada o ya recibida), `409 INVENTORY_REJECTED`, `409 OPERATION_IN_PROGRESS`, `409 VERSION_CONFLICT`, `409 IDEMPOTENCY_KEY_CONFLICT`, `403 BRANCH_ACCESS_DENIED`, `503`.
 
@@ -1220,7 +1179,7 @@ Errores: `409 INVALID_STATUS` (no confirmada o ya recibida), `409 INVENTORY_REJE
 | Permiso | `perm:purchase:purchases:delete` |
 | Cabeceras | `Authorization`, `Content-Type: application/json`, **`Idempotency-Key`** |
 
-Cuerpo (`CancelIn`): `version` (≥ 1) y `reason` (obligatorio, no vacío, ≤ 1000).
+Cuerpo (`CancelIn`): `version` (≥ 1, opcional) y `reason` (obligatorio, no vacío, ≤ 1000).
 
 Reglas: `DRAFT` o `CONFIRMED` pendiente de recepción → `CANCELLED` en una transacción local sin Inventory (conserva el número si lo tiene). `CONFIRMED` recibida → operación `CANCEL` `PENDING`, reverso exacto de `inventory_operation_id` y después `CANCELLED` (conserva número y datos de recepción); si el reverso falla, `FAILED` y la compra sigue `CONFIRMED`; si la mercancía ya se consumió, `409 INVENTORY_ALREADY_CONSUMED`. No revalida proveedor ni productos. Errores: `422 REASON_REQUIRED`, `409 INVALID_STATUS` (ya anulada), `VERSION_CONFLICT`, `OPERATION_IN_PROGRESS`, `IDEMPOTENCY_KEY_CONFLICT`, `INVENTORY_REJECTED`, `403`, `404`, `503`.
 
@@ -1260,7 +1219,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
   "promised_delivery_at": null,
   "supplier_document_number": null,
   "supplier_name_snapshot": "Distribuidora Farma S.A.S.",
-  "supplier_identification_snapshot": "NIT 900123456-7",
+  "supplier_identification_snapshot": "NIT 900123456-8",
   "currency_code": "COP",
   "observations": "Entrega en mostrador",
   "subtotal": "1600.00",
@@ -1318,7 +1277,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 
 ### 14. `GET /companies/{company_id}/purchases/{purchase_id}/operations`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/operations`; permiso `perm:purchase:purchase_operations:read`. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/operations`; permiso `perm:purchase:purchase_operations:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1348,7 +1307,7 @@ Respuesta `200`: **array** de `OperationResponse` con `id`, `purchase_id`, `oper
 
 ### 15. `GET /companies/{company_id}/purchase-operations/{operation_id}`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-operations/{operation_id}`; permiso `perm:purchase:purchase_operations:read`. `operation_id` = `pending_operation_id` o `id` de la operación 14. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-operations/{operation_id}`; permiso `perm:purchase:purchase_operations:read`. `operation_id` = `pending_operation_id` o `id` de la operación 14.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1440,7 +1399,7 @@ Ejemplo de respuesta `201` (`LifecycleEventResponse`; valores ilustrativos):
 
 ### 17. `GET /companies/{company_id}/purchases/{purchase_id}/lifecycle-events`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/lifecycle-events`; permiso `perm:purchase:purchase_lifecycle_events:read`. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/lifecycle-events`; permiso `perm:purchase:purchase_lifecycle_events:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1529,7 +1488,7 @@ Ejemplo de respuesta `201` (`SequenceResponse`; valores ilustrativos):
 
 ### 19. `GET /companies/{company_id}/purchase-sequences`
 
-`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences`; permiso `perm:purchase:purchase_sequences:read`. 
+`READ`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences`; permiso `perm:purchase:purchase_sequences:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1583,7 +1542,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 21. `PUT /companies/{company_id}/purchase-sequences/{sequence_id}`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}`; permiso `perm:purchase:purchase_sequences:update`. Cuerpo (`SequenceUpdateIn`): campos de la operación 18 **más `version`**. Tras el primer número asignado, el formato es inmutable (`409 SEQUENCE_IN_USE`); solo `maximum_number` puede cambiar sin quedar por debajo de un contador.
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}`; permiso `perm:purchase:purchase_sequences:update`. Cuerpo (`SequenceUpdateIn`, parcial): campos de la operación 18, todos opcionales (`series_code`, `prefix`, `separator`, `initial_number`, `number_length`, `reset_policy` no admiten `null`), y `version` (opcional). Tras el primer número asignado, el formato es inmutable (`409 SEQUENCE_IN_USE`); solo `maximum_number` puede cambiar sin quedar por debajo de un contador.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1637,7 +1596,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 22. `POST /companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`
 
-`HIGH_RISK` (sin secuencia activa, las confirmaciones fallan con `409 SEQUENCE_NOT_CONFIGURED`). URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`; cuerpo `{"version": 1}`; respuesta `200` con `is_active: false`.
+`HIGH_RISK` (sin secuencia activa, las confirmaciones fallan con `409 SEQUENCE_NOT_CONFIGURED`). URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`; cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo); respuesta `200` con `is_active: false`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1683,7 +1642,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 23. `POST /companies/{company_id}/purchase-sequences/{sequence_id}/reactivate`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/reactivate`; cuerpo `{"version": 2}`; respuesta `200` con `is_active: true`; `409 SEQUENCE_ALREADY_ACTIVE` si ya hay otra activa en el mismo alcance.
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/reactivate`; cuerpo `{"version": 2}` (`version` opcional; se acepta `{}` o ningún cuerpo); respuesta `200` con `is_active: true`; `409 SEQUENCE_ALREADY_ACTIVE` si ya hay otra activa en el mismo alcance.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1764,7 +1723,7 @@ Respuesta `200` (`PeriodPage`; valores ilustrativos):
       "received_at": "2026-10-20T09:00:03Z",
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "supplier_name": "Distribuidora Ejemplo S.A.S.",
-      "supplier_identification": "NIT 900123456-7",
+      "supplier_identification": "NIT 900123456-8",
       "number": "C-000045",
       "supplier_document_number": "FV-8891",
       "status": "CONFIRMED",
@@ -1795,12 +1754,86 @@ Respuesta `200` (`PeriodPage`; valores ilustrativos):
 
 Reglas: compras no `DRAFT` por `operation_date`; `category` deriva del estado: `RECEIVED` (confirmada y recibida), `PENDING_RECEIPT` (confirmada sin recibir), `CANCELLED` (anulada, aunque se hubiera recibido). `totals` es del período completo por moneda; `effective_total` = recibidas + pendientes. Orden: `operation_date`, `number`, `id`. Lo consume Business Reporting.
 
+### 25. `GET /companies/{company_id}/purchase-history`
+
+| | |
+|---|---|
+| Clasificación | `READ` |
+| URL | `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-history` |
+| Permiso | `perm:purchase:purchases:read` |
+
+Todas las compras que llevan un documento del proveedor (`supplier_document_number`), incluidas las anuladas, de la más reciente a la más antigua: es el historial del documento que el listado (ficha 4) resume en una fila.
+
+| Parámetro | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
+|---|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | Membresía | [company_id](../parametros/company-id.md) |
+| `supplier_document_number` | query | string | Sí | 1–100, coincidencia exacta | `supplier_document_number` de una fila del listado (ficha 4) |
+| `company_supplier_id` | query | UUID | No | — | Limita a un proveedor (dos proveedores pueden usar el mismo número) · [company_supplier_id](../parametros/supplier-id.md) |
+| `page`, `page_size` | query | integer | No | 1–100, por defecto 20 | — |
+
+Ejemplo de solicitud (sin cuerpo):
+
+```bash
+curl -sS -G 'https://sio-purchase-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/purchase-history' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  --data-urlencode 'supplier_document_number=FV-8891'
+```
+
+Respuesta `200` (`PurchasePage`, los mismos campos de la ficha 4; valores ilustrativos):
+
+```json
+{
+  "items": [
+    {
+      "id": "e6d7d0c7-a0be-4f4b-8bca-631867ff85c8",
+      "number": "C-000045",
+      "supplier_document_number": "FV-8891",
+      "supplier_name": "Distribuidora Farma S.A.S.",
+      "status": "CONFIRMED",
+      "receipt_status": "PENDING",
+      "operation_date": "2026-10-19",
+      "currency_code": "COP",
+      "total": "1600.00",
+      "created_by_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "created_by_name": "Operario DAO",
+      "created_at": "2026-10-19T15:04:05Z",
+      "confirmed_at": "2026-10-19T15:10:00Z",
+      "received_at": null,
+      "cancelled_at": null
+    },
+    {
+      "id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+      "number": null,
+      "supplier_document_number": "FV-8891",
+      "supplier_name": "Distribuidora Farma S.A.S.",
+      "status": "CANCELLED",
+      "receipt_status": null,
+      "operation_date": "2026-10-19",
+      "currency_code": "COP",
+      "total": "1600.00",
+      "created_by_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "created_by_name": "Operario DAO",
+      "created_at": "2026-10-19T14:50:00Z",
+      "confirmed_at": null,
+      "received_at": null,
+      "cancelled_at": "2026-10-19T14:55:00Z"
+    }
+  ],
+  "page": 1,
+  "page_size": 20,
+  "total_records": 2,
+  "total_pages": 1
+}
+```
+
+Errores: sin `supplier_document_number` → `422 PURCHASE.VALIDATION_ERROR`; sin membresía en la empresa → `404 PURCHASE.NOT_FOUND`. Un documento que no está en ninguna compra devuelve `items: []`.
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
 |---|---|---|
-| `403 PURCHASE.FORBIDDEN` al enviar `tax_percentage` | Falta `perm:purchase:purchase_line_taxes:override` | Ocultar el ajuste de tasa a quien no lo tenga (el grupo `compras` no lo tiene) |
-| `403 PURCHASE.BRANCH_ACCESS_DENIED` | Sin acceso a la sucursal | Ofrecer solo sucursales con `allowed: true` |
+| `403 PURCHASE.FORBIDDEN` al enviar `tax_percentage` | Falta `perm:purchase:purchase_line_taxes:override` | Ocultar el ajuste de tasa a quien no lo tenga (los grupos de área no lo tienen) |
+| `403 PURCHASE.BRANCH_ACCESS_DENIED` | Sucursal o empresa inactivas | Ofrecer solo sucursales con `allowed: true` |
 | `409 PURCHASE.PURCHASE_TAX_NOT_CONFIGURED` | Producto sin tasa de impuesto de compra | Configurar `purchase_tax_percentage` en el producto empresarial (Commercial Relationship) o ajustar la línea |
 | `409 PURCHASE.PURCHASE_TAX_CHANGED` | La tasa del producto cambió tras guardar la línea | Volver a guardar la línea |
 | `409 PURCHASE.PRICING_POLICY_NOT_CONFIGURED` | Presentación sin política de ganancia aplicable | Configurar la política en Commercial Relationship |
@@ -1827,8 +1860,8 @@ Reglas: compras no `DRAFT` por `operation_date`; `category` deriva del estado: `
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 24 |
-| Operaciones documentadas | 24 |
+| Operaciones en el OpenAPI desplegado | 25 |
+| Operaciones documentadas | 25 |
 | Permisos contrastados con el código | Sí (`api/purchases.py`, `operations.py`, `lifecycle_events.py`, `sequences.py`, `purchase_reports.py`, `identity.py`) |
 | Esquemas contrastados | Sí (`api/schemas/purchases.py`, `domain/lifecycle.py`, `domain/status.py`, OpenAPI desplegado) |
 | Verificado | Lista de compras ordenada por `operation_date` desc, `created_at` desc, `id`; `full_receipt_confirmed: false` → `422 FULL_RECEIPT_NOT_CONFIRMED`; `inventory_unit_cost` sin impuestos |

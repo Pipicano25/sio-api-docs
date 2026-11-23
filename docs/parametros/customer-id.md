@@ -1,5 +1,7 @@
 # Parámetro `company_customer_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Commercial Relationship](../servicios/commercial-relationship.md)
 
 > El nombre exacto del parámetro en las rutas y cuerpos es **`company_customer_id`** (cliente de la empresa). En esta documentación el archivo se llama `customer-id` por brevedad.
@@ -9,7 +11,7 @@
 | Qué representa | Un **cliente de una empresa**: la relación comercial entre la empresa y una persona u organización identificada en Party Identity. Las ventas se registran contra este identificador |
 | Nombre en las rutas y cuerpos | `company_customer_id` (en Sales: campo `company_customer_id` del cuerpo y filtro `?company_customer_id=`; en Commercial Relationship: ruta `/company-customers/{company_customer_id}`) |
 | Tipo | UUID (texto) |
-| Obligatorio | Sí al crear una venta |
+| Obligatorio | Al crear una venta, uno de `company_customer_id`, `person_identity_id` u `organization_identity_id` |
 | Ejemplo (ficticio) | `c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f` |
 | Quién lo genera | Commercial Relationship, al incorporar el cliente (`id` de la respuesta) |
 | Alcance | Empresa: solo lo ven los miembros de la empresa |
@@ -128,6 +130,10 @@ La respuesta `201` devuelve el mismo objeto que la lista; el `company_customer_i
 | `422` | `COMMERCIAL_RELATIONSHIP.VALIDATION_ERROR` | Identidad inexistente o inactiva en Party Identity, campo obligatorio ausente, formato inválido o campo desconocido | Corregir el formulario |
 | `503` | `COMMERCIAL_RELATIONSHIP.DEPENDENCY_UNAVAILABLE` | Operational Context, Party Identity o Product Catalog no responden (`dependency` lo indica) | Reintentar más tarde |
 
+
+## Vender sin registrarlo antes
+
+No hace falta tener el `company_customer_id` para vender: en la venta se puede enviar `person_identity_id` u `organization_identity_id` y Sales registra el cliente (código `CLI-<número de documento>`), o lo reactiva si estaba inactivo, al crear el borrador ([Ventas, API 1 y 6](../principales/ventas.md#1-buscar-el-cliente-de-la-venta)). La venta responde con el `company_customer_id` resultante.
 
 ## Cómo usarlo después
 

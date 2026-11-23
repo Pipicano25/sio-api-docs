@@ -1,5 +1,7 @@
 # Sales API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -31,21 +33,21 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 
 | Permiso | Operaciones | Grupos de la plantilla |
 |---|---|---|
-| `perm:sales:sales:create` | Crear venta | `administradores`, `supervisores`, `ventas` (`perm:sales:all:*`) |
-| `perm:sales:sales:read` | Listar, consultar, disponibilidad, agregaciones | `administradores`, `supervisores`, `ventas`, `reportes`, `consulta` |
-| `perm:sales:sales:update` | Editar cabecera, **confirmar** | `administradores`, `supervisores`, `ventas` |
-| `perm:sales:sales:delete` | **Anular** | `administradores`, `ventas` |
-| `perm:sales:sale_details:create` / `read` / `update` / `delete` | Líneas | `administradores`, `supervisores` (salvo `delete`), `ventas`; lectura también `reportes` y `consulta` |
-| `perm:sales:sale_operations:read` | Operaciones de confirmación y anulación | `administradores`, `supervisores`, `ventas`, `reportes`, `consulta` |
-| `perm:sales:sale_sequences:create` / `read` / `update` | Secuencias | `administradores`, `supervisores`, `ventas`; lectura también `reportes` y `consulta` |
-| `perm:sales:sales:read-profitability` | Añade costo y margen a las respuestas de venta y líneas | `administradores`, `supervisores` (permiso explícito; los comodines `read` **no** lo cubren) |
+| `perm:sales:sales:create` | Crear venta | `superadmin`, `admin`, `Ventas` (`perm:sales:all:*`) |
+| `perm:sales:sales:read` | Listar, consultar, disponibilidad, agregaciones | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sales:update` | Editar cabecera, **confirmar** | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sales:delete` | **Anular** | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sale_details:create` / `read` / `update` / `delete` | Líneas | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sale_operations:read` | Operaciones de confirmación y anulación | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sale_sequences:create` / `read` / `update` | Secuencias | `superadmin`, `admin`, `Ventas` |
+| `perm:sales:sales:read-profitability` | Añade costo y margen a las respuestas de venta y líneas | `superadmin`, `admin` (vía `perm:sales:all:all`; los comodines `read` **no** lo cubren). Los grupos de área (`Compras`, `Ventas`, `Inventario`) **no** lo tienen |
 
 ## Alcance de datos
 
 | Regla | Detalle |
 |---|---|
 | Empresa | Membresía `ACTIVE` en `company_id` evaluada en Operational Context con el token del usuario; sin ella, `404 SALES.NOT_FOUND`. Las lecturas y las secuencias solo exigen membresía (una empresa inactiva se puede consultar) |
-| Sucursal (escrituras sobre ventas) | Además, el usuario debe tener acceso a la sucursal de la venta: `BRANCH_NOT_ASSIGNED`, `USER_BRANCH_INACTIVE`, `BRANCH_INACTIVE` o `COMPANY_INACTIVE` producen `403 SALES.BRANCH_ACCESS_DENIED`; una sucursal de otra empresa, `404` |
+| Sucursal (escrituras sobre ventas) | Además, el usuario debe tener acceso a la sucursal de la venta: `BRANCH_INACTIVE` o `COMPANY_INACTIVE` producen `403 SALES.BRANCH_ACCESS_DENIED`; una sucursal de otra empresa, `404`. No exige asignación a la sucursal (enmienda 2026-11-19: la membresía `ACTIVE` da acceso a todas las sucursales activas; `BRANCH_NOT_ASSIGNED` y `USER_BRANCH_INACTIVE` ya no se producen) |
 | Operational Context con `403` | `403 SALES.OPERATIONAL_ACCESS_DENIED` (falta `perm:operational-context:application_users:read`) |
 
 ## Conceptos clave
@@ -53,7 +55,8 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Concepto | Detalle |
 |---|---|
 | Estados de la venta | `DRAFT` (editable), `CONFIRMED` (numerada; existencias descontadas), `CANCELLED` (anulada; conserva el número si estaba confirmada) |
-| `version` | Entero de concurrencia de la venta. Toda escritura exige la última versión leída; si no, `409 SALES.VERSION_CONFLICT`. Cada cambio la incrementa |
+| `version` | Entero de concurrencia de la venta. Es **opcional** en toda escritura (cuerpos de `PUT`, alta de línea, confirmación, anulación, secuencias y el `?version=` del `DELETE` de línea): si se envía y no coincide → `409 SALES.VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. Cada cambio la incrementa. La confirmación y la (in)activación de secuencias aceptan `{}` o ningún cuerpo |
+| `PUT` parcial | El cuerpo de `PUT` (cabecera, línea, secuencia) lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`; campo desconocido → `422`. Las validaciones se hacen sobre el registro combinado; si nada cambia, no se escribe ni sube la versión |
 | Precio | Lo resuelve Commercial Relationship (`applicable-prices/resolve`) con la lista pedida en la línea (`price_list_id`) o la predeterminada. Se guarda como `unit_price`, `price_list_id`, `price_list_item_id`, `price_source` (`PRICE_LIST_ITEM`) y `price_list_requested`. Enviar `unit_price` produce `422 UNIT_PRICE_NOT_ALLOWED` |
 | Importes | Cadenas decimales: cantidades con 4 decimales, dinero con 2. `discount_amount` y `tax_amount` deben ser `0` (MVP) |
 | Cantidad base | `quantity × base_quantity_factor_snapshot` de la presentación; es la que se descuenta en Inventory |
@@ -61,6 +64,15 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Idempotencia | Confirmación y anulación exigen `Idempotency-Key` ([Primeros pasos §6](../guias/primeros-pasos.md#6-idempotencia-en-operaciones-de-negocio)) |
 | Fecha de negocio | `operation_date` y `due_date` las fija el servicio al confirmar (fecha del día en la zona horaria de la sucursal). No se envían |
 | Numeración | Al confirmar se asigna `number` (`prefix` + `separator` + número con `number_length` dígitos) desde la secuencia activa de la sucursal o, si no hay, de la empresa |
+
+Ejemplo de `PUT` parcial (solo cambia `observations`, sin `version`):
+
+```bash
+curl -sS -X PUT 'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sales/9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"observations": "Cliente recoge en tienda"}'
+```
 
 ## Tabla de endpoints
 
@@ -172,7 +184,9 @@ Cuerpo (`SaleCreateIn`; rechaza campos adicionales; recorta espacios):
 | Campo | Tipo | Obligatorio | Validación | Cómo obtenerlo |
 |---|---|---|---|---|
 | `branch_id` | UUID | Sí | Sucursal con acceso | [branch_id](../parametros/branch-id.md) |
-| `company_customer_id` | UUID | Sí | Cliente `ACTIVE` de la empresa | [company_customer_id](../parametros/customer-id.md) |
+| `company_customer_id` | UUID | Uno de los tres | Cliente de la empresa (`ACTIVE`, o `INACTIVE`: se reactiva) | [company_customer_id](../parametros/customer-id.md) |
+| `person_identity_id` | UUID | Uno de los tres | Persona `ACTIVE` de Party Identity, sea o no cliente de la empresa | [Commercial Relationship 79](commercial-relationship.md#79-get-companiescompany_idcustomer-candidates) |
+| `organization_identity_id` | UUID | Uno de los tres | Organización `ACTIVE` de Party Identity (no la de la propia empresa), sea o no cliente | [Commercial Relationship 79](commercial-relationship.md#79-get-companiescompany_idcustomer-candidates) con `customer_kind=ORGANIZATION` |
 | `payment_method_id` | UUID | Sí | Método `ACTIVE` en Payment Reference | [payment_method_id](../parametros/payment-method-id.md) |
 | `observations` | string \| null | No | ≤ 2000 | — |
 | `lines[]` | array | No (puede crearse vacía) | Máx. 100 líneas (`LINES_LIMIT_EXCEEDED`) | — |
@@ -296,7 +310,8 @@ Respuesta `201` (`SaleResponse` con `lines`; valores ilustrativos):
 
 Reglas de negocio (verificadas en el código):
 
-- Referencias: una referencia inexistente, de otra empresa o incoherente (presentación de otro producto) → `422 SALES.VALIDATION_ERROR`; una referencia existente pero no utilizable (cliente inactivo, producto no vendible o sin control de inventario, presentación inactiva, método de pago inactivo, lista no aplicable, sin precio vigente, otra moneda) → `409 SALES.REFERENCES_NOT_ELIGIBLE`. Si hay ambas clases, se informa el `422`.
+- Cliente: exactamente uno de `company_customer_id`, `person_identity_id` u `organization_identity_id` (ninguno → `422 CUSTOMER_REQUIRED`; más de uno → `422 CUSTOMER_REFERENCE_AMBIGUOUS`). Con la persona o la organización, o con un cliente `INACTIVE`, Sales pide a Commercial Relationship con su identidad técnica ([CR 80](commercial-relationship.md#80-post-companiescompany_idcompany-customersensure)) que lo deje activo: si no era cliente lo registra con código `CLI-<número de documento>` y su nombre completo o razón social; si estaba inactivo lo reactiva. La venta guarda ese `company_customer_id`. Identidad inexistente o la organización de la propia empresa → `422` (`PERSON_IDENTITY_NOT_FOUND`, `ORGANIZATION_IDENTITY_NOT_FOUND`, `SELF_RELATIONSHIP_NOT_ALLOWED`); identidad inactiva → `409` (`PERSON_IDENTITY_INACTIVE`, `ORGANIZATION_IDENTITY_INACTIVE`). Confirmar la venta no reactiva: un cliente inactivo al confirmar → `409 CUSTOMER_NOT_ELIGIBLE`.
+- Referencias: una referencia inexistente, de otra empresa o incoherente (presentación de otro producto) → `422 SALES.VALIDATION_ERROR`; una referencia existente pero no utilizable (cliente bloqueado, producto no vendible o sin control de inventario, presentación inactiva, método de pago inactivo, lista no aplicable, sin precio vigente, otra moneda) → `409 SALES.REFERENCES_NOT_ELIGIBLE`. Si hay ambas clases, se informa el `422`.
 - Precio: una sola resolución por venta en Commercial Relationship; solo se acepta un precio explícito de la presentación (`PRICE_LIST_ITEM`). Sin precio vigente → `409`.
 - Importes: `subtotal = quantity × unit_price`; `total = subtotal` (sin descuentos ni impuestos).
 - Los *snapshots* de cliente, producto y presentación se capturan al crear o modificar; se vuelven a validar al confirmar.
@@ -418,7 +433,7 @@ Ejemplo de respuesta `200` (`SalePage`; valores ilustrativos):
 
 ### 5. `GET /companies/{company_id}/sales/{sale_id}`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}`; permiso `perm:sales:sales:read`. `sale_id` es el `id` devuelto al crear o listar. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}`; permiso `perm:sales:sales:read`. `sale_id` es el `id` devuelto al crear o listar.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -515,7 +530,7 @@ Ejemplo de respuesta `200` (`SaleResponse`; valores ilustrativos):
 | Permiso | `perm:sales:sales:update` |
 | Alcance | Empresa + acceso a la sucursal actual y a la nueva |
 
-Cuerpo (`SaleUpdateIn`): `branch_id` (UUID), `company_customer_id` (UUID), `payment_method_id` (UUID), `observations` (≤ 2000, opcional) y **`version`** (≥ 1), todos salvo `observations` obligatorios. Rechaza campos adicionales y los campos prohibidos de la operación 3.
+Cuerpo (`SaleUpdateIn`, parcial; todos opcionales): `branch_id` (UUID), `company_customer_id`, `person_identity_id` u `organization_identity_id` (UUID; para cambiar el cliente, uno solo: más de uno → `422 CUSTOMER_REFERENCE_AMBIGUOUS`; se registra o se reactiva como al crear) y `payment_method_id` (UUID), que no admiten `null`; `observations` (≤ 2000; `null` la borra) y `version` (≥ 1, opcional). Rechaza campos adicionales y los campos prohibidos de la operación 3.
 
 ```json
 {
@@ -630,7 +645,7 @@ Ejemplo de respuesta `200` (`SaleResponse`; valores ilustrativos):
 | URL | `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details` |
 | Permiso | `perm:sales:sale_details:create` |
 
-Cuerpo (`LineCreateIn`): los campos de `lines[]` de la operación 3 **más `version`** de la venta (≥ 1).
+Cuerpo (`LineCreateIn`): los campos de `lines[]` de la operación 3 y `version` de la venta (≥ 1, opcional).
 
 ```json
 {
@@ -739,7 +754,7 @@ Ejemplo de respuesta `201` (`SaleResponse`; valores ilustrativos):
 
 ### 8. `GET /companies/{company_id}/sales/{sale_id}/details`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details`; permiso `perm:sales:sale_details:read`. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details`; permiso `perm:sales:sale_details:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -791,7 +806,7 @@ Ejemplo de respuesta `200` (`None`; valores ilustrativos):
 
 ### 9. `PUT /companies/{company_id}/sales/{sale_id}/details/{detail_id}`
 
-`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}`; permiso `perm:sales:sale_details:update`. `detail_id` es el `id` de la línea. Cuerpo: `LineCreateIn` (igual que la operación 7). Reemplaza producto, presentación, lista y cantidad de la línea y vuelve a resolver el precio. 
+`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}`; permiso `perm:sales:sale_details:update`. `detail_id` es el `id` de la línea. Cuerpo (`LineUpdateIn`, parcial; todos opcionales): `company_product_id`, `company_product_presentation_id`, `quantity`, `discount_amount`, `tax_amount` (no admiten `null`), `price_list_id` y `version` (opcional); `unit_price` sigue rechazado. Cambia solo los campos enviados (producto, presentación, lista o cantidad) y vuelve a resolver el precio.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -891,7 +906,7 @@ Ejemplo de respuesta `200` (`SaleResponse`; valores ilustrativos):
 
 ### 10. `DELETE /companies/{company_id}/sales/{sale_id}/details/{detail_id}`
 
-`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}?version=3`; permiso `perm:sales:sale_details:delete`. La versión va como **parámetro de consulta** `version` (obligatorio, ≥ 1). 
+`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/details/{detail_id}?version=3`; permiso `perm:sales:sale_details:delete`. La versión va como **parámetro de consulta** `version` (opcional, ≥ 1; si se envía y no coincide → `409 VERSION_CONFLICT`).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -989,7 +1004,7 @@ Ejemplo de respuesta `200` (`SaleResponse`; valores ilustrativos):
 | Alcance | Empresa + acceso a la sucursal |
 | Cabeceras | `Authorization`, `Content-Type: application/json`, **`Idempotency-Key`** (obligatoria; 1–150 caracteres ASCII imprimibles sin espacios) |
 
-Cuerpo (`VersionIn`): `{"version": 3}`.
+Cuerpo (`VersionIn`): `{"version": 3}`, con `version` opcional; se acepta `{}` o ningún cuerpo.
 
 ```bash
 curl -sS -X POST 'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sales/9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a/confirmation' \
@@ -1081,7 +1096,7 @@ Ejemplo de respuesta `200` (`SaleResponse`; valores ilustrativos):
 
 Secuencia verificada en el código:
 
-1. Acceso a la sucursal; idempotencia (la clave queda ligada a la venta, al tipo de operación y al usuario); si hay una operación en curso, `409 OPERATION_IN_PROGRESS`; después, versión.
+1. Acceso a la sucursal; idempotencia (la clave queda ligada a la venta, al tipo de operación y al usuario); si hay una operación en curso, `409 OPERATION_IN_PROGRESS`; después, versión (si se envió).
 2. Revalidación de cliente, productos, presentaciones y usuario operativo, y **nueva resolución del precio** con la intención original de cada línea. Si el precio, la lista o el ítem cambiaron → `409 SALES.PRICES_CHANGED` sin efectos: el frontend debe mostrar los nuevos precios y pedir confirmación de nuevo (la venta actualizada se obtiene con la operación 5).
 3. Consulta informativa de existencias; la barrera real es Inventory. Sin existencias suficientes → `409 SALES.INSUFFICIENT_STOCK`; si Inventory rechaza por otra causa → `409 SALES.INVENTORY_REJECTED`.
 4. Se busca la secuencia activa de la sucursal o, si no hay, de la empresa, para el período de la fecha del día en la zona horaria de la sucursal: sin secuencia → `409 SEQUENCE_NOT_CONFIGURED`; agotada → `409 SEQUENCE_EXHAUSTED`.
@@ -1101,7 +1116,7 @@ Efectos secundarios: salida de inventario en la sucursal (Inventory), consumo de
 | Permiso | `perm:sales:sales:delete` |
 | Cabeceras | `Authorization`, `Content-Type: application/json`, **`Idempotency-Key`** |
 
-Cuerpo (`CancelIn`): `version` (≥ 1) y `reason` (obligatorio, sin espacios en blanco solos, ≤ 1000 caracteres).
+Cuerpo (`CancelIn`): `version` (≥ 1, opcional) y `reason` (obligatorio, sin espacios en blanco solos, ≤ 1000 caracteres).
 
 ```json
 {
@@ -1207,7 +1222,7 @@ Reglas: `DRAFT` → `CANCELLED` en una transacción local sin Inventory (la oper
 
 ### 13. `GET /companies/{company_id}/sales/{sale_id}/operations`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/operations`; permiso `perm:sales:sale_operations:read`. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/operations`; permiso `perm:sales:sale_operations:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1250,7 +1265,7 @@ Respuesta `200`: **array** de `OperationResponse`:
 
 ### 14. `GET /companies/{company_id}/sale-operations/{operation_id}`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-operations/{operation_id}`; permiso `perm:sales:sale_operations:read`. `operation_id` = `pending_operation_id` de la venta o `id` de la operación 13. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-operations/{operation_id}`; permiso `perm:sales:sale_operations:read`. `operation_id` = `pending_operation_id` de la venta o `id` de la operación 13.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1280,7 +1295,7 @@ Ejemplo de respuesta `200` (`OperationResponse`; valores ilustrativos):
 
 ### 15. `GET /companies/{company_id}/sales/{sale_id}/availability`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/availability`; permiso `perm:sales:sales:read`. Consulta a Inventory las existencias disponibles para las líneas de la venta en su sucursal, **sin reservar**. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales/{sale_id}/availability`; permiso `perm:sales:sales:read`. Consulta a Inventory las existencias disponibles para las líneas de la venta en su sucursal, **sin reservar**.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1391,7 +1406,7 @@ Reglas: **a lo sumo una secuencia activa** por empresa, sucursal (o ninguna) y t
 
 ### 17. `GET /companies/{company_id}/sale-sequences`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences`; permiso `perm:sales:sale_sequences:read`. Sin parámetros de consulta. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences`; permiso `perm:sales:sale_sequences:read`. Sin parámetros de consulta.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1445,7 +1460,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 19. `PUT /companies/{company_id}/sale-sequences/{sequence_id}`
 
-`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}`; permiso `perm:sales:sale_sequences:update`. Cuerpo (`SequenceUpdateIn`): los campos de la operación 16 **más `version`**. Regla: tras el primer número asignado son **inmutables** `prefix`, `separator`, `number_length`, `series_code`, `reset_policy`, `initial_number` y `branch_id` → `409 SALES.SEQUENCE_IN_USE`; `maximum_number` puede cambiar si no queda por debajo de ningún contador. Los contadores no se modifican por la API. 
+`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}`; permiso `perm:sales:sale_sequences:update`. Cuerpo (`SequenceUpdateIn`, parcial): los campos de la operación 16, todos opcionales (`series_code`, `prefix`, `separator`, `initial_number`, `number_length`, `reset_policy` no admiten `null`), y `version` (opcional). Regla: tras el primer número asignado son **inmutables** `prefix`, `separator`, `number_length`, `series_code`, `reset_policy`, `initial_number` y `branch_id` → `409 SALES.SEQUENCE_IN_USE`; `maximum_number` puede cambiar si no queda por debajo de ningún contador. Los contadores no se modifican por la API.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1500,7 +1515,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 20. `POST /companies/{company_id}/sale-sequences/{sequence_id}/deactivate`
 
-`HIGH_RISK`: sin secuencia activa aplicable, las confirmaciones de esa sucursal o empresa fallan con `409 SEQUENCE_NOT_CONFIGURED`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/deactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 1}`. 
+`HIGH_RISK`: sin secuencia activa aplicable, las confirmaciones de esa sucursal o empresa fallan con `409 SEQUENCE_NOT_CONFIGURED`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/deactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1547,7 +1562,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 21. `POST /companies/{company_id}/sale-sequences/{sequence_id}/reactivate`
 
-`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/reactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 2}`. 
+`WRITE`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/reactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 2}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1656,7 +1671,7 @@ Reglas: solo ventas `CONFIRMED` con `operation_date` en el período (las anulada
 
 ### 23. `GET /companies/{company_id}/sales-aggregates/by-branch`
 
-`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales-aggregates/by-branch`; permiso `perm:sales:sales:read`. Parámetros: `date_from`, `date_to` (obligatorios; mismas reglas) y `branch_id` repetible. 
+`READ`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sales-aggregates/by-branch`; permiso `perm:sales:sales:read`. Parámetros: `date_from`, `date_to` (obligatorios; mismas reglas) y `branch_id` repetible.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1700,9 +1715,9 @@ Ejemplo de respuesta `200` (`ByBranchOut`; valores ilustrativos):
 | Respuesta | Causa | Qué hacer |
 |---|---|---|
 | `403 SALES.FORBIDDEN` | Sin permiso o token de cuenta de servicio | Revisar permisos del grupo |
-| `403 SALES.BRANCH_ACCESS_DENIED` | El usuario no tiene asignada la sucursal, o sucursal/empresa inactiva | Ofrecer solo sucursales con `allowed: true` en `/me/operational-context` |
+| `403 SALES.BRANCH_ACCESS_DENIED` | Sucursal o empresa inactivas (ya no se exige asignación a la sucursal) | Ofrecer solo sucursales con `allowed: true` en `/me/operational-context` |
 | `404 SALES.NOT_FOUND` | Sin membresía, venta de otra empresa o inexistente | Verificar `company_id` y `sale_id` |
-| `409 SALES.VERSION_CONFLICT` | `version` desactualizada | Recargar la venta y repetir |
+| `409 SALES.VERSION_CONFLICT` | `version` enviada desactualizada | Recargar la venta y repetir, o enviar sin `version` |
 | `409 SALES.INVALID_STATUS` | Escritura sobre una venta que no está en `DRAFT` (o anular una ya anulada) | Bloquear la edición en la interfaz |
 | `409 SALES.OPERATION_IN_PROGRESS` | Hay una operación `PENDING` | Consultar la operación y esperar |
 | `409 SALES.REFERENCES_NOT_ELIGIBLE` | Cliente, producto, presentación, método de pago o lista no utilizables | Mostrar el `detail`; elegir otra referencia |

@@ -1,5 +1,7 @@
 # Parámetro `purchase_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Purchase](../servicios/purchase.md)
 
 | Propiedad | Valor |
@@ -10,7 +12,7 @@
 | Obligatorio | Sí en todas las operaciones de una compra existente |
 | Ejemplo (ficticio) | `4b5c6d7e-8f9a-4b0c-8d1e-2f3a4b5c6d7e` |
 | Quién lo genera | Purchase, al crear el borrador (`id` de la respuesta `201`) |
-| Alcance | Empresa y sucursal: la compra pertenece a la `branch_id` que recibirá la mercancía; la consultan los miembros de la empresa y la modifican solo los usuarios asignados a esa sucursal |
+| Alcance | Empresa y sucursal: la compra pertenece a la `branch_id` que recibirá la mercancía; la consultan y modifican los miembros `ACTIVE` de la empresa según sus permisos, mientras la sucursal y la empresa estén activas (no se exige asignación a la sucursal) |
 
 ## Cómo obtenerlo
 
@@ -103,7 +105,7 @@ Respuesta `200` (modelo `PurchasePage`; valores ilustrativos):
 
 ## Si la compra no existe todavía (operación `WRITE`)
 
-**¿Qué hace la API de creación?** Crea una compra en `DRAFT` en una sucursal asignada al usuario, a un proveedor `ACTIVE`, con método de pago y, opcionalmente, hasta 100 líneas. Calcula impuestos, totales, cantidad en unidad base y costo por unidad base; no numera la compra ni mueve inventario. Devuelve `201` con la compra completa; su `id` es el `purchase_id`. Ficha técnica: [Purchase 3](../servicios/purchase.md#3-post-companiescompany_idpurchases); guía principal con todos los campos y ejemplos: [Compras, API 4](../principales/compras.md#4-crear-la-compra-en-borrador).
+**¿Qué hace la API de creación?** Crea una compra en `DRAFT` en una sucursal activa de la empresa, a un proveedor `ACTIVE`, con método de pago y, opcionalmente, hasta 100 líneas. Calcula impuestos, totales, cantidad en unidad base y costo por unidad base; no numera la compra ni mueve inventario. Devuelve `201` con la compra completa; su `id` es el `purchase_id`. Ficha técnica: [Purchase 3](../servicios/purchase.md#3-post-companiescompany_idpurchases); guía principal con todos los campos y ejemplos: [Compras, API 4](../principales/compras.md#4-crear-la-compra-en-borrador).
 
 | | |
 |---|---|
@@ -116,7 +118,7 @@ Cuerpo (modelo `PurchaseCreateIn`; no admite campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `branch_id` | UUID | Sí | Sucursal `ACTIVE` asignada al usuario ([branch_id](branch-id.md)) |
+| `branch_id` | UUID | Sí | Sucursal `ACTIVE` de la empresa; no exige asignación ([branch_id](branch-id.md)) |
 | `company_supplier_id` | UUID | Sí | Proveedor `ACTIVE` de la empresa con identificación en Party Identity ([company_supplier_id](supplier-id.md)) |
 | `operation_date` | date | Sí | No futura en la zona horaria de la sucursal |
 | `supplier_payment_condition_id` | UUID \| null | No | Condición del mismo proveedor, activa, vigente, en la moneda de la empresa y de contado |
@@ -151,7 +153,7 @@ Cuerpo (modelo `PurchaseCreateIn`; no admite campos adicionales):
 
 La respuesta `201` devuelve la compra con sus líneas (`status` `DRAFT`, `version` `1`, `number` `null`).
 
-**Campo exacto:** `id`. Guárdalo junto con `version`, que se exige en cada escritura posterior.
+**Campo exacto:** `id`. Guárdalo junto con `version`, que puedes enviar (opcional) en las escrituras posteriores para detectar cambios simultáneos.
 
 **Posibles errores al crear:**
 
@@ -159,7 +161,7 @@ La respuesta `201` devuelve la compra con sus líneas (`status` `DRAFT`, `versio
 |---|---|---|---|
 | `401` | `{"detail": "Se requiere un token de acceso Bearer"}` | Token ausente, vencido o inválido | Renovar la sesión y reintentar; si falla, volver al login |
 | `403` | `PURCHASE.FORBIDDEN` | Falta alguno de los permisos indicados o el token es de una cuenta de servicio | Mostrar que faltan permisos y el `trace_id` |
-| `403` | `PURCHASE.BRANCH_ACCESS_DENIED` | El usuario no tiene asignación `ACTIVE` a la sucursal, o la sucursal o la empresa no están activas | Pedir la asignación al administrador de la empresa |
+| `403` | `PURCHASE.BRANCH_ACCESS_DENIED` | La sucursal o la empresa no están activas (ya no se exige asignación a la sucursal) | Elegir una sucursal con `allowed: true` o pedir al administrador que la reactive |
 | `404` | `PURCHASE.NOT_FOUND` | Sin membresía `ACTIVE` en la empresa, empresa inexistente o sucursal de otra empresa | Volver a leer el contexto operativo |
 | `409` | `PURCHASE.DUPLICATE_PRESENTATION_IN_PURCHASE` | La misma presentación aparece en más de una línea | Agrupar la cantidad en una sola línea |
 | `409` | `PURCHASE.REFERENCES_NOT_ELIGIBLE` | Una referencia existe pero no es apta (proveedor no activo, producto no comprable, condición de pago no vigente…); el detalle va en `errors[]` | Mostrar cada error junto a su campo |
@@ -168,10 +170,10 @@ La respuesta `201` devuelve la compra con sus líneas (`status` `DRAFT`, `versio
 
 ## Cómo usarlo después
 
-- [Compras, API 5, 6 y 7](../principales/compras.md#5-agregar-una-línea): agregar, modificar o eliminar líneas del borrador (`…/purchases/{purchase_id}/details[/{detail_id}]`, siempre con `version`).
+- [Compras, API 5, 6 y 7](../principales/compras.md#5-agregar-una-línea): agregar, modificar o eliminar líneas del borrador (`…/purchases/{purchase_id}/details[/{detail_id}]`, con `version` opcional).
 - [Compras, API 8](../principales/compras.md#8-consultar-la-compra-con-impuestos-y-totales): consultar la compra con sus líneas, impuestos y totales, y obtener la `version` vigente.
-- [Compras, API 9](../principales/compras.md#9-confirmar-la-compra): confirmar la compra (asigna el número; no mueve inventario), con `{"version": n}` e `Idempotency-Key`.
-- [Compras, API 10](../principales/compras.md#10-registrar-la-recepción-física-completa): registrar la recepción física completa, que ingresa la mercancía al inventario, con `{"version": n, "full_receipt_confirmed": true}` e `Idempotency-Key`.
+- [Compras, API 9](../principales/compras.md#9-confirmar-la-compra): confirmar la compra (asigna el número; no mueve inventario), con `{"version": n}` (`version` opcional) e `Idempotency-Key`.
+- [Compras, API 10](../principales/compras.md#10-registrar-la-recepción-física-completa): registrar la recepción física completa, que ingresa la mercancía al inventario, con `{"version": n, "full_receipt_confirmed": true}` (`version` opcional) e `Idempotency-Key`.
 - [Compras, API 11](../principales/compras.md#11-consultar-el-estado-de-las-operaciones): ver el estado de las operaciones de confirmación, recepción y anulación (`…/purchases/{purchase_id}/operations`).
 - [Compras, API 13](../principales/compras.md#13-anular-una-compra): anular la compra con un motivo e `Idempotency-Key`; si estaba recibida, revierte la entrada en Inventory.
 - Hitos logísticos de la compra: `GET https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/lifecycle-events` (línea de tiempo; ficha [Purchase 17](../servicios/purchase.md#17-get-companiescompany_idpurchasespurchase_idlifecycle-events)).
@@ -185,7 +187,7 @@ Los pasos completos están en [Registrar una compra](../ejemplos/registrar-compr
 | Respuesta | Causa probable |
 |---|---|
 | `404 PURCHASE.NOT_FOUND` | La compra no pertenece a la empresa o el usuario no tiene membresía |
-| `403 PURCHASE.BRANCH_ACCESS_DENIED` | El usuario no está asignado a la sucursal de la compra |
+| `403 PURCHASE.BRANCH_ACCESS_DENIED` | La sucursal de la compra o la empresa están inactivas |
 | `409 PURCHASE.VERSION_CONFLICT` | El `version` enviado no es el actual |
 | `409 PURCHASE.INVALID_STATUS` | La acción no está permitida en el estado actual (por ejemplo, editar líneas de una compra confirmada) |
 | `409 PURCHASE.PURCHASE_TAX_NOT_CONFIGURED` | Al confirmar, alguna línea no tiene tasa de impuesto de compra |

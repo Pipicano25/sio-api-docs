@@ -1,5 +1,7 @@
 # Parámetro `global_product_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Product Catalog](../servicios/product-catalog.md)
 
 | Propiedad | Valor |
@@ -95,7 +97,7 @@ Busca antes por nombre y por `identifier` para no duplicarlo: si otra empresa ya
 | Método y ruta | `POST /api/v1/products` |
 | URL completa | `https://sio-product-catalog-dev.onrender.com/api/v1/products` |
 | Permiso | `perm:product-catalog:products:create` |
-| Clasificación | `WRITE` (catálogo compartido; normalmente lo hacen administradores o supervisores) |
+| Clasificación | `WRITE` (catálogo compartido; lo hacen los grupos `superadmin` y `admin`) |
 
 Cuerpo (modelo `ProductCreate`; no admite campos adicionales):
 

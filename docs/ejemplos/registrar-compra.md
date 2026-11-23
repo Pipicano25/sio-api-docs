@@ -1,8 +1,10 @@
 # Registrar, confirmar y recibir una compra
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Flujos](README.md) · [← Índice](../index.md) · Ficha: [Purchase](../servicios/purchase.md)
 
-Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inventario) y recepción completa (ingresa la mercancía). Perfil típico: grupo `compras`.
+Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inventario) y recepción completa (ingresa la mercancía). Perfil típico: grupo `Compras`.
 
 ## 1. Contexto operativo
 
@@ -10,7 +12,7 @@ Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inv
 
 ## 2. Proveedor
 
-`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-suppliers?status=ACTIVE` → `items[].id` ([company_supplier_id](../parametros/supplier-id.md)). Opcional: sus productos (`GET …/supplier-products?company_supplier_id=…`, con `id` = `supplier_product_id`) y condiciones de pago de contado (`GET …/supplier-payment-conditions?company_supplier_id=…`).
+`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/supplier-candidates?search=farma` → organizaciones que pueden ser proveedoras, asociadas o no (`association`): `items[].organization_identity_id` y, si ya está asociada, `items[].company_supplier_id` ([company_supplier_id](../parametros/supplier-id.md)). No hace falta asociar el proveedor antes: la compra lo asocia, o lo reactiva o desbloquea, al crear el borrador. Opcional: sus productos (`GET …/supplier-products?company_supplier_id=…`, con `id` = `supplier_product_id`) y condiciones de pago de contado (`GET …/supplier-payment-conditions?company_supplier_id=…`).
 
 ## 3. Productos y presentaciones comprables
 
@@ -27,7 +29,7 @@ Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inv
 ```json
 {
   "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-  "company_supplier_id": "d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f60",
+  "organization_identity_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
   "operation_date": "2026-10-19",
   "payment_method_id": "b7c8d9e0-f1a2-4b3c-8d4e-5f6a7b8c9d05",
   "supplier_document_number": "FV-8891",
@@ -42,15 +44,15 @@ Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inv
 }
 ```
 
-`unit_cost` es por presentación; el impuesto lo calcula el servidor con la tasa del producto (`tax_percentage` solo con `perm:purchase:purchase_line_taxes:override`). Respuesta `201` con `id` (`purchase_id`), `version`, `status: "DRAFT"`.
+Con un proveedor ya asociado se puede enviar `company_supplier_id` en lugar de `organization_identity_id` (uno de los dos, nunca ambos: `422 SUPPLIER_REQUIRED`). `unit_cost` es por presentación; el impuesto lo calcula el servidor con la tasa del producto (`tax_percentage` solo con `perm:purchase:purchase_line_taxes:override`). Respuesta `201` con `id` (`purchase_id`), `version`, `status: "DRAFT"`.
 
 ## 6. Ajustar líneas (opcional)
 
-`POST …/purchases/{purchase_id}/details`, `PUT …/details/{detail_id}`, `DELETE …/details/{detail_id}?version=n` (operaciones 7, 9 y 10). Una presentación solo puede aparecer en una línea.
+`POST …/purchases/{purchase_id}/details`, `PUT …/details/{detail_id}`, `DELETE …/details/{detail_id}` (con `?version=n` opcional) (operaciones 7, 9 y 10). El `PUT` de línea es parcial: basta enviar los campos que cambian. Una presentación solo puede aparecer en una línea.
 
 ## 7. Confirmar
 
-`POST https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/confirmation` con `Idempotency-Key` y `{"version": n}` ([operación 11](../servicios/purchase.md#11-post-companiescompany_idpurchasespurchase_idconfirmation)); permiso `perm:purchase:purchases:update`. Asigna `number`, congela los datos y deja `receipt_status: "PENDING"`. **No mueve inventario.**
+`POST https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/confirmation` con `Idempotency-Key` y `{"version": n}` (`version` opcional; también `{}`) ([operación 11](../servicios/purchase.md#11-post-companiescompany_idpurchasespurchase_idconfirmation)); permiso `perm:purchase:purchases:update`. Asigna `number`, congela los datos y deja `receipt_status: "PENDING"`. **No mueve inventario.**
 
 | Respuesta | Acción |
 |---|---|
@@ -64,10 +66,10 @@ Flujo de compras del MVP: compra de contado, confirmación (numera, no mueve inv
 
 ## 9. Recibir la mercancía
 
-Cuando llega **toda** la compra: `POST https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/receipt` con `Idempotency-Key` y `{"version": n, "full_receipt_confirmed": true}` ([operación 12](../servicios/purchase.md#12-post-companiescompany_idpurchasespurchase_idreceipt)); permiso `perm:purchase:purchases:update`. `HIGH_RISK`: ingresa las cantidades en Inventory y abre capas de costo FIFO; además envía los costos a Commercial Relationship para la actualización automática de precios.
+Cuando llega **toda** la compra: `POST https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchases/{purchase_id}/receipt` con `Idempotency-Key` y `{"version": n, "full_receipt_confirmed": true}` (`version` opcional) ([operación 12](../servicios/purchase.md#12-post-companiescompany_idpurchasespurchase_idreceipt)); permiso `perm:purchase:purchases:update`. `HIGH_RISK`: ingresa las cantidades en Inventory y abre capas de costo FIFO; además envía los costos a Commercial Relationship para la actualización automática de precios.
 
 Respuesta `200` con `receipt_status: "RECEIVED"`, `received_at`, `inventory_operation_id`. Si Inventory no responde (`503` con `operation_id`), repetir con la misma `Idempotency-Key` o consultar `GET …/purchases/{purchase_id}/operations`.
 
 ## 10. Anular (si hace falta)
 
-`POST …/purchases/{purchase_id}/cancellation` con `Idempotency-Key`, `{"version": n, "reason": "…"}` ([operación 13](../servicios/purchase.md#13-post-companiescompany_idpurchasespurchase_idcancellation)); permiso `perm:purchase:purchases:delete`. Si ya estaba recibida, revierte la entrada de inventario (`409 INVENTORY_ALREADY_CONSUMED` si la mercancía ya salió).
+`POST …/purchases/{purchase_id}/cancellation` con `Idempotency-Key`, `{"version": n, "reason": "…"}` (`version` opcional, `reason` obligatorio) ([operación 13](../servicios/purchase.md#13-post-companiescompany_idpurchasespurchase_idcancellation)); permiso `perm:purchase:purchases:delete`. Si ya estaba recibida, revierte la entrada de inventario (`409 INVENTORY_ALREADY_CONSUMED` si la mercancía ya salió).

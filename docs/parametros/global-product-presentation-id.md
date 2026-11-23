@@ -1,5 +1,7 @@
 # Parámetro `global_product_presentation_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Product Catalog](../servicios/product-catalog.md)
 
 | Propiedad | Valor |

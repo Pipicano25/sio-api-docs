@@ -1,8 +1,10 @@
 # Crear y confirmar una venta
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Flujos](README.md) · [← Índice](../index.md) · Ficha: [Sales](../servicios/sales.md) · Módulo: [Ventas](../principales/ventas.md)
 
-Flujo del punto de venta: venta de contado, **lista de precios elegida por el vendedor en cada línea**, precio resuelto por el sistema, confirmación con descuento de inventario. Perfil típico: grupo `ventas`. Los identificadores son ficticios y las respuestas siguen los modelos reales de cada servicio.
+Flujo del punto de venta: venta de contado, **lista de precios elegida por el vendedor en cada línea**, precio resuelto por el sistema, confirmación con descuento de inventario. Perfil típico: grupo `Ventas`. Los identificadores son ficticios y las respuestas siguen los modelos reales de cada servicio.
 
 Regla aprobada: el frontend consulta los precios vigentes de la presentación en todas las listas, los muestra de mayor a menor precio, preselecciona el mayor, el vendedor elige y el frontend envía `price_list_id` en la línea. **Nunca envía `unit_price`** (`422 UNIT_PRICE_NOT_ALLOWED`).
 
@@ -12,7 +14,7 @@ Regla aprobada: el frontend consulta los precios vigentes de la presentación en
 
 ## 2. Elegir el cliente
 
-`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/company-customers?search=perez&status=ACTIVE` → `items[].id` es el [company_customer_id](../parametros/customer-id.md). Permiso: `perm:commercial-relationship:company_customers:read`. Si no existe, crear primero la [identidad de persona](../parametros/person-identity-id.md) y después el cliente ([Gestión de clientes](../principales/gestion-de-clientes.md)).
+`GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/customer-candidates?search=1012345678` → personas que pueden ser clientes, registradas o no en la empresa (`association`): `items[].person_identity_id` y, si ya es cliente, `items[].company_customer_id` ([company_customer_id](../parametros/customer-id.md)); con `customer_kind=ORGANIZATION`, organizaciones. Permiso: `perm:commercial-relationship:company_customers:read`. No hace falta registrar el cliente antes: la venta lo registra, o lo reactiva, al crear el borrador. Si la persona no existe en SIO, crear primero su [identidad](../parametros/person-identity-id.md) ([Gestión de clientes](../principales/gestion-de-clientes.md)).
 
 ## 3. Buscar productos con existencias
 
@@ -64,7 +66,7 @@ curl -sS 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/
 }
 ```
 
-Cada elemento es una opción: `price_list_id` + `unit_price`. El frontend las ordena por `unit_price` **descendente**, les pone el nombre de la lista (4a) y **preselecciona la primera** (la de mayor precio). El vendedor puede cambiar a otra lista. El `price_list_id` elegido es el que viaja en la línea. Si `items` está vacío, la presentación no tiene precio vigente y no puede venderse ([Productos y precios §12](../principales/productos-y-precios.md#12-registrar-un-precio-manual-por-presentación)).
+Cada elemento es una opción: `price_list_id` + `unit_price`. El frontend las ordena por `unit_price` **descendente**, les pone el nombre de la lista (4a) y **preselecciona la primera** (la de mayor precio). El vendedor puede cambiar a otra lista. El `price_list_id` elegido es el que viaja en la línea. Si `items` está vacío, la presentación no tiene precio vigente y no puede venderse ([Productos y precios §17](../principales/productos-y-precios.md#17-registrar-un-precio-de-venta)).
 
 ## 5. Método de pago
 
@@ -77,7 +79,7 @@ Cada elemento es una opción: `price_list_id` + `unit_price`. El frontend las or
 ```json
 {
   "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-  "company_customer_id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+  "person_identity_id": "a0e1d2c3-b4a5-4968-8776-655443322110",
   "payment_method_id": "b7c8d9e0-f1a2-4b3c-8d4e-5f6a7b8c9d05",
   "observations": "Entrega en mostrador",
   "lines": [
@@ -93,7 +95,7 @@ Cada elemento es una opción: `price_list_id` + `unit_price`. El frontend las or
 }
 ```
 
-Respuesta `201` (`SaleResponse`; valores ilustrativos): `id` es el [sale_id](../parametros/sale-id.md); `lines[].unit_price`, `price_list_id` y `price_list_item_id` muestran el precio que Sales resolvió en Commercial Relationship para la lista elegida; `price_list_requested: true` registra que la lista fue pedida por el vendedor.
+Con un cliente ya registrado se puede enviar `company_customer_id` en lugar de `person_identity_id` (u `organization_identity_id`): uno solo de los tres (`422 CUSTOMER_REQUIRED` o `CUSTOMER_REFERENCE_AMBIGUOUS`). Respuesta `201` (`SaleResponse`; valores ilustrativos): `id` es el [sale_id](../parametros/sale-id.md); `company_customer_id` es el cliente que quedó registrado o reactivado; `lines[].unit_price`, `price_list_id` y `price_list_item_id` muestran el precio que Sales resolvió en Commercial Relationship para la lista elegida; `price_list_requested: true` registra que la lista fue pedida por el vendedor.
 
 ```json
 {
@@ -171,11 +173,11 @@ Respuesta `201` (`SaleResponse`; valores ilustrativos): `id` es el [sale_id](../
 }
 ```
 
-Errores: `409 SALES.REFERENCES_NOT_ELIGIBLE` con `errors[]` (`PRICE_LIST_NOT_APPLICABLE`: la lista no está vigente o es de otra moneda; `NO_PRICE_IN_LIST`: la lista no tiene precio para la presentación; cliente o presentación no elegibles), `422 UNIT_PRICE_NOT_ALLOWED` si se envió `unit_price`, `403 BRANCH_ACCESS_DENIED` si el vendedor no tiene asignada la sucursal.
+Errores: `409 SALES.REFERENCES_NOT_ELIGIBLE` con `errors[]` (`PRICE_LIST_NOT_APPLICABLE`: la lista no está vigente o es de otra moneda; `NO_PRICE_IN_LIST`: la lista no tiene precio para la presentación; cliente o presentación no elegibles), `422 UNIT_PRICE_NOT_ALLOWED` si se envió `unit_price`, `403 BRANCH_ACCESS_DENIED` si la sucursal o la empresa están inactivas (no se exige asignación a la sucursal).
 
 ## 7. Ajustar líneas
 
-Cada línea nueva repite los pasos 3 y 4 (buscar producto, elegir lista) y se envía con la `version` actual de la venta:
+Cada línea nueva repite los pasos 3 y 4 (buscar producto, elegir lista) y puede enviarse con la `version` actual de la venta (opcional; sirve para detectar cambios simultáneos):
 
 - Agregar: `POST …/sales/{sale_id}/details` ([operación 7](../servicios/sales.md#7-post-companiescompany_idsalessale_iddetails)):
 
@@ -192,7 +194,7 @@ Cada línea nueva repite los pasos 3 y 4 (buscar producto, elegir lista) y se en
 ```
 
 - Modificar (también para cambiar de lista): `PUT …/sales/{sale_id}/details/{detail_id}` con el mismo cuerpo completo ([operación 9](../servicios/sales.md#9-put-companiescompany_idsalessale_iddetailsdetail_id)).
-- Eliminar: `DELETE …/sales/{sale_id}/details/{detail_id}?version=n` ([operación 10](../servicios/sales.md#10-delete-companiescompany_idsalessale_iddetailsdetail_id)).
+- Eliminar: `DELETE …/sales/{sale_id}/details/{detail_id}` (con `?version=n` opcional) ([operación 10](../servicios/sales.md#10-delete-companiescompany_idsalessale_iddetailsdetail_id)).
 
 Cada respuesta `200` devuelve la venta completa con la nueva `version`; el frontend reemplaza su copia local.
 
@@ -294,7 +296,7 @@ Manejo de errores habituales:
 
 | Respuesta | Acción |
 |---|---|
-| `409 SALES.PRICES_CHANGED` | Algún precio de la lista elegida cambió desde que se guardó la línea. Recargar la venta (`GET …/sales/{sale_id}`), mostrar en `errors[]` el precio guardado y el vigente, volver a guardar las líneas afectadas (paso 7) y confirmar con la nueva `version` |
+| `409 SALES.PRICES_CHANGED` | Algún precio de la lista elegida cambió desde que se guardó la línea. Recargar la venta (`GET …/sales/{sale_id}`), mostrar en `errors[]` el precio guardado y el vigente, volver a guardar las líneas afectadas (paso 7) y confirmar (con la nueva `version` si se envía) |
 | `409 SALES.INSUFFICIENT_STOCK` | Mostrar faltantes por producto; reducir cantidades |
 | `422 SALES.SALE_WITHOUT_LINES` | La venta no tiene líneas |
 | `409 SALES.SEQUENCE_NOT_CONFIGURED` | Un administrador debe crear la secuencia (`POST …/sale-sequences`, operación 16) |
@@ -303,4 +305,4 @@ Manejo de errores habituales:
 
 ## 10. Anular (si hace falta)
 
-`POST …/sales/{sale_id}/cancellation` con `Idempotency-Key`, `{"version": n, "reason": "…"}` ([operación 12](../servicios/sales.md#12-post-companiescompany_idsalessale_idcancellation)); permiso `perm:sales:sales:delete`. Si estaba confirmada, revierte la salida de inventario y conserva el número.
+`POST …/sales/{sale_id}/cancellation` con `Idempotency-Key`, `{"version": n, "reason": "…"}` (`version` opcional, `reason` obligatorio) ([operación 12](../servicios/sales.md#12-post-companiescompany_idsalessale_idcancellation)); permiso `perm:sales:sales:delete`. Si estaba confirmada, revierte la salida de inventario y conserva el número.

@@ -1,5 +1,7 @@
 # ¿De dónde sale cada parámetro?
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md)
 
 Guías reutilizables de los identificadores que piden las API de SIO. Cada una indica qué representa el valor, su tipo, qué servicio lo entrega, la URL completa de Render, el método, los parámetros y el permiso de la consulta, un ejemplo de solicitud y de respuesta, el campo exacto del que se copia y cómo usarlo después. Las fichas de servicio enlazan aquí en lugar de repetir la explicación.

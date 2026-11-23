@@ -1,5 +1,7 @@
 # Parámetros geográficos: `country_id`, `administrative_division_id`, `city_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Geography](../servicios/geography.md)
 
 Los tres identificadores forman una jerarquía global (país → división administrativa → ciudad) que piden Operational Context (dirección de empresas y sucursales), Party Identity (país de identificación o de registro) y Commercial Relationship (direcciones de clientes y proveedores).

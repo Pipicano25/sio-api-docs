@@ -1,8 +1,10 @@
 # Consultar inventario
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Flujos](README.md) · [← Índice](../index.md) · Fichas: [Product Inventory Query](../servicios/product-inventory-query.md), [Inventory](../servicios/inventory.md)
 
-Tres pantallas típicas de solo lectura y cómo resolverlas con la menor cantidad de llamadas. Perfil típico: grupo `inventario` (ve existencias y mínimos; no ve precios) o `ventas` (ve precios y existencias; no ve mínimos).
+Tres pantallas típicas de solo lectura y cómo resolverlas con la menor cantidad de llamadas. Perfil típico: grupo `Inventario` (ve precios, existencias y mínimos).
 
 ## 1. Contexto operativo
 
@@ -34,4 +36,4 @@ Indicadores para un tablero: `GET …/companies/{company_id}/inventory-summary` 
 
 ## 6. Si hay que corregir existencias
 
-Un ajuste manual es `HIGH_RISK` y exige asignación a la sucursal: `POST …/companies/{company_id}/inventory-adjustments` con `adjustment_key` (UUID de idempotencia), `adjustment_type`, `quantity` y `reason` ([Inventory, operación 16](../servicios/inventory.md#16-post-companiescompany_idinventory-adjustments)). Para un inventario físico completo use los conteos (operaciones 19–25): crear, iniciar, registrar cantidades contadas y completar.
+Un ajuste manual es `HIGH_RISK` y exige un usuario humano miembro de la empresa, con la sucursal activa (no exige asignación a la sucursal): `POST …/companies/{company_id}/inventory-adjustments` con `adjustment_key` (UUID de idempotencia), `adjustment_type`, `quantity` y `reason` ([Inventory, operación 16](../servicios/inventory.md#16-post-companiescompany_idinventory-adjustments)). Para un inventario físico completo use los conteos (operaciones 19–25): crear, iniciar, registrar cantidades contadas y completar.

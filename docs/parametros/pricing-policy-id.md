@@ -1,5 +1,7 @@
 # Parámetro `policy_id` (política de ganancia)
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Commercial Relationship](../servicios/commercial-relationship.md)
 
 > En las rutas el parámetro se llama **`policy_id`**; en las respuestas es el campo `id` de `PricingPolicyResponse` y en las actualizaciones automáticas, `policy_id`. El archivo se llama `pricing-policy-id` para distinguirlo de las políticas de inventario.
@@ -12,11 +14,11 @@
 | Obligatorio | Sí para asignar o retirar presentaciones, cambiar el porcentaje o inactivar la política |
 | Ejemplo (ficticio) | `7a8b9c0d-1e2f-4a3b-8c4d-5e6f7a8b9c0d` |
 | Quién lo genera | Commercial Relationship, al crear la política (`id` de la respuesta `201`) |
-| Alcance | Empresa (la de la lista de precios); solo la consultan administradores y supervisores |
+| Alcance | Empresa (la de la lista de precios); solo la consultan los grupos `superadmin` y `admin` |
 
 ## Cómo obtenerlo
 
-**¿Qué hace?** Lista, con paginación, las políticas de ganancia de una lista con su porcentaje vigente y cuántas presentaciones cubren. Por defecto solo `ACTIVE`. Es la fuente de `policy_id` y de la `version` que piden las modificaciones. Ficha técnica: [Commercial Relationship 61](../servicios/commercial-relationship.md#61-get-companiescompany_idprice-listsprice_list_idpricing-policies); guía principal: [Productos y precios, API 22](../principales/productos-y-precios.md#22-consultar-las-políticas-de-una-lista).
+**¿Qué hace?** Lista, con paginación, las políticas de ganancia de una lista con su porcentaje vigente y cuántas presentaciones cubren. Por defecto solo `ACTIVE`. Es la fuente de `policy_id` y de la `version` que pueden enviar (opcionalmente) las modificaciones. Ficha técnica: [Commercial Relationship 61](../servicios/commercial-relationship.md#61-get-companiescompany_idprice-listsprice_list_idpricing-policies); guía principal: [Productos y precios, API 22](../principales/productos-y-precios.md#22-consultar-las-políticas-de-una-lista).
 
 | | |
 |---|---|
@@ -63,7 +65,7 @@ Respuesta `200` (modelo `PaginatedResponse[PricingPolicyResponse]`; valores ilus
 }
 ```
 
-**Campo exacto:** `items[].id`. `markup_percentage` es el porcentaje vigente con 4 decimales, `presentation_count` cuántas presentaciones cubre y `version` el valor que deben enviar las modificaciones.
+**Campo exacto:** `items[].id`. `markup_percentage` es el porcentaje vigente con 4 decimales, `presentation_count` cuántas presentaciones cubre y `version` el valor que pueden enviar las modificaciones para detectar cambios simultáneos (opcional).
 
 Para saber si una presentación tiene política, la [API 26 de Productos y precios](../principales/productos-y-precios.md#26-verificar-la-cobertura-de-políticas) indica por presentación y moneda si está cubierta y en qué listas, sin exponer el porcentaje. Después se consulta la política de cada lista con esta API.
 

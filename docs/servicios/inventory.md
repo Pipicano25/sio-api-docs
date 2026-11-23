@@ -1,5 +1,7 @@
 # Inventory API
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Índice](../index.md) · [Autenticación](../guias/autenticacion.md) · [Permisos](../guias/permisos.md) · [Errores](../guias/errores.md) · [Parámetros](../parametros/README.md)
 
 ## Introducción
@@ -34,26 +36,26 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 |---|---|---|---|
 | `entries:create` | Aplicar y revertir entradas | **Solo cuentas de servicio** (Purchase). Un usuario humano recibe `403` | Ninguno (cuentas técnicas) |
 | `outputs:create` | Aplicar y revertir salidas | **Solo cuentas de servicio** (Sales) | Ninguno |
-| `balances:read` | Stock, saldo, lookup de saldos, conjuntos de productos, resumen | Usuarios con membresía | `administradores`, `supervisores`, `inventario` |
-| `movements:read` | Kardex y operaciones | Usuarios con membresía | `administradores`, `supervisores`, `inventario` |
-| `valuation:read` | Valoración, capas, consumos; `include_valuation` del resumen | Usuarios con membresía | `administradores`, `supervisores`, `inventario` |
-| `adjustments:create` | Registrar ajuste | **Usuario humano asignado a la sucursal** | `administradores`, `supervisores`, `inventario` |
-| `adjustments:read` | Listar y consultar ajustes | Membresía | `administradores`, `supervisores`, `inventario` |
-| `counts:create` | Crear, iniciar, registrar, completar y cancelar conteos | **Usuario humano asignado a la sucursal** | `administradores`, `supervisores`, `inventario` |
-| `counts:read` | Listar y consultar conteos | Membresía | `administradores`, `supervisores`, `inventario` |
-| `company-policies:read` / `update` | Política de la empresa (leer / registrar y actualizar) | Membresía; escritura por usuario humano | Lectura: `administradores`, `supervisores`, `inventario`. Escritura: `administradores`, `supervisores` |
+| `balances:read` | Stock, saldo, lookup de saldos, conjuntos de productos, resumen | Usuarios con membresía | `superadmin`, `admin`, `Inventario` |
+| `movements:read` | Kardex y operaciones | Usuarios con membresía | `superadmin`, `admin`, `Inventario` |
+| `valuation:read` | Valoración, capas, consumos; `include_valuation` del resumen | Usuarios con membresía | `superadmin`, `admin`, `Inventario` |
+| `adjustments:create` | Registrar ajuste | **Usuario humano** miembro de la empresa, en sucursal activa | `superadmin`, `admin`, `Inventario` |
+| `adjustments:read` | Listar y consultar ajustes | Membresía | `superadmin`, `admin`, `Inventario` |
+| `counts:create` | Crear, iniciar, registrar, completar y cancelar conteos | **Usuario humano** miembro de la empresa, en sucursal activa | `superadmin`, `admin`, `Inventario` |
+| `counts:read` | Listar y consultar conteos | Membresía | `superadmin`, `admin`, `Inventario` |
+| `company-policies:read` / `update` | Política de la empresa (leer / registrar y actualizar) | Membresía; escritura por usuario humano | Lectura: `superadmin`, `admin`, `Inventario`. Escritura: `superadmin`, `admin` |
 | `product-policies:read` / `update` | Políticas de producto (leer, lookup / crear, actualizar, inactivar) | Ídem | Ídem |
-| `stock_evolution:read` | Evolución de existencias (sucursal y consolidada) | Membresía | `administradores`, `supervisores`, `inventario`, `reportes` |
+| `stock_evolution:read` | Evolución de existencias (sucursal y consolidada) | Membresía | `superadmin`, `admin`, `Inventario` |
 | `platform:lookup` | Lecturas técnicas sin membresía | Cuentas de servicio | — |
 
-Los grupos `compras`, `ventas` y `consulta` no tienen permisos de Inventory en la plantilla (ventas accede a existencias a través de Product Inventory Query).
+Ningún grupo de área puede modificar políticas; ningún grupo de usuario salvo `superadmin` tiene `entries:create`, `outputs:create` ni `platform:lookup`, que son de cuentas de servicio.
 
 ## Alcance de datos
 
 | Operaciones | Regla |
 |---|---|
 | Lecturas (`/companies/{company_id}/…`) | Membresía `ACTIVE` en la empresa (evaluada en Operational Context con el token del usuario) o cuenta técnica con `platform:lookup`. Sin asignación a la sucursal. Fuera de alcance → `404 INVENTORY.NOT_FOUND` |
-| Ajustes y conteos | Además, asignación `ACTIVE` del usuario a la sucursal: `BRANCH_NOT_ASSIGNED`, `USER_BRANCH_INACTIVE`, `BRANCH_INACTIVE`, `COMPANY_INACTIVE` → `403 INVENTORY.BRANCH_ACCESS_DENIED`; sucursal de otra empresa → `404` |
+| Ajustes y conteos | Además, sucursal y empresa activas: `BRANCH_INACTIVE`, `COMPANY_INACTIVE` → `403 INVENTORY.BRANCH_ACCESS_DENIED`; sucursal de otra empresa → `404`. No exige asignación a la sucursal (enmienda 2026-11-19: la membresía `ACTIVE` da acceso a todas las sucursales activas; `BRANCH_NOT_ASSIGNED` y `USER_BRANCH_INACTIVE` ya no se producen) |
 | Políticas (escritura) | Usuario humano con membresía en la empresa |
 | Entradas y salidas | Cuenta de servicio; la empresa y sucursal van en el cuerpo |
 | Operational Context responde `403` | `403 INVENTORY.OPERATIONAL_ACCESS_DENIED` |
@@ -69,6 +71,17 @@ Los grupos `compras`, `ventas` y `consulta` no tienen permisos de Inventory en l
 | Saldo nunca negativo | Una salida, un reverso de entrada o un ajuste negativo que dejaría saldo negativo → `409 INSUFFICIENT_STOCK` con la extensión `shortages` (faltantes por producto) |
 | FIFO | Cada entrada o ajuste positivo abre una **capa de costo** (`layer_kind`: `ENTRY`, `ADJUSTMENT`, `OPENING`; `status`: `OPEN`, `CLOSED`). Las salidas consumen capas en orden (`consumption_type`: `CONSUME`, `RESTORE`, `ENTRY_REVERSAL`). `cost_known: false` marca cantidades sin costo conocido |
 | Reversos | Un reverso deshace una operación completa, una sola vez (`409 ALREADY_REVERSED`); un reverso no se revierte (`409 REVERSAL_NOT_ALLOWED`); revertir una entrada cuyas capas ya se consumieron → `409 ENTRY_LAYER_CONSUMED` |
+| `PUT` parcial | Los `PUT` de políticas llevan solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`; campo desconocido → `422`. Los rangos se validan sobre el registro combinado; si nada cambia, no se escribe ni sube la versión |
+| `version` | **Opcional** en las escrituras de políticas y conteos (`PUT`, `deactivate`, `start`, `complete`, `cancel`): si se envía y no coincide → `409 VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. `start` y `deactivate` aceptan `{}` o ningún cuerpo |
+
+Ejemplo de `PUT` parcial (solo cambia `minimum_stock`, sin `version`):
+
+```bash
+curl -sS -X PUT 'https://sio-inventory-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/inventory-policies/7a8b9c0d-1e2f-4a3b-8c4d-5e6f7a8b9c0d' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"minimum_stock": "10"}'
+```
 
 ## Tabla de endpoints
 
@@ -89,15 +102,15 @@ Los grupos `compras`, `ventas` y `consulta` no tienen permisos de Inventory en l
 | 13 | `GET` | `/companies/{company_id}/branches/{branch_id}/valuation` | Valor del inventario de la sucursal | `valuation:read` | `READ` | [Ver](#13-get-companiescompany_idbranchesbranch_idvaluation) |
 | 14 | `GET` | `/companies/{company_id}/branches/{branch_id}/valuation/{company_product_id}/layers` | Capas FIFO de un producto | `valuation:read` | `READ` | [Ver](#14-get-companiescompany_idbranchesbranch_idvaluationcompany_product_idlayers) |
 | 15 | `GET` | `/companies/{company_id}/inventory-movements/{movement_id}/cost-consumptions` | Consumos de capas de un movimiento | `valuation:read` | `READ` | [Ver](#15-get-companiescompany_idinventory-movementsmovement_idcost-consumptions) |
-| 16 | `POST` | `/companies/{company_id}/inventory-adjustments` | Registrar y aplicar ajuste | `adjustments:create` + asignación | `HIGH_RISK` | [Ver](#16-post-companiescompany_idinventory-adjustments) |
+| 16 | `POST` | `/companies/{company_id}/inventory-adjustments` | Registrar y aplicar ajuste | `adjustments:create` + sucursal activa | `HIGH_RISK` | [Ver](#16-post-companiescompany_idinventory-adjustments) |
 | 17 | `GET` | `/companies/{company_id}/inventory-adjustments` | Listar ajustes | `adjustments:read` | `READ` | [Ver](#17-get-companiescompany_idinventory-adjustments) |
 | 18 | `GET` | `/companies/{company_id}/inventory-adjustments/{adjustment_id}` | Ajuste por id | `adjustments:read` | `READ` | [Ver](#18-get-companiescompany_idinventory-adjustmentsadjustment_id) |
-| 19 | `POST` | `/companies/{company_id}/inventory-counts` | Crear conteo (`DRAFT`) | `counts:create` + asignación | `WRITE` | [Ver](#19-post-companiescompany_idinventory-counts) |
+| 19 | `POST` | `/companies/{company_id}/inventory-counts` | Crear conteo (`DRAFT`) | `counts:create` + sucursal activa | `WRITE` | [Ver](#19-post-companiescompany_idinventory-counts) |
 | 20 | `GET` | `/companies/{company_id}/inventory-counts` | Listar conteos | `counts:read` | `READ` | [Ver](#20-get-companiescompany_idinventory-counts) |
-| 21 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/start` | Iniciar conteo | `counts:create` + asignación | `WRITE` | [Ver](#21-post-companiescompany_idinventory-countscount_idstart) |
-| 22 | `PUT` | `/companies/{company_id}/inventory-counts/{count_id}/details/{company_product_id}` | Registrar cantidad contada | `counts:create` + asignación | `WRITE` | [Ver](#22-put-companiescompany_idinventory-countscount_iddetailscompany_product_id) |
-| 23 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/complete` | Completar conteo (aplica ajustes) | `counts:create` + asignación | `HIGH_RISK` | [Ver](#23-post-companiescompany_idinventory-countscount_idcomplete) |
-| 24 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/cancel` | Cancelar conteo | `counts:create` + asignación | `WRITE` | [Ver](#24-post-companiescompany_idinventory-countscount_idcancel) |
+| 21 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/start` | Iniciar conteo | `counts:create` + sucursal activa | `WRITE` | [Ver](#21-post-companiescompany_idinventory-countscount_idstart) |
+| 22 | `PUT` | `/companies/{company_id}/inventory-counts/{count_id}/details/{company_product_id}` | Registrar cantidad contada | `counts:create` + sucursal activa | `WRITE` | [Ver](#22-put-companiescompany_idinventory-countscount_iddetailscompany_product_id) |
+| 23 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/complete` | Completar conteo (aplica ajustes) | `counts:create` + sucursal activa | `HIGH_RISK` | [Ver](#23-post-companiescompany_idinventory-countscount_idcomplete) |
+| 24 | `POST` | `/companies/{company_id}/inventory-counts/{count_id}/cancel` | Cancelar conteo | `counts:create` + sucursal activa | `WRITE` | [Ver](#24-post-companiescompany_idinventory-countscount_idcancel) |
 | 25 | `GET` | `/companies/{company_id}/inventory-counts/{count_id}` | Conteo con detalles y ajustes | `counts:read` | `READ` | [Ver](#25-get-companiescompany_idinventory-countscount_id) |
 | 26 | `GET` | `/companies/{company_id}/inventory-policy` | Política de la empresa | `company-policies:read` | `READ` | [Ver](#26-get-companiescompany_idinventory-policy) |
 | 27 | `POST` | `/companies/{company_id}/inventory-policy` | Registrar política de la empresa | `company-policies:update` | `WRITE` | [Ver](#27-post-companiescompany_idinventory-policy) |
@@ -196,7 +209,7 @@ Flujo verificado: formato → idempotencia (misma clave, mismo cliente y misma h
 
 ### 4. `POST /inventory-entries/{operation_id}/reversal`
 
-`HIGH_RISK` (resta las existencias de la entrada). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-entries/{operation_id}/reversal`; permiso `entries:create` + cuenta de servicio. Cuerpo (`ReversalIn`): `operation_key` (UUID), `company_id` (UUID, obligatorio: la operación original se busca dentro de esa empresa), `application_user_id`, `correlation_id`, `reason` (opcional). 
+`HIGH_RISK` (resta las existencias de la entrada). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-entries/{operation_id}/reversal`; permiso `entries:create` + cuenta de servicio. Cuerpo (`ReversalIn`): `operation_key` (UUID), `company_id` (UUID, obligatorio: la operación original se busca dentro de esa empresa), `application_user_id`, `correlation_id`, `reason` (opcional).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -263,7 +276,7 @@ Ejemplo de respuesta `201` (`InventoryOperationResponse`; valores ilustrativos):
 
 ### 5. `POST /inventory-outputs`
 
-`HIGH_RISK` (resta existencias; nunca deja saldo negativo). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-outputs`; permiso `outputs:create` + cuenta de servicio. Cuerpo: `OperationIn` con `origin_type: "SALE"`, `origin_id` = venta; `lines[].unit_cost` **no se admite** en salidas (el costo lo calcula FIFO). 
+`HIGH_RISK` (resta existencias; nunca deja saldo negativo). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-outputs`; permiso `outputs:create` + cuenta de servicio. Cuerpo: `OperationIn` con `origin_type: "SALE"`, `origin_id` = venta; `lines[].unit_cost` **no se admite** en salidas (el costo lo calcula FIFO).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -341,7 +354,7 @@ Ejemplo de respuesta `201` (`InventoryOperationResponse`; valores ilustrativos):
 
 ### 6. `POST /inventory-outputs/{operation_id}/reversal`
 
-`HIGH_RISK` (restituye existencias y capas). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-outputs/{operation_id}/reversal`; permiso `outputs:create` + cuenta de servicio. Cuerpo `ReversalIn`. 
+`HIGH_RISK` (restituye existencias y capas). URL `https://sio-inventory-dev.onrender.com/api/v1/inventory-outputs/{operation_id}/reversal`; permiso `outputs:create` + cuenta de servicio. Cuerpo `ReversalIn`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -456,7 +469,7 @@ Respuesta `200` (`BalancePage`; valores ilustrativos):
 
 ### 8. `GET /companies/{company_id}/branches/{branch_id}/balances/{company_product_id}`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/balances/{company_product_id}`; permiso `balances:read`. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/balances/{company_product_id}`; permiso `balances:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -484,7 +497,7 @@ Ejemplo de respuesta `200` (`BalanceResponse`; valores ilustrativos):
 
 ### 9. `POST /companies/{company_id}/branches/{branch_id}/balances/lookup`
 
-`READ` (consulta por `POST`). URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/balances/lookup`; permiso `balances:read`. Cuerpo (`BalanceLookupIn`): `{"company_product_ids": ["…"]}` con 1 a 100 UUID sin repetir. 
+`READ` (consulta por `POST`). URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/balances/lookup`; permiso `balances:read`. Cuerpo (`BalanceLookupIn`): `{"company_product_ids": ["…"]}` con 1 a 100 UUID sin repetir.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -547,7 +560,7 @@ Respuesta `200` (`KardexPage`) en **orden cronológico**; cada `KardexMovement`:
 
 ### 11. `GET /companies/{company_id}/inventory-operations/{operation_id}`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-operations/{operation_id}`; permiso `movements:read`. `operation_id` = `inventory_operation_id` de una venta o compra, u `operation_id` del kardex. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-operations/{operation_id}`; permiso `movements:read`. `operation_id` = `inventory_operation_id` de una venta o compra, u `operation_id` del kardex.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -606,7 +619,7 @@ Ejemplo de respuesta `200` (`InventoryOperationResponse`; valores ilustrativos):
 
 ### 12. `GET /companies/{company_id}/inventory-operations/by-key/{operation_key}`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-operations/by-key/{operation_key}`; permiso `movements:read`. Busca por la clave de operación (en Sales y Purchase, el `id` de la operación de confirmación, recepción o anulación). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-operations/by-key/{operation_key}`; permiso `movements:read`. Busca por la clave de operación (en Sales y Purchase, el `id` de la operación de confirmación, recepción o anulación).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -665,7 +678,7 @@ Ejemplo de respuesta `200` (`InventoryOperationResponse`; valores ilustrativos):
 
 ### 13. `GET /companies/{company_id}/branches/{branch_id}/valuation`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/valuation`; permiso `valuation:read`; `page`, `page_size`. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/valuation`; permiso `valuation:read`; `page`, `page_size`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -699,7 +712,7 @@ Ejemplo de respuesta `200` (`BranchValuationResponse`; valores ilustrativos):
 
 ### 14. `GET /companies/{company_id}/branches/{branch_id}/valuation/{company_product_id}/layers`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/valuation/{company_product_id}/layers`; permiso `valuation:read`; `page`, `page_size`, `include_closed` (boolean, `false`). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/valuation/{company_product_id}/layers`; permiso `valuation:read`; `page`, `page_size`, `include_closed` (boolean, `false`).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -735,7 +748,7 @@ Ejemplo de respuesta `200` (`LayersPage`; valores ilustrativos):
 
 ### 15. `GET /companies/{company_id}/inventory-movements/{movement_id}/cost-consumptions`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-movements/{movement_id}/cost-consumptions`; permiso `valuation:read`. `movement_id` = `id` de un movimiento del kardex. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-movements/{movement_id}/cost-consumptions`; permiso `valuation:read`. `movement_id` = `id` de un movimiento del kardex.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -771,7 +784,7 @@ Ejemplo de respuesta `200` (`CostConsumptionsResponse`; valores ilustrativos):
 |---|---|
 | Clasificación | `HIGH_RISK` · modifica existencias de inmediato (no hay borrador ni aprobación) |
 | URL | `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-adjustments` |
-| Permiso | `perm:inventory:adjustments:create` · usuario humano con asignación `ACTIVE` a la sucursal |
+| Permiso | `perm:inventory:adjustments:create` · usuario humano miembro de la empresa, en sucursal y empresa activas |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
 Cuerpo (`AdjustmentIn`; rechaza campos adicionales):
@@ -779,7 +792,7 @@ Cuerpo (`AdjustmentIn`; rechaza campos adicionales):
 | Campo | Tipo | Obligatorio | Validación | Cómo obtenerlo |
 |---|---|---|---|---|
 | `adjustment_key` | UUID | Sí | Clave de idempotencia generada por el cliente (`crypto.randomUUID()`) | — |
-| `branch_id` | UUID | Sí | Sucursal asignada al usuario | [branch_id](../parametros/branch-id.md) |
+| `branch_id` | UUID | Sí | Sucursal activa de la empresa (no exige asignación) | [branch_id](../parametros/branch-id.md) |
 | `company_product_id` | UUID | Sí | Producto apto para movimientos (control de inventario, validado en Commercial Relationship) | [company_product_id](../parametros/company-product-id.md) |
 | `adjustment_type` | `POSITIVE` \| `NEGATIVE` | Sí | — | — |
 | `quantity` | number \| string | Sí | > 0, hasta 4 decimales, unidad base | — |
@@ -856,7 +869,7 @@ Reglas (verificadas): idempotencia por `adjustment_key` ligada al usuario y a la
 
 ### 17. `GET /companies/{company_id}/inventory-adjustments`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-adjustments`; permiso `adjustments:read`. Parámetros: `page`, `page_size`, `branch_id`, `company_product_id`, `adjustment_type`, `inventory_count_id` (UUID; ajustes generados por un conteo), `created_at_from`, `created_at_to` (date-time con zona). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-adjustments`; permiso `adjustments:read`. Parámetros: `page`, `page_size`, `branch_id`, `company_product_id`, `adjustment_type`, `inventory_count_id` (UUID; ajustes generados por un conteo), `created_at_from`, `created_at_to` (date-time con zona).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -969,7 +982,7 @@ Ejemplo de respuesta `200` (`InventoryAdjustmentResponse`; valores ilustrativos)
 |---|---|
 | Clasificación | `WRITE` · crea el conteo en `DRAFT` (sin efectos en existencias) |
 | URL | `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts` |
-| Permiso | `perm:inventory:counts:create` · usuario humano asignado a la sucursal |
+| Permiso | `perm:inventory:counts:create` · usuario humano miembro de la empresa, en sucursal y empresa activas |
 
 Cuerpo (`CountCreateIn`): `branch_id` (UUID, obligatorio), `observations` (≤ 2000, opcional).
 
@@ -1053,7 +1066,7 @@ Ciclo de vida: `DRAFT` → `IN_PROGRESS` (operación 21) → `COMPLETED` (23) o 
 
 ### 20. `GET /companies/{company_id}/inventory-counts`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts`; permiso `counts:read`. Parámetros: `page`, `page_size`, `branch_id`, `status` (`DRAFT`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts`; permiso `counts:read`. Parámetros: `page`, `page_size`, `branch_id`, `status` (`DRAFT`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1148,7 +1161,7 @@ Ejemplo de respuesta `200` (`CountPage`; valores ilustrativos):
 
 ### 21. `POST /companies/{company_id}/inventory-counts/{count_id}/start`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/start`; permiso `counts:create` + asignación. Cuerpo (`CountTransitionIn`): `{"version": 1}`. Pasa a `IN_PROGRESS` y fija `started_at`. Errores: `409 COUNT_ALREADY_IN_PROGRESS` (otro conteo en curso en la sucursal), `409 INVALID_COUNT_TRANSITION`, `409 VERSION_CONFLICT`.
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/start`; permiso `counts:create` + sucursal activa. Cuerpo (`CountTransitionIn`): `{"version": 1}`, con `version` opcional; se acepta `{}` o ningún cuerpo. Pasa a `IN_PROGRESS` y fija `started_at`. Errores: `409 COUNT_ALREADY_IN_PROGRESS` (otro conteo en curso en la sucursal), `409 INVALID_COUNT_TRANSITION`, `409 VERSION_CONFLICT`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1225,7 +1238,7 @@ Ejemplo de respuesta `200` (`InventoryCountResponse`; valores ilustrativos):
 
 ### 22. `PUT /companies/{company_id}/inventory-counts/{count_id}/details/{company_product_id}`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/details/{company_product_id}`; permiso `counts:create` + asignación. Solo con el conteo `IN_PROGRESS` (`409 COUNT_NOT_IN_PROGRESS`). Cuerpo (`CountDetailIn`): `counted_quantity` (≥ 0, puede ser 0, hasta 4 decimales; obligatorio), `unit_cost` (opcional; costo por unidad base para la capa que abriría una diferencia positiva). Registrar de nuevo el mismo producto **reemplaza** la cantidad. 
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/details/{company_product_id}`; permiso `counts:create` + sucursal activa. Solo con el conteo `IN_PROGRESS` (`409 COUNT_NOT_IN_PROGRESS`). Cuerpo (`CountDetailIn`): `counted_quantity` (≥ 0, puede ser 0, hasta 4 decimales; obligatorio), `unit_cost` (opcional; costo por unidad base para la capa que abriría una diferencia positiva). Registrar de nuevo el mismo producto **reemplaza** la cantidad.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1259,7 +1272,7 @@ Ejemplo de respuesta `200` (`InventoryCountDetailResponse`; valores ilustrativos
 
 ### 23. `POST /companies/{company_id}/inventory-counts/{count_id}/complete`
 
-`HIGH_RISK` · aplica **todas** las diferencias como ajustes, todo o nada. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/complete`; permiso `counts:create` + asignación. Cuerpo (`CountCompleteIn`): `completion_key` (UUID de idempotencia) y `version`. Reglas (verificadas): una sola operación `ADJUSTMENT` con origen `COUNT` y una línea por diferencia distinta de cero calculada **sobre el saldo vigente** en ese momento; crea un ajuste por línea y cierra el conteo en una transacción. Un conteo sin diferencias se completa sin operación. Repetir con la misma clave y versión devuelve el conteo. 
+`HIGH_RISK` · aplica **todas** las diferencias como ajustes, todo o nada. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/complete`; permiso `counts:create` + sucursal activa. Cuerpo (`CountCompleteIn`): `completion_key` (UUID de idempotencia, obligatorio) y `version` (opcional). Reglas (verificadas): una sola operación `ADJUSTMENT` con origen `COUNT` y una línea por diferencia distinta de cero calculada **sobre el saldo vigente** en ese momento; crea un ajuste por línea y cierra el conteo en una transacción. Un conteo sin diferencias se completa sin operación. Repetir con la misma clave y versión devuelve el conteo.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1351,7 +1364,7 @@ Ejemplo de respuesta `200` (`InventoryCountResponse`; valores ilustrativos):
 
 ### 24. `POST /companies/{company_id}/inventory-counts/{count_id}/cancel`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/cancel`; permiso `counts:create` + asignación. Cuerpo (`CountCancelIn`): `reason` (1–2000, obligatorio) y `version`. Desde `DRAFT` o `IN_PROGRESS`; no afecta existencias. 
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}/cancel`; permiso `counts:create` + sucursal activa. Cuerpo (`CountCancelIn`): `reason` (1–2000, obligatorio) y `version` (opcional). Desde `DRAFT` o `IN_PROGRESS`; no afecta existencias.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1430,7 +1443,7 @@ Ejemplo de respuesta `200` (`InventoryCountResponse`; valores ilustrativos):
 
 ### 25. `GET /companies/{company_id}/inventory-counts/{count_id}`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}`; permiso `counts:read`. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-counts/{count_id}`; permiso `counts:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1517,7 +1530,7 @@ Ejemplo de respuesta `200` (`InventoryCountResponse`; valores ilustrativos):
 
 ### 26. `GET /companies/{company_id}/inventory-policy`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:read`. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:read`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1548,7 +1561,7 @@ Ejemplo de respuesta `200` (`CompanyPolicyResponse`; valores ilustrativos):
 
 ### 27. `POST /companies/{company_id}/inventory-policy`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:update`; usuario humano con membresía. Cuerpo (`CompanyPolicyIn`): `inventory_system` (`PERPETUAL` \| `PERIODIC`, obligatorio), `valuation_method` (opcional, solo se acepta `FIFO`), `replenishment_strategy` (`STANDARD` \| `JIT`, obligatorio). Una por empresa (`409 POLICY_ALREADY_EXISTS`). 
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:update`; usuario humano con membresía. Cuerpo (`CompanyPolicyIn`): `inventory_system` (`PERPETUAL` \| `PERIODIC`, obligatorio), `valuation_method` (opcional, solo se acepta `FIFO`), `replenishment_strategy` (`STANDARD` \| `JIT`, obligatorio). Una por empresa (`409 POLICY_ALREADY_EXISTS`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1585,7 +1598,7 @@ Ejemplo de respuesta `201` (`CompanyPolicyResponse`; valores ilustrativos):
 
 ### 28. `PUT /companies/{company_id}/inventory-policy`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:update`. Cuerpo (`CompanyPolicyUpdateIn`): los campos de la operación 27 más `version`. `409 VERSION_CONFLICT`.
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policy`; permiso `company-policies:update`. Cuerpo (`CompanyPolicyUpdateIn`, parcial): los campos de la operación 27, todos opcionales (`inventory_system`, `valuation_method`, `replenishment_strategy` no admiten `null`), y `version` (opcional). `409 VERSION_CONFLICT` si se envía `version` y no coincide.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1622,7 +1635,7 @@ Ejemplo de respuesta `200` (`CompanyPolicyResponse`; valores ilustrativos):
 
 ### 29. `GET /companies/{company_id}/inventory-policies`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies`; permiso `product-policies:read`. Parámetros: `page`, `page_size`, `branch_id`, `company_product_id`, `is_active`. 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies`; permiso `product-policies:read`. Parámetros: `page`, `page_size`, `branch_id`, `company_product_id`, `is_active`.
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -1770,7 +1783,7 @@ Ejemplo de respuesta `200` (`ProductPolicyResponse`; valores ilustrativos):
 
 ### 32. `PUT /companies/{company_id}/inventory-policies/{policy_id}`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies/{policy_id}`; permiso `product-policies:update`. Cuerpo (`ProductPolicyUpdateIn`): los campos de la operación 30 salvo `branch_id` y `company_product_id`, más `version`. `409 VERSION_CONFLICT`.
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies/{policy_id}`; permiso `product-policies:update`. Cuerpo (`ProductPolicyUpdateIn`, parcial): los campos de la operación 30 salvo `branch_id` y `company_product_id`, todos opcionales (`minimum_stock`, `safety_stock_method`, `calculation_window_days`, `replenishment_mode`, `auto_purchase_enabled` no admiten `null`; `target_stock` y `service_level` se borran con `null`), y `version` (opcional). `409 VERSION_CONFLICT` si se envía `version` y no coincide.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1814,7 +1827,7 @@ Ejemplo de respuesta `200` (`ProductPolicyResponse`; valores ilustrativos):
 
 ### 33. `POST /companies/{company_id}/inventory-policies/{policy_id}/deactivate`
 
-`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies/{policy_id}/deactivate`; permiso `product-policies:update`. Cuerpo `{"version": n}`. 
+`WRITE`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-policies/{policy_id}/deactivate`; permiso `product-policies:update`. Cuerpo `{"version": n}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1854,7 +1867,7 @@ Ejemplo de respuesta `200` (`ProductPolicyResponse`; valores ilustrativos):
 
 ### 34. `POST /companies/{company_id}/branches/{branch_id}/inventory-policies/lookup`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/inventory-policies/lookup`; permiso `product-policies:read`. Cuerpo (`PolicyLookupIn`): `{"company_product_ids": [...]}` (1–100, sin repetir). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/branches/{branch_id}/inventory-policies/lookup`; permiso `product-policies:read`. Cuerpo (`PolicyLookupIn`): `{"company_product_ids": [...]}` (1–100, sin repetir).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1872,7 +1885,7 @@ Respuesta `200` (`PolicyLookupResponse`): `items[]` con `company_product_id` y `
 
 ### 35. `POST /companies/{company_id}/inventory-product-sets`
 
-`READ` (consulta por `POST`; la usa Product Inventory Query para filtrar por existencias y mínimos). URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-product-sets`; permisos `balances:read` **y** `product-policies:read`. Cuerpo (`ProductSetsIn`): `branch_ids` (1–100 UUID, sin repetir, obligatorio), `stock_state` (`IN_STOCK` \| null), `minimum_state` (`BELOW_MINIMUM`, `AT_MINIMUM`, `ABOVE_MINIMUM`, `WITH_POLICY` \| null), `unit` (`PRODUCTS` por defecto; `PAIRS` solo con `BELOW_MINIMUM`), `after` (posición `{"k": [...], "id": "…", "branch_id": "…"}` devuelta antes, para paginar), `limit` (1–100, obligatorio). 
+`READ` (consulta por `POST`; la usa Product Inventory Query para filtrar por existencias y mínimos). URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-product-sets`; permisos `balances:read` **y** `product-policies:read`. Cuerpo (`ProductSetsIn`): `branch_ids` (1–100 UUID, sin repetir, obligatorio), `stock_state` (`IN_STOCK` \| null), `minimum_state` (`BELOW_MINIMUM`, `AT_MINIMUM`, `ABOVE_MINIMUM`, `WITH_POLICY` \| null), `unit` (`PRODUCTS` por defecto; `PAIRS` solo con `BELOW_MINIMUM`), `after` (posición `{"k": [...], "id": "…", "branch_id": "…"}` devuelta antes, para paginar), `limit` (1–100, obligatorio).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1913,7 +1926,7 @@ Ejemplo de respuesta `200` (`ProductSetsResponse`; valores ilustrativos):
 
 ### 36. `POST /companies/{company_id}/inventory-summary`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-summary`; permisos `balances:read` **y** `product-policies:read`; con `include_valuation: true` además `valuation:read` (si falta, `403`). Cuerpo (`InventorySummaryIn`): `branch_ids` (1–100, obligatorio), `include_valuation` (boolean, `false`). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/inventory-summary`; permisos `balances:read` **y** `product-policies:read`; con `include_valuation: true` además `valuation:read` (si falta, `403`). Cuerpo (`InventorySummaryIn`): `branch_ids` (1–100, obligatorio), `include_valuation` (boolean, `false`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -2009,7 +2022,7 @@ Ejemplo de respuesta `200` (`StockEvolutionPage`; valores ilustrativos):
 
 ### 38. `GET /companies/{company_id}/stock-evolution`
 
-`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/stock-evolution`; permiso `stock_evolution:read`. Como la operación 37, sumando por producto las sucursales de `branch_id` (**obligatorio**, repetible, 1–100). 
+`READ`. URL `https://sio-inventory-dev.onrender.com/api/v1/companies/{company_id}/stock-evolution`; permiso `stock_evolution:read`. Como la operación 37, sumando por producto las sucursales de `branch_id` (**obligatorio**, repetible, 1–100).
 
 Ejemplo de solicitud (sin cuerpo):
 
@@ -2056,8 +2069,8 @@ Ejemplo de respuesta `200` (`ConsolidatedStockEvolutionPage`; valores ilustrativ
 | Respuesta | Causa | Qué hacer |
 |---|---|---|
 | `403 INVENTORY.FORBIDDEN` en entradas o salidas | Token de usuario en rutas de cuentas de servicio | No usarlas desde el frontend |
-| `403 INVENTORY.FORBIDDEN` en ajustes o conteos | Token de cuenta de servicio, o sin permiso | Usar un usuario humano del grupo `inventario` |
-| `403 INVENTORY.BRANCH_ACCESS_DENIED` | El usuario no tiene asignada la sucursal | Asignarla en Operational Context |
+| `403 INVENTORY.FORBIDDEN` en ajustes o conteos | Token de cuenta de servicio, o sin permiso | Usar un usuario humano de los grupos `admin` o `Inventario` (o `superadmin`) miembro de la empresa |
+| `403 INVENTORY.BRANCH_ACCESS_DENIED` | La sucursal o la empresa están inactivas (ya no se exige asignación a la sucursal) | Elegir una sucursal activa o reactivarla en Operational Context |
 | `404 INVENTORY.NOT_FOUND` | Sin membresía, recurso de otra empresa o inexistente | Revisar `company_id` |
 | `409 INVENTORY.INSUFFICIENT_STOCK` (`shortages`) | Saldo insuficiente | Mostrar faltantes por producto |
 | `409 INVENTORY.OPERATION_KEY_CONFLICT` | Misma clave con otro contenido | Generar clave nueva por operación |
@@ -2070,7 +2083,7 @@ Ejemplo de respuesta `200` (`ConsolidatedStockEvolutionPage`; valores ilustrativ
 
 | Servicio | Uso |
 |---|---|
-| Operational Context | Membresía y asignación a la sucursal (con el token del usuario); datos de empresa y sucursal con la cuenta técnica |
+| Operational Context | Membresía y estado de empresa y sucursal (con el token del usuario; la asignación a sucursal no se evalúa); datos de empresa y sucursal con la cuenta técnica |
 | Commercial Relationship | Verificar que el producto es de la empresa y tiene control de inventario; moneda de la empresa |
 | Purchase, Sales | Emisores de entradas, salidas y reversos (cuentas de servicio) |
 | Audit | Eventos de auditoría |

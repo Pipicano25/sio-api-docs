@@ -1,5 +1,7 @@
 # Permisos y contexto operativo
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Volver al índice](../index.md) · [Autenticación](autenticacion.md) · [Primeros pasos](primeros-pasos.md) · [Errores](errores.md) · [Operational Context](../servicios/operational-context.md)
 
 Para que una operación de SIO se ejecute deben cumplirse **dos condiciones independientes**:
@@ -18,7 +20,6 @@ En el Access Token, dentro de `resource_access["sio-api"].roles`. No hay otro cl
   "resource_access": {
     "sio-api": {
       "roles": [
-        "inventario",
         "perm:inventory:balances:read",
         "perm:inventory:adjustments:create",
         "perm:geography:all:read",
@@ -29,7 +30,7 @@ En el Access Token, dentro de `resource_access["sio-api"].roles`. No hay otro cl
 }
 ```
 
-- Los valores sin prefijo (`administrador`, `supervisor`, `compras`, `ventas`, `inventario`, `reportes`, `consulta`) son el **perfil** del grupo: sirven para mostrar el rol del usuario, no conceden nada.
+- Los valores sin prefijo (`superadmin`, `admin`) son el **perfil** de esos grupos: sirven para mostrar el rol del usuario, no conceden nada. Los grupos de área (`Compras`, `Ventas`, `Inventario`) no traen valor sin prefijo; el frontend los ve en el claim `groups` de `userinfo`.
 - Solo cuentan los valores con formato exacto `perm:{servicio}:{recurso}:{accion}` (cuatro segmentos). Un `perm:` con otro número de segmentos se ignora.
 - Los roles son los **efectivos** de `sio-api`: los de los grupos del usuario más los asignados directamente.
 
@@ -54,8 +55,8 @@ export const puede = (roles: string[], servicio: string, recurso: string, accion
 
 | Permiso en el token | Cubre |
 |---|---|
-| `perm:all:all:all` | Todo (grupo administradores) |
-| `perm:all:all:read` | Toda consulta de cualquier servicio |
+| `perm:all:all:all` | Todo (grupo `superadmin`) |
+| `perm:all:all:read` | Toda consulta de cualquier servicio (definido en la plantilla; ningún grupo lo usa) |
 | `perm:inventory:all:read` (ejemplo de comodín por servicio; no está definido en la plantilla) | Toda consulta de Inventory |
 | `perm:sales:sales:create` | Solo crear ventas |
 | `perm:operational-context:all:read` | Todas las lecturas de Operational Context, incluido `/me/operational-context` |
@@ -82,109 +83,96 @@ export const puede = (roles: string[], servicio: string, recurso: string, accion
 
 El realm define 316 roles `perm:*` en total. El permiso exacto de cada operación figura en la ficha del servicio, verificado contra el código del router.
 
-> **Observación:** los grupos `reportes` y `consulta` incluyen además dos permisos con el segmento `payment_reference` (guion bajo). El servicio Payment Reference declara sus permisos con `payment-reference` (guion), por lo que esos dos valores **no conceden nada**; los permisos efectivos son los escritos con guion, que también están presentes en ambos grupos.
+> **Observación:** el grupo `admin` incluye además dos permisos con el segmento `payment_reference` (guion bajo). El servicio Payment Reference declara sus permisos con `payment-reference` (guion), por lo que esos dos valores **no conceden nada**; los permisos efectivos son los escritos con guion, que el grupo también tiene.
 
 ## 4. Grupos del realm y sus permisos
 
-Los grupos y permisos provienen de la plantilla del realm del repositorio (`infrastructure/keycloak/realm-template/sio-realm.template.json`). 
+Los grupos y permisos provienen de la plantilla del realm del repositorio (`infrastructure/keycloak/realm-template/sio-realm.template.json`). Desde la spec 026 hay **cinco** grupos de usuario: dos perfiles (`superadmin`, `admin`) y tres áreas (`Compras`, `Ventas`, `Inventario`). Un usuario puede estar en **varios** grupos y recibe la **suma** de sus permisos; un operario típico está en las tres áreas. El grupo dice *qué* puede hacer el usuario y su membresía en Operational Context dice *en qué empresas*.
 
-### Grupo `/administradores` (rol `administrador`, usuario de prueba `admin.test`)
+| Grupo | Perfil | Quién | Resumen |
+|---|---|---|---|
+| `/superadmin` | `superadmin` | Dueño del software y quienes él indique | Todo, en todas las empresas sin ser miembro; crea empresas; elimina y desactiva datos globales |
+| `/admin` | `admin` | Gerente, dueño o encargado de una empresa | Todo en sus empresas (incluidas la rentabilidad, los usuarios de la empresa y la auditoría de la empresa); crea y modifica datos globales, sin eliminarlos ni desactivarlos |
+| `/Compras` | — | Personal de compras | Compras de sus empresas (incluido anular), proveedores y lo que necesita consultar; crea y modifica personas, organizaciones y sus contactos |
+| `/Ventas` | — | Personal de ventas | Ventas de sus empresas (incluido anular, sin rentabilidad), crear clientes y lo que necesita consultar; crea y modifica personas, organizaciones y sus contactos |
+| `/Inventario` | — | Personal de bodega | Ajustes, conteos, saldos, kardex, valoración y consultas de existencias de sus empresas |
 
-1 permisos `perm:*`.
+Las tres áreas juntas tienen exactamente los permisos del antiguo grupo `empleado` (80). Ninguna área tiene rentabilidad ni escritura en Operational Context; ninguna elimina ni desactiva en Party Identity.
+
+Ningún grupo de usuario salvo `superadmin` tiene permisos técnicos o de plataforma: `platform:administer`, `platform:lookup`, `audit:audit-events:create`, `audit:platform-events:read`, `product-catalog:first-use:register`, `commercial-relationship:automatic_price_update_requests:submit`, `inventory:entries:create` ni `inventory:outputs:create`.
+
+### Grupo `/superadmin` (rol `superadmin`, usuario de prueba `admin.sio`)
+
+1 permiso `perm:*`.
 
 | Servicio | Permisos |
 |---|---|
 | `all` | `perm:all:all:all` |
 
-### Grupo `/supervisores` (rol `supervisor`, usuario de prueba `supervisor.test`)
+### Grupo `/admin` (rol `admin`, usuario de prueba `admin.dao`)
 
-7 permisos `perm:*`.
-
-| Servicio | Permisos |
-|---|---|
-| `all` | `perm:all:all:read`, `perm:all:all:create`, `perm:all:all:update` |
-| `sales` | `perm:sales:sales:read-profitability` |
-| `commercial-relationship` | `perm:commercial-relationship:pricing_policies:delete`, `perm:commercial-relationship:automatic_price_applications:resolve` |
-| `purchase` | `perm:purchase:purchase_line_taxes:override` |
-
-### Grupo `/compras` (rol `compras`, usuario de prueba `compras.test`)
-
-47 permisos `perm:*`.
+49 permisos `perm:*`. Usa comodines por servicio con acción `create`, `read`, `update` o `delete`, que **no** cubren acciones especiales (`lookup`, `deactivate`, `submit`, `register`); en los servicios globales no incluye `delete`.
 
 | Servicio | Permisos |
 |---|---|
-| `purchase` | `perm:purchase:purchases:create`, `perm:purchase:purchases:read`, `perm:purchase:purchases:update`, `perm:purchase:purchases:delete`, `perm:purchase:purchase_details:create`, `perm:purchase:purchase_details:read`, `perm:purchase:purchase_details:update`, `perm:purchase:purchase_details:delete`, `perm:purchase:purchase_lifecycle_events:create`, `perm:purchase:purchase_lifecycle_events:read`, `perm:purchase:purchase_lifecycle_events:update`, `perm:purchase:purchase_lifecycle_events:delete`, `perm:purchase:purchase_sequences:create`, `perm:purchase:purchase_sequences:read`, `perm:purchase:purchase_sequences:update`, `perm:purchase:purchase_sequences:delete`, `perm:purchase:purchase_operations:create`, `perm:purchase:purchase_operations:read`, `perm:purchase:purchase_operations:update`, `perm:purchase:purchase_operations:delete` |
-| `geography` | `perm:geography:all:read` |
-| `payment-reference` | `perm:payment-reference:all:read` |
-| `product-catalog` | `perm:product-catalog:all:read` |
-| `party-identity` | `perm:party-identity:identification_type_rules:read`, `perm:party-identity:person_identities:read`, `perm:party-identity:organization_identities:read`, `perm:party-identity:person_contact_profiles:read`, `perm:party-identity:organization_contact_profiles:read`, `perm:party-identity:organization_contact_persons:read`, `perm:party-identity:global_business_sectors:read`, `perm:party-identity:organization_business_sectors:read` |
-| `commercial-relationship` | `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:price_list_items:read`, `perm:commercial-relationship:supplier_evaluations:read` |
-| `operational-context` | `perm:operational-context:all:read` |
+| `audit` | `perm:audit:audit-events:read` |
+| `business-reporting` | `perm:business-reporting:purchases:read`, `perm:business-reporting:sales_by_branch:read`, `perm:business-reporting:stock_evolution:read`, `perm:business-reporting:top_selling_products:read` |
+| `commercial-relationship` | `perm:commercial-relationship:all:create`, `perm:commercial-relationship:all:delete`, `perm:commercial-relationship:all:read`, `perm:commercial-relationship:all:update`, `perm:commercial-relationship:automatic_price_applications:resolve` |
+| `geography` | `perm:geography:all:create`, `perm:geography:all:read`, `perm:geography:all:update` |
+| `inventory` | `perm:inventory:adjustments:create`, `perm:inventory:adjustments:read`, `perm:inventory:balances:read`, `perm:inventory:company-policies:read`, `perm:inventory:company-policies:update`, `perm:inventory:counts:create`, `perm:inventory:counts:read`, `perm:inventory:movements:read`, `perm:inventory:product-policies:read`, `perm:inventory:product-policies:update`, `perm:inventory:stock_evolution:read`, `perm:inventory:valuation:read` |
+| `operational-context` | `perm:operational-context:all:create`, `perm:operational-context:all:delete`, `perm:operational-context:all:read`, `perm:operational-context:all:update` |
+| `party-identity` | `perm:party-identity:all:create`, `perm:party-identity:all:read`, `perm:party-identity:all:update` |
+| `payment-reference` | `perm:payment-reference:all:create`, `perm:payment-reference:all:read`, `perm:payment-reference:all:update` |
+| `payment_reference` | `perm:payment_reference:global_payment_condition_types:read`, `perm:payment_reference:global_payment_methods:read` |
+| `product-catalog` | `perm:product-catalog:all:create`, `perm:product-catalog:all:read`, `perm:product-catalog:all:update`, `perm:product-catalog:first-use:register-manual` |
+| `product-inventory-query` | `perm:product-inventory-query:inventory_overviews:read`, `perm:product-inventory-query:inventory_summary:read`, `perm:product-inventory-query:inventory_valuation:read`, `perm:product-inventory-query:low_stock_products:read`, `perm:product-inventory-query:product_overviews:read`, `perm:product-inventory-query:stock:read` |
+| `purchase` | `perm:purchase:all:all` |
+| `sales` | `perm:sales:all:all` |
+
+### Grupo `/Compras` (sin rol de nombre; usuarios de prueba `operario.dao`)
+
+58 permisos `perm:*`. Compras, proveedores, consultas de catálogo, precios y existencias; registro y edición de personas y organizaciones.
+
+| Servicio | Permisos |
+|---|---|
 | `business-reporting` | `perm:business-reporting:purchases:read` |
-
-### Grupo `/ventas` (rol `ventas`, usuario de prueba `ventas.test`)
-
-34 permisos `perm:*`.
-
-| Servicio | Permisos |
-|---|---|
-| `sales` | `perm:sales:all:create`, `perm:sales:all:read`, `perm:sales:all:update`, `perm:sales:all:delete` |
+| `commercial-relationship` | `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:price_list_items:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_evaluations:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read` |
 | `geography` | `perm:geography:all:read` |
+| `operational-context` | `perm:operational-context:all:read` |
+| `party-identity` | `perm:party-identity:global_business_sectors:read`, `perm:party-identity:identification_type_rules:read`, `perm:party-identity:organization_business_sectors:read`, `perm:party-identity:organization_contact_persons:create`, `perm:party-identity:organization_contact_persons:read`, `perm:party-identity:organization_contact_persons:update`, `perm:party-identity:organization_contact_profiles:create`, `perm:party-identity:organization_contact_profiles:read`, `perm:party-identity:organization_contact_profiles:update`, `perm:party-identity:organization_identities:create`, `perm:party-identity:organization_identities:read`, `perm:party-identity:organization_identities:update`, `perm:party-identity:organization_legal_representatives:read`, `perm:party-identity:person_contact_profiles:create`, `perm:party-identity:person_contact_profiles:read`, `perm:party-identity:person_contact_profiles:update`, `perm:party-identity:person_identities:create`, `perm:party-identity:person_identities:read`, `perm:party-identity:person_identities:update` |
 | `payment-reference` | `perm:payment-reference:all:read` |
 | `product-catalog` | `perm:product-catalog:all:read` |
-| `party-identity` | `perm:party-identity:identification_type_rules:read`, `perm:party-identity:person_identities:read`, `perm:party-identity:organization_identities:read`, `perm:party-identity:person_contact_profiles:read`, `perm:party-identity:organization_contact_profiles:read`, `perm:party-identity:organization_contact_persons:read`, `perm:party-identity:global_business_sectors:read`, `perm:party-identity:organization_business_sectors:read` |
-| `commercial-relationship` | `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:price_list_items:read`, `perm:commercial-relationship:supplier_evaluations:read` |
-| `operational-context` | `perm:operational-context:all:read` |
-| `product-inventory-query` | `perm:product-inventory-query:product_overviews:read`, `perm:product-inventory-query:inventory_overviews:read`, `perm:product-inventory-query:stock:read` |
+| `purchase` | `perm:purchase:purchase_details:create`, `perm:purchase:purchase_details:delete`, `perm:purchase:purchase_details:read`, `perm:purchase:purchase_details:update`, `perm:purchase:purchase_lifecycle_events:create`, `perm:purchase:purchase_lifecycle_events:delete`, `perm:purchase:purchase_lifecycle_events:read`, `perm:purchase:purchase_lifecycle_events:update`, `perm:purchase:purchase_operations:create`, `perm:purchase:purchase_operations:delete`, `perm:purchase:purchase_operations:read`, `perm:purchase:purchase_operations:update`, `perm:purchase:purchase_sequences:create`, `perm:purchase:purchase_sequences:delete`, `perm:purchase:purchase_sequences:read`, `perm:purchase:purchase_sequences:update`, `perm:purchase:purchases:create`, `perm:purchase:purchases:delete`, `perm:purchase:purchases:read`, `perm:purchase:purchases:update` |
+
+### Grupo `/Ventas` (sin rol de nombre; usuarios de prueba `operario.dao`)
+
+46 permisos `perm:*`. Ventas, clientes de la empresa, consultas de catálogo, precios y existencias; registro y edición de personas y organizaciones.
+
+| Servicio | Permisos |
+|---|---|
 | `business-reporting` | `perm:business-reporting:top_selling_products:read` |
-
-### Grupo `/inventario` (rol `inventario`, usuario de prueba `inventario.test`)
-
-20 permisos `perm:*`.
-
-| Servicio | Permisos |
-|---|---|
+| `commercial-relationship` | `perm:commercial-relationship:company_customers:create`, `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:price_list_items:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_evaluations:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read` |
 | `geography` | `perm:geography:all:read` |
-| `product-catalog` | `perm:product-catalog:all:read` |
 | `operational-context` | `perm:operational-context:all:read` |
-| `inventory` | `perm:inventory:balances:read`, `perm:inventory:movements:read`, `perm:inventory:adjustments:create`, `perm:inventory:counts:create`, `perm:inventory:adjustments:read`, `perm:inventory:counts:read`, `perm:inventory:company-policies:read`, `perm:inventory:product-policies:read`, `perm:inventory:valuation:read`, `perm:inventory:stock_evolution:read` |
-| `commercial-relationship` | `perm:commercial-relationship:company_products:read` |
-| `product-inventory-query` | `perm:product-inventory-query:product_overviews:read`, `perm:product-inventory-query:inventory_overviews:read`, `perm:product-inventory-query:inventory_summary:read`, `perm:product-inventory-query:low_stock_products:read`, `perm:product-inventory-query:stock:read` |
+| `party-identity` | `perm:party-identity:global_business_sectors:read`, `perm:party-identity:identification_type_rules:read`, `perm:party-identity:organization_business_sectors:read`, `perm:party-identity:organization_contact_persons:create`, `perm:party-identity:organization_contact_persons:read`, `perm:party-identity:organization_contact_persons:update`, `perm:party-identity:organization_contact_profiles:create`, `perm:party-identity:organization_contact_profiles:read`, `perm:party-identity:organization_contact_profiles:update`, `perm:party-identity:organization_identities:create`, `perm:party-identity:organization_identities:read`, `perm:party-identity:organization_identities:update`, `perm:party-identity:organization_legal_representatives:read`, `perm:party-identity:person_contact_profiles:create`, `perm:party-identity:person_contact_profiles:read`, `perm:party-identity:person_contact_profiles:update`, `perm:party-identity:person_identities:create`, `perm:party-identity:person_identities:read`, `perm:party-identity:person_identities:update` |
+| `payment-reference` | `perm:payment-reference:all:read` |
+| `product-catalog` | `perm:product-catalog:all:read` |
+| `product-inventory-query` | `perm:product-inventory-query:inventory_overviews:read`, `perm:product-inventory-query:product_overviews:read`, `perm:product-inventory-query:stock:read` |
+| `sales` | `perm:sales:all:create`, `perm:sales:all:delete`, `perm:sales:all:read`, `perm:sales:all:update` |
+
+### Grupo `/Inventario` (sin rol de nombre; usuarios de prueba `operario.dao`)
+
+20 permisos `perm:*`. Ajustes, conteos, saldos, kardex, valoración y consultas de existencias.
+
+| Servicio | Permisos |
+|---|---|
 | `business-reporting` | `perm:business-reporting:stock_evolution:read` |
-
-### Grupo `/reportes` (rol `reportes`, usuario de prueba `reportes.test`)
-
-59 permisos `perm:*`.
-
-| Servicio | Permisos |
-|---|---|
-| `commercial-relationship` | `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_evaluations:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:price_list_items:read` |
-| `geography` | `perm:geography:global_administrative_divisions:read`, `perm:geography:global_cities:read`, `perm:geography:global_countries:read` |
-| `operational-context` | `perm:operational-context:application_users:read`, `perm:operational-context:branches:read`, `perm:operational-context:companies:read`, `perm:operational-context:company_advisor_assignments:read`, `perm:operational-context:user_branches:read` |
-| `party-identity` | `perm:party-identity:global_business_sectors:read`, `perm:party-identity:identification_type_rules:read`, `perm:party-identity:organization_business_sectors:read`, `perm:party-identity:organization_identities:read`, `perm:party-identity:person_identities:read` |
-| `payment-reference` | `perm:payment-reference:global_payment_condition_types:read`, `perm:payment-reference:global_payment_methods:read` |
-| `product-catalog` | `perm:product-catalog:attribute-definitions:read`, `perm:product-catalog:brands:read`, `perm:product-catalog:categories:read`, `perm:product-catalog:global_categories:read`, `perm:product-catalog:global_category_attributes:read`, `perm:product-catalog:global_product_attribute_values:read`, `perm:product-catalog:global_products:read`, `perm:product-catalog:global_units_of_measure:read`, `perm:product-catalog:group-types:read`, `perm:product-catalog:packaging-types:read`, `perm:product-catalog:product_assets:read`, `perm:product-catalog:product_attribute_definitions:read`, `perm:product-catalog:products:read`, `perm:product-catalog:units-of-measure:read` |
-| `purchase` | `perm:purchase:purchase_details:read`, `perm:purchase:purchase_lifecycle_events:read`, `perm:purchase:purchase_operations:read`, `perm:purchase:purchase_sequences:read`, `perm:purchase:purchases:read` |
-| `sales` | `perm:sales:sale_details:read`, `perm:sales:sale_operations:read`, `perm:sales:sale_sequences:read`, `perm:sales:sales:read` |
-| `payment_reference` | `perm:payment_reference:global_payment_condition_types:read`, `perm:payment_reference:global_payment_methods:read` |
-| `inventory` | `perm:inventory:stock_evolution:read` |
-| `business-reporting` | `perm:business-reporting:top_selling_products:read`, `perm:business-reporting:sales_by_branch:read`, `perm:business-reporting:purchases:read`, `perm:business-reporting:stock_evolution:read` |
-
-### Grupo `/consulta` (rol `consulta`, usuario de prueba `consulta.test`)
-
-54 permisos `perm:*`.
-
-| Servicio | Permisos |
-|---|---|
-| `commercial-relationship` | `perm:commercial-relationship:company_customers:read`, `perm:commercial-relationship:company_products:read`, `perm:commercial-relationship:company_suppliers:read`, `perm:commercial-relationship:customer_credit_profiles:read`, `perm:commercial-relationship:customer_payment_conditions:read`, `perm:commercial-relationship:customer_segments:read`, `perm:commercial-relationship:product_pricing_policies:read`, `perm:commercial-relationship:supplier_commercial_conditions:read`, `perm:commercial-relationship:supplier_evaluations:read`, `perm:commercial-relationship:supplier_payment_conditions:read`, `perm:commercial-relationship:supplier_products:read`, `perm:commercial-relationship:company_product_presentations:read`, `perm:commercial-relationship:price_lists:read`, `perm:commercial-relationship:price_list_items:read` |
-| `geography` | `perm:geography:global_administrative_divisions:read`, `perm:geography:global_cities:read`, `perm:geography:global_countries:read` |
-| `operational-context` | `perm:operational-context:application_users:read`, `perm:operational-context:branches:read`, `perm:operational-context:companies:read`, `perm:operational-context:company_advisor_assignments:read`, `perm:operational-context:user_branches:read` |
-| `party-identity` | `perm:party-identity:global_business_sectors:read`, `perm:party-identity:identification_type_rules:read`, `perm:party-identity:organization_business_sectors:read`, `perm:party-identity:organization_identities:read`, `perm:party-identity:person_identities:read` |
-| `payment-reference` | `perm:payment-reference:global_payment_condition_types:read`, `perm:payment-reference:global_payment_methods:read` |
-| `product-catalog` | `perm:product-catalog:attribute-definitions:read`, `perm:product-catalog:brands:read`, `perm:product-catalog:categories:read`, `perm:product-catalog:global_categories:read`, `perm:product-catalog:global_category_attributes:read`, `perm:product-catalog:global_product_attribute_values:read`, `perm:product-catalog:global_products:read`, `perm:product-catalog:global_units_of_measure:read`, `perm:product-catalog:group-types:read`, `perm:product-catalog:packaging-types:read`, `perm:product-catalog:product_assets:read`, `perm:product-catalog:product_attribute_definitions:read`, `perm:product-catalog:products:read`, `perm:product-catalog:units-of-measure:read` |
-| `purchase` | `perm:purchase:purchase_details:read`, `perm:purchase:purchase_lifecycle_events:read`, `perm:purchase:purchase_operations:read`, `perm:purchase:purchase_sequences:read`, `perm:purchase:purchases:read` |
-| `sales` | `perm:sales:sale_details:read`, `perm:sales:sale_operations:read`, `perm:sales:sale_sequences:read`, `perm:sales:sales:read` |
-| `payment_reference` | `perm:payment_reference:global_payment_condition_types:read`, `perm:payment_reference:global_payment_methods:read` |
+| `commercial-relationship` | `perm:commercial-relationship:company_products:read` |
+| `geography` | `perm:geography:all:read` |
+| `inventory` | `perm:inventory:adjustments:create`, `perm:inventory:adjustments:read`, `perm:inventory:balances:read`, `perm:inventory:company-policies:read`, `perm:inventory:counts:create`, `perm:inventory:counts:read`, `perm:inventory:movements:read`, `perm:inventory:product-policies:read`, `perm:inventory:stock_evolution:read`, `perm:inventory:valuation:read` |
+| `operational-context` | `perm:operational-context:all:read` |
+| `product-catalog` | `perm:product-catalog:all:read` |
+| `product-inventory-query` | `perm:product-inventory-query:inventory_overviews:read`, `perm:product-inventory-query:inventory_summary:read`, `perm:product-inventory-query:low_stock_products:read`, `perm:product-inventory-query:product_overviews:read`, `perm:product-inventory-query:stock:read` |
 
 ## 5. Alcance de datos: plataforma, empresa y sucursal
 
@@ -192,8 +180,8 @@ SIO es multi-tenant. Cada operación de esta documentación indica su **alcance*
 
 | Alcance | Datos | Quién puede verlos | Servicios |
 |---|---|---|---|
-| **Global** | Catálogos compartidos por todas las empresas: países, ciudades, productos del catálogo global, marcas, unidades, tipos de identificación, tipos de condición de pago | Cualquier usuario con el permiso de lectura; la escritura suele requerir permisos de catálogo que solo tienen administradores y supervisores | Geography, Payment Reference, Product Catalog, Party Identity (catálogos), Audit (eventos de plataforma) |
-| **Empresa** | Datos de una empresa cliente de SIO: clientes, proveedores, productos adoptados, precios, compras, ventas, existencias, usuarios de aplicación, reportes | Usuarios con **membresía `ACTIVE`** en esa empresa y el permiso funcional; además, los administradores de plataforma | Operational Context, Commercial Relationship, Purchase, Sales, Inventory, Audit, Product Inventory Query, Business Reporting |
+| **Global** | Catálogos compartidos por todas las empresas: países, ciudades, productos del catálogo global, marcas, unidades, tipos de identificación, tipos de condición de pago | Cualquier usuario con el permiso de lectura; crear y modificar lo tienen `superadmin` y `admin`; eliminar o desactivar, solo `superadmin` | Geography, Payment Reference, Product Catalog, Party Identity (catálogos), Audit (eventos de plataforma) |
+| **Empresa** | Datos de una empresa cliente de SIO: clientes, proveedores, productos adoptados, precios, compras, ventas, existencias, usuarios de aplicación, reportes | Usuarios con **membresía `ACTIVE`** en esa empresa y el permiso funcional; además, el grupo `superadmin` (administración de plataforma) | Operational Context, Commercial Relationship, Purchase, Sales, Inventory, Audit, Product Inventory Query, Business Reporting |
 | **Sucursal** | Subconjunto de los datos de empresa asociado a una sucursal: existencias, ventas, compras y reportes por sucursal | Usuarios con acceso a esa sucursal (`user_branches` activo) dentro de la membresía | Inventory, Sales, Purchase, Product Inventory Query, Business Reporting |
 
 ### 5.1. Cómo se decide el alcance
@@ -216,21 +204,21 @@ Dos permisos de Operational Context amplían el alcance sin necesidad de membres
 
 | Permiso | Efecto | Quién lo tiene en la plantilla |
 |---|---|---|
-| `perm:operational-context:platform:administer` | Ve y administra **todas** las empresas y sucursales | Solo quien tenga `perm:all:all:all` (administradores) |
+| `perm:operational-context:platform:administer` | Ve y administra **todas** las empresas y sucursales | Solo el grupo `superadmin` (`perm:all:all:all`) |
 | `perm:operational-context:platform:lookup` | Lecturas por UUID de empresas y sucursales sin membresía; pensado para identidades técnicas entre servicios | Cuentas de servicio técnicas; también cubierto por `perm:all:all:all` |
 
 ## 6. Comprobar el acceso antes de actuar
 
 Operational Context expone una consulta que devuelve el resultado de la evaluación **sin producir `403`** por una denegación funcional:
 
-```http
-GET https://sio-operational-context-dev.onrender.com/api/v1/operational-access?company_id=550e8400-e29b-41d4-a716-446655440000&branch_id=7c9e6679-7425-40de-944b-e07fc1f90ae7&permission=perm:sales:sales:create
-Authorization: Bearer <ACCESS_TOKEN>
+```bash
+curl -sS 'https://sio-operational-context-dev.onrender.com/api/v1/operational-access?branch_id=7c9e6679-7425-40de-944b-e07fc1f90ae7&permission=perm:sales:sales:create' \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
 | Parámetro de consulta | Tipo | Obligatorio | Significado |
 |---|---|---|---|
-| `company_id` | UUID | No | Empresa a evaluar ([cómo obtenerlo](../parametros/company-id.md)) |
+| `company_id` | UUID | No | Empresa a evaluar ([cómo obtenerlo](../parametros/company-id.md)); se envía exactamente uno de `company_id` o `branch_id` |
 | `branch_id` | UUID | No | Sucursal a evaluar ([cómo obtenerlo](../parametros/branch-id.md)) |
 | `permission` | string (máx. 255) | No | Permiso concreto `perm:{servicio}:{recurso}:{accion}` a evaluar junto con el alcance |
 | `keycloak_user_id` | string (máx. 255) | No | Solo con `perm:operational-context:platform:lookup`: evalúa a otro usuario |
@@ -241,8 +229,8 @@ Respuesta `200` (modelo `OperationalAccessResponse`; valores ilustrativos):
 
 ```json
 {
-  "allowed": false,
-  "reason": "USER_BRANCH_INACTIVE",
+  "allowed": true,
+  "reason": null,
   "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
   "company_id": "550e8400-e29b-41d4-a716-446655440000",
   "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
@@ -251,7 +239,7 @@ Respuesta `200` (modelo `OperationalAccessResponse`; valores ilustrativos):
 }
 ```
 
-`reason` es `null` cuando `allowed` es `true`. Cuando es `false`, contiene la **primera** condición que falla, en este orden fijo (catálogo cerrado `AccessDenialReason` del código de Operational Context):
+`reason` es `null` cuando `allowed` es `true`. Cuando es `false`, contiene la **primera** condición que falla, en este orden fijo (catálogo cerrado `AccessDenialReason` del código de Operational Context). Desde la enmienda 2026-11-19 («acceso por membresía») la membresía `ACTIVE` da acceso a la empresa y a todas sus sucursales activas; lo que el usuario puede hacer lo limitan solo sus permisos de Keycloak. La asignación a sucursal ya no se evalúa:
 
 | `reason` | Significado |
 |---|---|
@@ -259,8 +247,8 @@ Respuesta `200` (modelo `OperationalAccessResponse`; valores ilustrativos):
 | `USER_MEMBERSHIP_INACTIVE` | Tiene membresía, pero está `INACTIVE` |
 | `COMPANY_INACTIVE` | La empresa está `INACTIVE` |
 | `BRANCH_INACTIVE` | La sucursal consultada está `INACTIVE` |
-| `BRANCH_NOT_ASSIGNED` | El usuario no tiene asignada esa sucursal |
-| `USER_BRANCH_INACTIVE` | La asignación a la sucursal está `INACTIVE` |
+| `BRANCH_NOT_ASSIGNED` | Ya no se produce (se conserva en el catálogo por compatibilidad); antes indicaba que el usuario no tenía asignada esa sucursal |
+| `USER_BRANCH_INACTIVE` | Ya no se produce (se conserva en el catálogo por compatibilidad); antes indicaba que la asignación a la sucursal estaba `INACTIVE` |
 | `PERMISSION_DENIED` | Todo lo anterior se cumple, pero el token no cubre el `permission` indicado |
 
 El detalle de la operación está en la ficha de [Operational Context](../servicios/operational-context.md). Esta consulta es útil para decidir qué mostrar al cambiar de empresa o sucursal; la autorización definitiva la sigue haciendo cada operación.

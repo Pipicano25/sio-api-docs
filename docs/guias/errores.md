@@ -1,5 +1,7 @@
 # Errores y diagnóstico
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Volver al índice](../index.md) · [Primeros pasos](primeros-pasos.md) · [Autenticación](autenticacion.md) · [Permisos](permisos.md)
 
 Esta guía describe los formatos de error que devuelven las API de SIO, qué significa cada código HTTP y cómo debe reaccionar el frontend. Los códigos de aplicación (`code`) propios de cada operación se detallan en la ficha de cada servicio; aquí están las reglas comunes, verificadas en el código de los 12 servicios.
@@ -103,7 +105,7 @@ Prefijos de `code` y base de `type` por servicio:
 | `403` | Token válido sin el permiso de la operación; o acceso operativo denegado en Purchase, Sales, Inventory, Commercial Relationship y Audit | `FORBIDDEN`, `OPERATIONAL_ACCESS_DENIED`, `BRANCH_ACCESS_DENIED` | Mostrar el `detail` y el `trace_id`. No reintentar. Recalcular los permisos de la interfaz |
 | `404` | El recurso de la ruta no existe **o está fuera del alcance** del usuario (empresa o sucursal sin membresía) | `NOT_FOUND` | Revisar el identificador y el contexto operativo ([Permisos §5](permisos.md#5-alcance-de-datos-plataforma-empresa-y-sucursal)) |
 | `405` | Método no permitido en la ruta | `METHOD_NOT_ALLOWED` | Error de programación del cliente |
-| `409` | Conflicto de estado: duplicado, versión desactualizada, transición no permitida, secuencia no configurada, clave de idempotencia reutilizada con otro cuerpo | `VERSION_CONFLICT`, `INVALID_STATUS_TRANSITION`, `DUPLICATE_*`, `IDEMPOTENCY_KEY_CONFLICT`, otros por servicio | Mostrar el `detail`; recargar el recurso y repetir la acción con la versión actual si procede |
+| `409` | Conflicto de estado: duplicado, versión desactualizada, transición no permitida, secuencia no configurada, clave de idempotencia reutilizada con otro cuerpo | `VERSION_CONFLICT`, `INVALID_STATUS_TRANSITION`, `DUPLICATE_*`, `IDEMPOTENCY_KEY_CONFLICT`, otros por servicio | Mostrar el `detail`; recargar el recurso y repetir la acción (con la versión actual si se envía `version`) si procede |
 | `422` | Validación de campos o de reglas de negocio de la entrada, incluidas referencias a recursos inexistentes o inactivos | `VALIDATION_ERROR`, `IMMUTABLE_FIELD`, otros por servicio | Mostrar `errors[].message` junto al campo `errors[].field` |
 | `500` | Error no controlado | `INTERNAL_ERROR` | Mostrar mensaje genérico y el `trace_id`; reportar |
 | `503` | Base de datos del servicio o un servicio dependiente no disponible | `DEPENDENCY_UNAVAILABLE` con `dependency` | Mostrar estado temporal y permitir reintentar tras unos segundos |
@@ -129,9 +131,78 @@ Causas de `errors[].code` en Purchase y Sales: `REQUIRED`, `INVALID_FORMAT`, `UN
 
 Un campo desconocido en el cuerpo produce `422` en los servicios que rechazan campos extra (Purchase y Sales lo reportan como `UNKNOWN_FIELD`). **** para cada modelo de los demás servicios; las fichas indican cuándo un modelo rechaza campos adicionales.
 
+### 3.1. Validación semántica de los campos
+
+Desde el 2026-11-21, Party Identity, Operational Context y Commercial Relationship validan que cada campo reciba lo que
+representa, no solo un texto de cierta longitud; desde el 2026-11-22 también Product Catalog, Purchase, Sales,
+Inventory, Geography y Payment Reference. Un valor que no corresponde responde `422` `VALIDATION_ERROR` con el campo en
+`errors[].field` y no guarda nada. En Purchase, Sales e Inventory cada elemento de `errors[]` trae además la causa
+`INVALID_FORMAT`; Geography y Payment Reference responden el `422` estándar de validación con el campo en
+`detail[].loc`. Los textos se recortan y los espacios repetidos quedan en uno. En un campo opcional de texto libre
+(descripción, observaciones, prefijo, código de ciudad), un texto en blanco equivale a `null`.
+
+| Tipo de campo | Campos | Acepta | Rechaza |
+|---|---|---|---|
+| Nombre de persona | `first_name`, `middle_name`, `last_name`, `second_last_name` (Party Identity) | Letras con tildes y ñ, espacios, apóstrofo, punto y guion: `María José`, `O'Neil-Muñoz` | Números o símbolos: `1000000001`, `Ana2`, `@@@` |
+| Nombre | `legal_name`, `trade_name`, `organization_type`, `registration_status`, nombre de sector; `name` de sucursal, `display_name` de usuario; `display_name`, `short_name` de producto, cliente y proveedor; `name` de lista de precios; `name` de marca, categoría, empaque, unidad, grupo, atributo, opción y presentación, `canonical_name` de producto (Product Catalog); `name` de país, división y ciudad (Geography); `name` de método de pago y tipo de condición (Payment Reference) | Al menos una letra; admite números: `DROGUERÍA 24 HORAS S.A.S.`, `Ibuprofeno 400 mg` | Solo números o símbolos: `900000001`, `...`; saltos de línea |
+| Código | `code` de sucursal; `internal_code` de producto, cliente y proveedor; `internal_code` y `sku` de presentación; `code` de lista de precios; código y sistema de sector; `code` de marca, categoría, empaque, unidad, grupo, atributo, opción y presentación (Product Catalog); `code` de división y ciudad (Geography); `code` de método de pago y tipo de condición (Payment Reference) | Letras sin tilde, números, `.`, `-`, `_`, `/`, sin espacios: `DAO-PPAL`, `P-000001`, `7702057000123` | `PRD 01`, `Acetaminofén`, `-P01`, `#01` |
+| Referencia | `reference_code`, `supplier_product_code`, `source_document_reference`; `value` de identificador de producto (Product Catalog); `supplier_document_number` de compra | Al menos una letra o un número; admite espacios: `REF 123` | `---` |
+| Teléfono | `phone` | Dígitos, `+` inicial, espacios, guiones y paréntesis; de 7 a 15 dígitos: `+57 602 837 3035` | `Carlos Pérez`, `123`, `+++` |
+| Correo | `email`, `reference_email` | `usuario@dominio.ext`; se guarda en minúsculas | `Carlos Pérez`, `contacto@dao` |
+| Sitio web | `website` | `https://empresa.com.co` o `empresa.com.co` | `Droguería DAO`, `dao` |
+| Código postal | `postal_code` | De 3 a 10 letras o dígitos, con al menos un dígito: `760001` | `Cali`, `12` |
+| Texto | `address_line`, `block_reason`; `position` (además necesita una letra); `description` (admite saltos de línea); `text_value` de atributo (Product Catalog); `observations`, `notes` y `reason` de compras, ventas e inventario (admiten saltos de línea) | Al menos una letra o un número | `---`, `12345` como cargo |
+| Fecha de nacimiento | `birth_date` | Fecha real desde el `1900-01-01` y no posterior a hoy | `1899-12-31`, `1990-02-30` |
+| Código de país y prefijo | `iso2_code`, `iso3_code`, `phone_prefix` (Geography) | Dos o tres letras: `CO`, `COL`; prefijo con `+` opcional y de 1 a 4 dígitos: `+57`, `+1-809` | `C1`, `Colombia` como prefijo |
+
+El número de identificación ya se validaba por la regla de su sigla (`identification-type-rules`) y, en el NIT, por el
+dígito de verificación de la DIAN; un nombre en `identification_number` responde `422`
+`INVALID_IDENTIFICATION_NUMBER`.
+
+Ejemplo: un número de documento enviado como nombre.
+
+```bash
+curl -sS -X POST 'https://sio-party-identity-dev.onrender.com/api/v1/person-identities' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "identification_country_id": "c0a80101-0000-4000-8000-000000000001",
+    "identification_type": "CC",
+    "identification_number": "1012345678",
+    "first_name": "1012345678",
+    "last_name": "Pérez"
+  }'
+```
+
+Respuesta `422`:
+
+```json
+{
+  "type": "https://sio/errors/party-identity/validation-error",
+  "title": "Solicitud inválida",
+  "status": 422,
+  "detail": "La solicitud contiene datos inválidos.",
+  "instance": "/api/v1/person-identities",
+  "code": "PARTY_IDENTITY.VALIDATION_ERROR",
+  "trace_id": "f83f59dcf17040f3b9065e78b4edfe4c",
+  "errors": [
+    {
+      "field": "first_name",
+      "message": "Value error, Debe ser un nombre de persona: solo letras, espacios, apóstrofo, punto o guion; sin números ni símbolos.",
+      "code": "VALIDATION_ERROR"
+    }
+  ]
+}
+```
+
 ## 4. Concurrencia y versiones
 
-Varios recursos llevan un campo `version` (entero) que debe enviarse al modificar. Si el recurso cambió desde que se leyó, el servicio responde `409` `VERSION_CONFLICT`. El frontend debe recargar el recurso, mostrar los cambios y repetir la acción con la nueva versión. Las fichas indican qué operaciones exigen `version` y en qué campo (cuerpo o cabecera).
+Varios recursos llevan un campo `version` (entero). En las escrituras (`PUT`, acciones como `deactivate`/`reactivate`, confirmar, anular, y el `?version=` de los `DELETE` de línea) `version` es **opcional**:
+
+- Si se envía y no coincide con la vigente, el servicio responde `409` `VERSION_CONFLICT`. El frontend debe recargar el recurso, mostrar los cambios y repetir la acción (con la nueva versión o sin ella).
+- Si no se envía, el cambio se aplica sobre el registro vigente (gana la última escritura). Enviarla es la forma de detectar cambios simultáneos.
+
+Los `PUT` son **parciales**: el cuerpo lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Un cuerpo vacío `{}` o solo con `version` responde `422`. Las acciones cuyo cuerpo solo llevaba `version` aceptan `{}` o ningún cuerpo. Las fichas indican las excepciones (por ejemplo, operaciones que siguen exigiendo una versión).
 
 ## 5. Trazabilidad
 

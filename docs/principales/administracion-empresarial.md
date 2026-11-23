@@ -1,10 +1,12 @@
 # 6.2 Administración empresarial
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← API principales](README.md) · [← Índice](../index.md)
 
 Operaciones con las que un administrador configura una empresa cliente de SIO: la empresa misma, sus sucursales, las personas que trabajan en ella (membresías), las sucursales a las que cada una puede acceder, la trazabilidad de lo que ocurre en la empresa (auditoría) y la numeración de los documentos comerciales.
 
-Servicios implicados: [Operational Context](../servicios/operational-context.md) (empresas, sucursales, membresías y asignaciones), [Party Identity](../servicios/party-identity.md) (identidad legal de la empresa y de cada persona), [Geography](../servicios/geography.md) (ubicación), [Audit](../servicios/audit.md) (trazabilidad) y las secuencias de [Sales](../servicios/sales.md) y [Purchase](../servicios/purchase.md) (numeración). Flujo completo: [Crear una empresa y una sucursal](../ejemplos/crear-empresa-y-sucursal.md).
+Servicios implicados: [Operational Context](../servicios/operational-context.md) (empresas, sucursales, membresías y asignaciones informativas a sucursal), [Party Identity](../servicios/party-identity.md) (identidad legal de la empresa y de cada persona), [Geography](../servicios/geography.md) (ubicación), [Audit](../servicios/audit.md) (trazabilidad) y las secuencias de [Sales](../servicios/sales.md) y [Purchase](../servicios/purchase.md) (numeración). Flujo completo: [Crear una empresa y una sucursal](../ejemplos/crear-empresa-y-sucursal.md).
 
 | # | API | Método y URL | Permiso | Referencia técnica |
 |---|---|---|---|---|
@@ -32,13 +34,16 @@ Servicios implicados: [Operational Context](../servicios/operational-context.md)
 
 Operaciones relacionadas que no se consideran principales (ver las fichas): inactivar o reactivar empresas y sucursales (OC 7, 8, 13, 14), retirar o reactivar una asignación de sucursal (OC 25, 26), modificar los datos de referencia de un usuario (OC 18), la gestión de asesores (OC 27–31) y los eventos de auditoría de plataforma (Audit 8–10).
 
+Regla de acceso (enmienda 2026-11-19, «acceso por membresía»): la membresía `ACTIVE` de un usuario en una empresa le da acceso a la empresa y a **todas** sus sucursales activas; lo que puede hacer lo limitan solo sus permisos de Keycloak (grupos). Las asignaciones a sucursal ([API 11](#11-consultar-las-sucursales-asignadas-a-un-usuario), [12](#12-asignar-un-usuario-a-una-sucursal) y [13](#13-consultar-los-usuarios-asignados-a-una-sucursal), OC 25 y 26) son un dato **informativo** (sede habitual, listados de empleados por sucursal): crearlas, retirarlas o reactivarlas no cambia el acceso.
+
 Convenciones de todo el módulo:
 
 - `TU_ACCESS_TOKEN` es el Access Token de [Acceso y contexto operativo](acceso-y-contexto-operativo.md); los UUID son ficticios.
 - Las cuatro API de escritura de Operational Context con cuerpo JSON **rechazan campos desconocidos** con `422` (modelos estrictos). Las de Sales y Purchase también.
 - Errores comunes a todas las API de SIO de este módulo (no se repiten en cada tabla): `401` con `{"detail": "Se requiere un token de acceso Bearer"}` u otro `detail` cuando el token falta, venció o no es válido (renovar una vez y reintentar; si falla, volver al login); `403` con `code` `…FORBIDDEN` cuando el token no tiene el permiso indicado (mostrar que faltan permisos y el `trace_id`); `503` con `code` `…DEPENDENCY_UNAVAILABLE` cuando la base de datos u otro servicio no responde (reintentar más tarde). Los demás errores llegan en Problem Details (`application/problem+json`) con `code` `OPERATIONAL_CONTEXT.…`, `AUDIT.…`, `SALES.…` o `PURCHASE.…` y `trace_id`; ver la [guía de errores](../guias/errores.md).
 - **Alcance por empresa.** Operational Context solo muestra una empresa a quien tiene membresía `ACTIVE` en ella o el permiso `perm:operational-context:platform:administer`. Fuera de ese alcance la respuesta es `404 OPERATIONAL_CONTEXT.NOT_FOUND`, igual que si no existiera. Audit, Sales y Purchase responden también `404` sin membresía `ACTIVE`.
-- **Control de versión.** Toda modificación envía la `version` actual del recurso; si otra persona lo cambió antes, la API responde `409 …VERSION_CONFLICT` y el frontend debe volver a leer el recurso y repetir con la nueva `version`.
+- **Control de versión.** `version` es **opcional** en toda modificación: si se envía la `version` leída y otra persona cambió el recurso antes, la API responde `409 …VERSION_CONFLICT` y el frontend debe volver a leer el recurso y repetir; si no se envía, el cambio se aplica sobre lo vigente. Se recomienda enviarla para detectar cambios simultáneos.
+- **`PUT` parcial.** El cuerpo de un `PUT` lleva solo los campos que cambian: un campo ausente no cambia, `null` borra un campo opcional y en uno obligatorio responde `422`; un cuerpo vacío `{}` o solo con `version` responde `422`. Las acciones de estado (inactivar, reactivar) aceptan `{}` o ningún cuerpo.
 - Las respuestas de Operational Context traen siempre `created_by`, `updated_by` (el `sub` de Keycloak de quien actuó), `created_at` y `updated_at`.
 
 ---
@@ -47,7 +52,7 @@ Convenciones de todo el módulo:
 
 **Método:** `POST`
 **URL:** `https://sio-operational-context-dev.onrender.com/api/v1/companies`
-**Permiso requerido:** `perm:operational-context:companies:create` **y** `perm:operational-context:platform:administer` (ambos; en el realm de desarrollo solo el grupo `administradores` tiene el segundo).
+**Permiso requerido:** `perm:operational-context:companies:create` **y** `perm:operational-context:platform:administer` (ambos; en el realm de desarrollo solo el grupo `superadmin` tiene el segundo).
 
 ### ¿Qué hace esta API?
 
@@ -164,7 +169,7 @@ Si se envía `country_id`, `administrative_division_id` o `city_id`, los tres de
 | `id` | UUID | El nuevo [company_id](../parametros/company-id.md); se usa en todas las rutas `/companies/{company_id}/…` |
 | `organization_identity_id` | UUID | Identidad con la razón social (Party Identity) |
 | `status` | `ACTIVE` \| `INACTIVE` | Siempre `ACTIVE` al crear |
-| `version` | integer | Siempre `1` al crear; se envía en la [API 4](#4-actualizar-una-empresa) |
+| `version` | integer | Siempre `1` al crear; puede enviarse (opcional) en la [API 4](#4-actualizar-una-empresa) |
 | `latitude`, `longitude` | string decimal \| null | Las coordenadas se devuelven como cadenas |
 | `timezone`, `default_currency` | string | Los valores aplicados (enviados o por defecto) |
 
@@ -304,7 +309,7 @@ Un usuario sin membresías no recibe error: recibe `items: []`.
 
 ### ¿Qué hace esta API?
 
-Devuelve la ficha completa de una empresa, en cualquier estado, si está en el alcance del usuario. Se usa para mostrar los datos de la empresa seleccionada en la sesión y para leer su `version` antes de modificarla. Para mostrar la razón social hay que consultar además Party Identity con `organization_identity_id` (`GET https://sio-party-identity-dev.onrender.com/api/v1/organization-identities/{organization_identity_id}`, permiso `perm:party-identity:organization_identities:read`).
+Devuelve la ficha completa de una empresa, en cualquier estado, si está en el alcance del usuario. Se usa para mostrar los datos de la empresa seleccionada en la sesión y para leer su `version` (opcional, recomendable para detectar cambios simultáneos) antes de modificarla. Para mostrar la razón social hay que consultar además Party Identity con `organization_identity_id` (`GET https://sio-party-identity-dev.onrender.com/api/v1/organization-identities/{organization_identity_id}`, permiso `perm:party-identity:organization_identities:read`).
 
 Antes necesita: el `company_id` de la empresa (del contexto operativo o de la [API 2](#2-consultar-las-empresas-del-usuario)).
 
@@ -362,7 +367,7 @@ curl -X GET \
 | Campo | Tipo | Significado para el frontend |
 |---|---|---|
 | `status` | `ACTIVE` \| `INACTIVE` | Una empresa `INACTIVE` se puede consultar pero no modificar ni operar |
-| `version` | integer | Valor que debe enviarse en la [API 4](#4-actualizar-una-empresa) |
+| `version` | integer | Valor que puede enviarse (opcional) en la [API 4](#4-actualizar-una-empresa) |
 
 ### Posibles errores
 
@@ -379,9 +384,9 @@ curl -X GET \
 
 ### ¿Qué hace esta API?
 
-Reemplaza los datos de contacto, dirección, zona horaria y moneda de una empresa. Es un reemplazo completo: hay que enviar todos los campos con su valor final (los que no se envían quedan en `null`), más la `version` leída. Si nada cambia, no escribe ni incrementa la versión. `organization_identity_id` debe enviarse con el mismo valor: cambiarlo a otra organización responde `409` si esa organización ya tiene empresa o `422` si no existe o está inactiva. Una empresa `INACTIVE` no se puede modificar.
+Modifica los datos de contacto, dirección, zona horaria y moneda de una empresa. Es un `PUT` parcial: se envían solo los campos que cambian (un campo ausente no cambia; `null` borra un dato opcional) y, opcionalmente, la `version` leída. Si nada cambia, no escribe ni incrementa la versión. `organization_identity_id` normalmente se omite; cambiarlo a otra organización responde `409` si esa organización ya tiene empresa o `422` si no existe o está inactiva. Una empresa `INACTIVE` no se puede modificar.
 
-Antes necesita: la ficha actual de la empresa ([API 3](#3-consultar-una-empresa)) para conocer todos sus valores y su `version`.
+Antes necesita: el `company_id`. Recomendado: la ficha actual de la empresa ([API 3](#3-consultar-una-empresa)) para mostrar sus valores y enviar su `version`.
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -421,7 +426,7 @@ curl -X PUT \
 
 ### Cuerpo de la solicitud (Body)
 
-Modelo `CompanyUpdate`: los mismos campos de la [API 1](#1-crear-empresa), con `timezone` y `default_currency` **obligatorios** (sin valor por defecto) y `version`:
+Modelo `CompanyUpdate` (parcial): los mismos campos de la [API 1](#1-crear-empresa), todos opcionales; `organization_identity_id`, `timezone` y `default_currency` no admiten `null`. `version` es opcional. El ejemplo envía el registro completo, lo cual también es válido:
 
 ```json
 {
@@ -443,13 +448,13 @@ Modelo `CompanyUpdate`: los mismos campos de la [API 1](#1-crear-empresa), con `
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `organization_identity_id` | UUID | Sí | Debe repetirse el valor actual | `0f1e2d3c-4b5a-4968-8776-655443322111` | `organization_identity_id` de la [API 3](#3-consultar-una-empresa) (devuelve la ficha de la empresa); se repite sin cambios |
-| `email`, `phone`, `address_line`, `postal_code` | string \| null | No; aceptan `null` | Valor final de cada dato; omitir un campo lo deja en `null` | — | Formulario |
+| `organization_identity_id` | UUID | No; no admite `null` | Identidad de la empresa; normalmente se omite (no cambia) | `0f1e2d3c-4b5a-4968-8776-655443322111` | `organization_identity_id` de la [API 3](#3-consultar-una-empresa) (devuelve la ficha de la empresa) |
+| `email`, `phone`, `address_line`, `postal_code` | string \| null | No; aceptan `null` | Nuevo valor; `null` lo borra; omitir un campo lo deja como está | — | Formulario |
 | `country_id`, `administrative_division_id`, `city_id` | UUID \| null | No; aceptan `null` | Ubicación final, coherente entre sí; Geography solo se consulta si cambia | — | `items[].id` de `GET …/global-countries`, `GET …/global-administrative-divisions` y `GET …/global-cities` de Geography (selectores en cascada país → división → ciudad) · qué hace cada una y sus errores en la guía [country_id, administrative_division_id, city_id](../parametros/country-id.md) |
 | `latitude`, `longitude` | decimal \| null | No; aceptan `null` | Coordenadas | `"4.6097"` | Formulario |
-| `timezone` | string (1–60) | **Sí** | Zona horaria IANA | `America/Bogota` | [API 3](#3-consultar-una-empresa) o formulario |
-| `default_currency` | string | **Sí** | Moneda por defecto | `COP` | [API 3](#3-consultar-una-empresa) o formulario |
-| `version` | integer ≥ 1 | Sí | Versión leída en la [API 3](#3-consultar-una-empresa) | `1` | [API 3](#3-consultar-una-empresa) |
+| `timezone` | string (1–60) | No; no admite `null` | Zona horaria IANA | `America/Bogota` | [API 3](#3-consultar-una-empresa) o formulario |
+| `default_currency` | string | No; no admite `null` | Moneda por defecto | `COP` | [API 3](#3-consultar-una-empresa) o formulario |
+| `version` | integer ≥ 1 | No | Versión leída en la [API 3](#3-consultar-una-empresa). Opcional: si se envía y no coincide con la vigente → `409 VERSION_CONFLICT`; si se omite, se aplica sobre lo vigente | `1` | [API 3](#3-consultar-una-empresa) |
 
 ### Respuesta exitosa
 
@@ -489,11 +494,11 @@ Modelo `CompanyUpdate`: los mismos campos de la [API 1](#1-crear-empresa), con `
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `OPERATIONAL_CONTEXT.NOT_FOUND` | Empresa inexistente o fuera del alcance | Volver a leer el contexto operativo |
-| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | La `version` enviada no es la actual | Releer la empresa ([API 3](#3-consultar-una-empresa)) y repetir con la nueva `version` |
+| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | La `version` enviada no es la actual | Releer la empresa ([API 3](#3-consultar-una-empresa)) y repetir con la nueva `version` (o sin `version`) |
 | `409` | `OPERATIONAL_CONTEXT.DUPLICATE_ORGANIZATION_IDENTITY` | Se intentó cambiar a una organización que ya tiene empresa | Mantener `organization_identity_id` |
 | `422` | `OPERATIONAL_CONTEXT.COMPANY_INACTIVE` | La empresa está `INACTIVE` | No se puede modificar; reactivarla primero (OC 8, administrador de plataforma) |
 | `422` | `OPERATIONAL_CONTEXT.ORGANIZATION_IDENTITY_NOT_FOUND` / `_INACTIVE`, `COUNTRY_NOT_FOUND`, `ADMINISTRATIVE_DIVISION_NOT_FOUND`, `CITY_NOT_FOUND`, `LOCATION_INACTIVE`, `GEOGRAPHY_INCOHERENT` | Referencias inválidas, como en la [API 1](#1-crear-empresa) | Corregir el formulario |
-| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Falta `timezone`, `default_currency` o `version`, formato inválido o campo desconocido | Corregir el formulario |
+| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Cuerpo vacío o solo con `version`; `null` en `organization_identity_id`, `timezone` o `default_currency`; formato inválido o campo desconocido | Corregir el formulario |
 
 ## 5. Crear una sucursal
 
@@ -505,7 +510,7 @@ Modelo `CompanyUpdate`: los mismos campos de la [API 1](#1-crear-empresa), con `
 
 Registra un punto de operación de la empresa (tienda, bodega, farmacia) donde se venderá, comprará y controlará inventario. La empresa debe estar `ACTIVE`. El `code` es único dentro de la empresa y se guarda en mayúsculas. Si no se envía `timezone`, la sucursal hereda la de la empresa (la respuesta lo muestra en `effective_timezone`).
 
-Efecto verificado: crear la sucursal **no la asigna a ningún usuario**. Cada usuario que deba operar en ella se asigna con la [API 12](#12-asignar-un-usuario-a-una-sucursal). Para confirmar ventas o compras en ella hará falta además una secuencia de numeración ([API 19](#19-crear-una-secuencia-de-numeración)) propia o de la empresa.
+Efecto verificado: crear la sucursal **no la asigna a ningún usuario**, y no hace falta: todos los miembros `ACTIVE` de la empresa pueden operar en ella desde que se crea, según sus permisos. La asignación con la [API 12](#12-asignar-un-usuario-a-una-sucursal) es opcional e informativa (sede habitual). Para confirmar ventas o compras en ella hará falta además una secuencia de numeración ([API 19](#19-crear-una-secuencia-de-numeración)) propia o de la empresa.
 
 Antes necesita: el `company_id` de una empresa `ACTIVE` en la que el administrador tenga membresía (o `platform:administer`) y, si lleva dirección, los identificadores geográficos.
 
@@ -657,7 +662,7 @@ Ejemplo de `409`:
 
 ### ¿Qué hace esta API?
 
-Lista, con paginación, **todas** las sucursales de la empresa (no solo las asignadas al usuario), con búsqueda por código o nombre. Sirve para la administración de sucursales y para mostrar el nombre de cada `branch_id` del contexto operativo. Por defecto solo devuelve sucursales `ACTIVE`. Para saber en cuáles puede operar el usuario, usar `memberships[].branches[]` del contexto operativo.
+Lista, con paginación, **todas** las sucursales de la empresa (con independencia de las asignaciones informativas), con búsqueda por código o nombre. Sirve para la administración de sucursales y para mostrar el nombre de cada `branch_id` del contexto operativo. Por defecto solo devuelve sucursales `ACTIVE`. Para saber en cuáles puede operar el usuario, usar `memberships[].branches[]` del contexto operativo.
 
 Antes necesita: el `company_id` y membresía en la empresa.
 
@@ -754,7 +759,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 
 ### ¿Qué hace esta API?
 
-Devuelve una sucursal por su identificador, en cualquier estado, con el estado de su empresa. Se usa para mostrar la sucursal seleccionada en la sesión (nombre, zona horaria) y para leer su `version` antes de modificarla. Solo necesita el `branch_id`; no hace falta conocer la empresa.
+Devuelve una sucursal por su identificador, en cualquier estado, con el estado de su empresa. Se usa para mostrar la sucursal seleccionada en la sesión (nombre, zona horaria) y para leer su `version` (opcional, recomendable) antes de modificarla. Solo necesita el `branch_id`; no hace falta conocer la empresa.
 
 Antes necesita: el `branch_id` (del contexto operativo o de la [API 6](#6-consultar-las-sucursales-de-una-empresa)).
 
@@ -833,9 +838,9 @@ curl -X GET \
 
 ### ¿Qué hace esta API?
 
-Reemplaza los datos de una sucursal: código, nombre, contacto, dirección y zona horaria. Es un reemplazo completo con `version`. La empresa de la sucursal es inmutable (no se envía). Geography solo se consulta si cambia la ubicación.
+Modifica los datos de una sucursal: código, nombre, contacto, dirección y zona horaria. Es un `PUT` parcial: se envían solo los campos que cambian y, opcionalmente, la `version`. La empresa de la sucursal es inmutable (no se envía). Geography solo se consulta si cambia la ubicación.
 
-Antes necesita: la sucursal actual ([API 7](#7-consultar-una-sucursal)) con todos sus valores y su `version`.
+Antes necesita: el `branch_id`. Recomendado: la sucursal actual ([API 7](#7-consultar-una-sucursal)) para mostrar sus valores y enviar su `version`.
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -875,7 +880,7 @@ curl -X PUT \
 
 ### Cuerpo de la solicitud (Body)
 
-Modelo `BranchUpdate`: los campos de la [API 5](#5-crear-una-sucursal) más `version`. No admite `company_id`.
+Modelo `BranchUpdate` (parcial): los campos de la [API 5](#5-crear-una-sucursal), todos opcionales (`code` y `name` no admiten `null`), y `version` opcional. No admite `company_id`.
 
 ```json
 {
@@ -897,13 +902,13 @@ Modelo `BranchUpdate`: los campos de la [API 5](#5-crear-una-sucursal) más `ver
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `code` | string | Sí | Código único por empresa (mayúsculas) | `SUC-01` | [API 7](#7-consultar-una-sucursal) o formulario |
-| `name` | string (1–160) | Sí | Nombre | `Sucursal Centro Histórico` | Formulario |
-| `email`, `phone`, `address_line`, `postal_code` | string \| null | No; aceptan `null` | Valor final | — | Formulario |
+| `code` | string | No; no admite `null` | Código único por empresa (mayúsculas) | `SUC-01` | [API 7](#7-consultar-una-sucursal) o formulario |
+| `name` | string (1–160) | No; no admite `null` | Nombre | `Sucursal Centro Histórico` | Formulario |
+| `email`, `phone`, `address_line`, `postal_code` | string \| null | No; aceptan `null` | Nuevo valor; `null` lo borra | — | Formulario |
 | `country_id`, `administrative_division_id`, `city_id` | UUID \| null | No; aceptan `null` | Ubicación final coherente | — | `items[].id` de `GET …/global-countries`, `GET …/global-administrative-divisions` y `GET …/global-cities` de Geography (selectores en cascada país → división → ciudad) · qué hace cada una y sus errores en la guía [country_id, administrative_division_id, city_id](../parametros/country-id.md) |
 | `latitude`, `longitude` | decimal \| null | No; aceptan `null` | Coordenadas | `"4.6097"` | Formulario |
 | `timezone` | string (≤ 60) \| null | No; acepta `null` | Zona propia o `null` para heredar la de la empresa | `America/Bogota` | Formulario |
-| `version` | integer ≥ 1 | Sí | Versión leída en la [API 7](#7-consultar-una-sucursal) | `1` | [API 7](#7-consultar-una-sucursal) |
+| `version` | integer ≥ 1 | No | Versión leída en la [API 7](#7-consultar-una-sucursal). Opcional: si se envía y no coincide con la vigente → `409 VERSION_CONFLICT`; si se omite, se aplica sobre lo vigente | `1` | [API 7](#7-consultar-una-sucursal) |
 
 ### Respuesta exitosa
 
@@ -946,10 +951,10 @@ Modelo `BranchUpdate`: los campos de la [API 5](#5-crear-una-sucursal) más `ver
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `OPERATIONAL_CONTEXT.NOT_FOUND` | Sucursal inexistente o fuera del alcance | Volver a leer el contexto operativo |
-| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` desactualizada | Releer ([API 7](#7-consultar-una-sucursal)) y repetir |
+| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` enviada desactualizada | Releer ([API 7](#7-consultar-una-sucursal)) y repetir |
 | `409` | `OPERATIONAL_CONTEXT.DUPLICATE_BRANCH_CODE` | Otro registro de la empresa ya usa ese `code` | Pedir otro código |
 | `422` | `OPERATIONAL_CONTEXT.COUNTRY_NOT_FOUND`, `ADMINISTRATIVE_DIVISION_NOT_FOUND`, `CITY_NOT_FOUND`, `LOCATION_INACTIVE`, `GEOGRAPHY_INCOHERENT` | Ubicación inválida | Corregir la ubicación |
-| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Falta `code`, `name` o `version`; formato inválido; `company_id` u otro campo desconocido | Corregir el formulario |
+| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Cuerpo vacío o solo con `version`; `null` en `code` o `name`; formato inválido; `company_id` u otro campo desconocido | Corregir el formulario |
 
 ## 9. Consultar los usuarios de una empresa
 
@@ -1054,7 +1059,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 
 Da acceso a la empresa a una persona que ya tiene cuenta en Keycloak, creando su membresía. Es una operación `HIGH_RISK` (concede acceso a los datos de la empresa): pedir confirmación al usuario. La cuenta se indica por su `sub` (`keycloak_user_id`) **o** por su `username`, exactamente uno; el servicio la verifica en Keycloak y guarda solo el `sub`. La persona debe existir y estar `ACTIVE` en Party Identity. Una cuenta y una persona solo pueden tener una membresía activa por empresa.
 
-Efecto verificado: desde ese momento el usuario ve la empresa en su contexto operativo, pero **sin sucursales** hasta que se le asigne alguna con la [API 12](#12-asignar-un-usuario-a-una-sucursal). Los permisos (`perm:…`) no se asignan aquí sino en los grupos de Keycloak.
+Efecto: desde ese momento el usuario ve la empresa en su contexto operativo con **todas** sus sucursales, y puede operar en las activas según sus permisos; no hace falta asignarle ninguna con la [API 12](#12-asignar-un-usuario-a-una-sucursal) (la asignación es solo informativa). Los permisos (`perm:…`) no se asignan aquí sino en los grupos de Keycloak.
 
 Antes necesita: (1) la cuenta del usuario en Keycloak, habilitada y en el grupo que corresponda a su función; (2) la identidad de la persona en Party Identity (`POST https://sio-party-identity-dev.onrender.com/api/v1/person-identities`, ver [person_identity_id](../parametros/person-identity-id.md)); (3) que el administrador vea la empresa (membresía activa o `platform:administer`). La **primera membresía** de una empresa recién creada la registra el administrador de plataforma.
 
@@ -1132,7 +1137,7 @@ Enviar `keycloak_user_id` y `username` a la vez, o ninguno, responde `422`. No s
 
 | Campo | Tipo | Significado para el frontend |
 |---|---|---|
-| `id` | UUID | El nuevo [application_user_id](../parametros/application-user-id.md); se usa para asignar sucursales ([API 12](#12-asignar-un-usuario-a-una-sucursal)) y cambiar el estado ([API 14](#14-inactivar-una-membresía) y [15](#15-reactivar-una-membresía)) |
+| `id` | UUID | El nuevo [application_user_id](../parametros/application-user-id.md); se usa para asignar sucursales de forma informativa ([API 12](#12-asignar-un-usuario-a-una-sucursal)) y cambiar el estado ([API 14](#14-inactivar-una-membresía) y [15](#15-reactivar-una-membresía)) |
 | `keycloak_user_id` | string | `sub` resuelto en Keycloak, aunque se haya enviado `username` |
 | `status`, `version` | — | `ACTIVE` y `1` al crear |
 
@@ -1181,7 +1186,7 @@ Ejemplo de `422` por cuenta inexistente:
 
 ### ¿Qué hace esta API?
 
-Lista las asignaciones de sucursal de una membresía, con el acceso efectivo calculado para cada una (`operational_access`). Es la pantalla «sucursales de este usuario» de la administración. Por defecto solo devuelve asignaciones `ACTIVE`; con `status=INACTIVE` se ven las retiradas, que pueden reactivarse (OC 26).
+Lista las asignaciones de sucursal de una membresía (dato informativo: sede habitual), con el acceso efectivo del usuario en cada sucursal (`operational_access`, calculado por membresía, empresa y sucursal; no depende de la asignación). Es la pantalla «sucursales de este usuario» de la administración. No es la lista de sucursales donde puede operar: la membresía `ACTIVE` da acceso a todas las sucursales activas de la empresa. Por defecto solo devuelve asignaciones `ACTIVE`; con `status=INACTIVE` se ven las retiradas, que pueden reactivarse (OC 26).
 
 Antes necesita: el `application_user_id` ([API 9](#9-consultar-los-usuarios-de-una-empresa) o [10](#10-asociar-un-usuario-a-una-empresa-crear-membresía)).
 
@@ -1257,12 +1262,12 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 |---|---|---|
 | `items[].id` | UUID | El [user_branch_id](../parametros/user-branch-id.md) de la asignación, necesario para retirarla o reactivarla (OC 25, 26) |
 | `items[].branch_id` | UUID | Sucursal asignada; el nombre se consulta con la [API 7](#7-consultar-una-sucursal) |
-| `items[].status` | `ACTIVE` \| `INACTIVE` | Estado de la asignación |
+| `items[].status` | `ACTIVE` \| `INACTIVE` | Estado de la asignación informativa (no limita el acceso) |
 | `items[].assigned_at`, `assigned_by` | date-time, string | Cuándo y quién (`sub`) la asignó |
 | `items[].deactivated_at` | date-time \| null | Cuándo se retiró, si está inactiva |
-| `items[].membership_status`, `branch_status`, `company_status` | `ACTIVE` \| `INACTIVE` | Estados que condicionan el acceso |
-| `items[].operational_access.allowed` | boolean | `true` si el usuario puede operar hoy en esa sucursal |
-| `items[].operational_access.reason` | string \| null | Si `allowed` es `false`, la primera causa: `USER_MEMBERSHIP_INACTIVE`, `COMPANY_INACTIVE`, `BRANCH_INACTIVE`, `USER_BRANCH_INACTIVE` |
+| `items[].membership_status`, `branch_status`, `company_status` | `ACTIVE` \| `INACTIVE` | Estados que condicionan el acceso (la asignación no lo condiciona) |
+| `items[].operational_access.allowed` | boolean | `true` si el usuario puede operar hoy en esa sucursal (membresía, empresa y sucursal `ACTIVE`), aunque la asignación esté `INACTIVE` |
+| `items[].operational_access.reason` | string \| null | Si `allowed` es `false`, la primera causa: `COMPANY_INACTIVE`, `BRANCH_INACTIVE` o `USER_MEMBERSHIP_INACTIVE` (`USER_BRANCH_INACTIVE` ya no se produce) |
 
 ### Posibles errores
 
@@ -1279,9 +1284,9 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 
 ### ¿Qué hace esta API?
 
-Autoriza a un miembro de la empresa a operar en una sucursal concreta (vender, comprar, ajustar inventario). Operación `HIGH_RISK`: pedir confirmación. La sucursal debe pertenecer a la misma empresa que la membresía, y membresía, sucursal y empresa deben estar `ACTIVE`. Un usuario puede tener varias sucursales; cada una es una asignación.
+Registra la sucursal habitual de un miembro de la empresa (dato informativo para listados de empleados por sucursal). **No** concede acceso: desde la enmienda 2026-11-19 la membresía `ACTIVE` ya permite operar (vender, comprar, ajustar inventario) en todas las sucursales activas de la empresa, según los permisos de Keycloak. Operación `HIGH_RISK`: pedir confirmación. La sucursal debe pertenecer a la misma empresa que la membresía, y membresía, sucursal y empresa deben estar `ACTIVE`. Un usuario puede tener varias sucursales; cada una es una asignación.
 
-Efecto verificado: a partir de la respuesta, el usuario ve la sucursal con `allowed: true` en su contexto operativo y las API de negocio aceptan ese `branch_id` para él.
+Efecto: la sucursal aparece en las [API 11](#11-consultar-las-sucursales-asignadas-a-un-usuario) y [13](#13-consultar-los-usuarios-asignados-a-una-sucursal) y en `user_branch_status` del contexto operativo. El acceso (`allowed`) y lo que aceptan las API de negocio no cambian.
 
 Antes necesita: el `application_user_id` de una membresía `ACTIVE` ([API 9](#9-consultar-los-usuarios-de-una-empresa) o [10](#10-asociar-un-usuario-a-una-empresa-crear-membresía)) y el `branch_id` de una sucursal `ACTIVE` de la misma empresa ([API 6](#6-consultar-las-sucursales-de-una-empresa)).
 
@@ -1357,7 +1362,7 @@ No se envía `application_user_id` (va en la ruta) ni quién asigna (se toma del
 | Campo | Tipo | Significado para el frontend |
 |---|---|---|
 | `id` | UUID | El nuevo [user_branch_id](../parametros/user-branch-id.md) (para OC 25 y 26) |
-| `operational_access` | objeto | Siempre `allowed: true` y `reason: null` justo al crear, porque todas las condiciones se validaron |
+| `operational_access` | objeto | Acceso efectivo del usuario a la sucursal, calculado por membresía, empresa y sucursal; `allowed: true` y `reason: null` justo al crear, porque esas condiciones se validaron |
 | `assigned_by` | string | `sub` del administrador que hizo la asignación |
 
 ### Posibles errores
@@ -1380,7 +1385,7 @@ No se envía `application_user_id` (va en la ruta) ni quién asigna (se toma del
 
 ### ¿Qué hace esta API?
 
-Lista las asignaciones de una sucursal, es decir, qué miembros pueden operar en ella y con qué acceso efectivo. Es la vista inversa de la [API 11](#11-consultar-las-sucursales-asignadas-a-un-usuario), para la pantalla de administración de una sucursal. Por defecto solo asignaciones `ACTIVE`.
+Lista las asignaciones de una sucursal (empleados con esa sede habitual; dato informativo) y el acceso efectivo de cada uno. No es la lista completa de quién puede operar en ella: puede hacerlo cualquier miembro `ACTIVE` de la empresa con los permisos necesarios. Es la vista inversa de la [API 11](#11-consultar-las-sucursales-asignadas-a-un-usuario), para la pantalla de administración de una sucursal. Por defecto solo asignaciones `ACTIVE`.
 
 Antes necesita: el `branch_id` ([API 6](#6-consultar-las-sucursales-de-una-empresa) o contexto operativo).
 
@@ -1464,9 +1469,9 @@ curl -X GET \
 
 ### ¿Qué hace esta API?
 
-Retira el acceso de una persona a la empresa sin borrar nada: la membresía pasa a `INACTIVE`. Operación `HIGH_RISK`: pedir confirmación. Efectos verificados: en el contexto operativo del usuario todas las sucursales de esa empresa pasan a `allowed: false` con `reason: USER_MEMBERSHIP_INACTIVE`, y las API de negocio le responden `404` o `403` en esa empresa; sus asignaciones de sucursal se conservan y vuelven a ser efectivas al reactivar. Solo afecta a esta membresía, no a la cuenta de Keycloak ni a otras empresas.
+Retira el acceso de una persona a la empresa sin borrar nada: la membresía pasa a `INACTIVE`. Operación `HIGH_RISK`: pedir confirmación. Efectos verificados: en el contexto operativo del usuario todas las sucursales de esa empresa pasan a `allowed: false` con `reason: USER_MEMBERSHIP_INACTIVE`, y las API de negocio le responden `404` o `403` en esa empresa; sus asignaciones de sucursal (informativas) se conservan. Solo afecta a esta membresía, no a la cuenta de Keycloak ni a otras empresas.
 
-Antes necesita: el `application_user_id` y su `version` actual ([API 9](#9-consultar-los-usuarios-de-una-empresa)).
+Antes necesita: el `application_user_id` ([API 9](#9-consultar-los-usuarios-de-una-empresa)); su `version` es opcional.
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -1504,7 +1509,7 @@ Modelo `StatusActionRequest`:
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `version` | integer ≥ 1 | Sí | Versión actual de la membresía | `1` | `items[].version` de la [API 9](#9-consultar-los-usuarios-de-una-empresa) |
+| `version` | integer ≥ 1 | No | Versión actual de la membresía; opcional (se acepta `{}` o ningún cuerpo) | `1` | `items[].version` de la [API 9](#9-consultar-los-usuarios-de-una-empresa) |
 
 No admite `{}` ni otros campos.
 
@@ -1540,9 +1545,9 @@ No admite `{}` ni otros campos.
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `OPERATIONAL_CONTEXT.NOT_FOUND` | Membresía inexistente o fuera del alcance | Volver a leer la lista |
-| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` desactualizada | Releer y repetir |
+| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` enviada desactualizada | Releer y repetir |
 | `409` | `OPERATIONAL_CONTEXT.INVALID_STATUS_TRANSITION` | La membresía ya estaba `INACTIVE` | Refrescar la pantalla; no hay nada que hacer |
-| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Falta `version` o hay campos desconocidos | Corregir el cuerpo |
+| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Campos desconocidos o `version` inválida (< 1) | Corregir el cuerpo |
 
 ## 15. Reactivar una membresía
 
@@ -1552,9 +1557,9 @@ No admite `{}` ni otros campos.
 
 ### ¿Qué hace esta API?
 
-Devuelve el acceso a la empresa a una membresía `INACTIVE`. Operación `HIGH_RISK`. Antes de reactivar, el servicio vuelve a comprobar que la cuenta exista y esté habilitada en Keycloak, que la persona esté `ACTIVE` en Party Identity, que la empresa esté `ACTIVE` y que no exista otra membresía activa de la misma persona o cuenta en la empresa. Las asignaciones de sucursal que tenía vuelven a ser efectivas.
+Devuelve el acceso a la empresa a una membresía `INACTIVE`. Operación `HIGH_RISK`. Antes de reactivar, el servicio vuelve a comprobar que la cuenta exista y esté habilitada en Keycloak, que la persona esté `ACTIVE` en Party Identity, que la empresa esté `ACTIVE` y que no exista otra membresía activa de la misma persona o cuenta en la empresa. Al reactivar vuelve a tener acceso a todas las sucursales activas de la empresa; las asignaciones informativas que tenía se conservan.
 
-Antes necesita: el `application_user_id` y su `version` actual ([API 9](#9-consultar-los-usuarios-de-una-empresa) con `status=INACTIVE`).
+Antes necesita: el `application_user_id` ([API 9](#9-consultar-los-usuarios-de-una-empresa) con `status=INACTIVE`); su `version` es opcional.
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -1592,7 +1597,7 @@ Modelo `StatusActionRequest`:
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `version` | integer ≥ 1 | Sí | Versión actual de la membresía | `2` | `items[].version` de la [API 9](#9-consultar-los-usuarios-de-una-empresa) |
+| `version` | integer ≥ 1 | No | Versión actual de la membresía; opcional (se acepta `{}` o ningún cuerpo) | `2` | `items[].version` de la [API 9](#9-consultar-los-usuarios-de-una-empresa) |
 
 ### Respuesta exitosa
 
@@ -1626,12 +1631,12 @@ Modelo `StatusActionRequest`:
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `OPERATIONAL_CONTEXT.NOT_FOUND` | Membresía inexistente o fuera del alcance | Volver a leer la lista |
-| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` desactualizada | Releer y repetir |
+| `409` | `OPERATIONAL_CONTEXT.VERSION_CONFLICT` | `version` enviada desactualizada | Releer y repetir |
 | `409` | `OPERATIONAL_CONTEXT.INVALID_STATUS_TRANSITION` | La membresía ya estaba `ACTIVE` | Refrescar la pantalla |
 | `409` | `OPERATIONAL_CONTEXT.DUPLICATE_MEMBERSHIP` | Mientras estuvo inactiva se creó otra membresía activa de la misma persona o cuenta | Mantener la otra membresía |
 | `422` | `OPERATIONAL_CONTEXT.COMPANY_INACTIVE` | La empresa está `INACTIVE` | No se puede reactivar hasta reactivar la empresa |
 | `422` | `OPERATIONAL_CONTEXT.KEYCLOAK_USER_NOT_FOUND`, `KEYCLOAK_USER_DISABLED`, `TECHNICAL_ACCOUNT_NOT_ALLOWED`, `PERSON_IDENTITY_NOT_FOUND`, `PERSON_IDENTITY_INACTIVE` | La cuenta o la persona ya no son válidas | Corregir en Keycloak o Party Identity |
-| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Falta `version` o hay campos desconocidos | Corregir el cuerpo |
+| `422` | `OPERATIONAL_CONTEXT.VALIDATION_ERROR` | Campos desconocidos o `version` inválida (< 1) | Corregir el cuerpo |
 | `503` | `OPERATIONAL_CONTEXT.DEPENDENCY_UNAVAILABLE` | Keycloak o Party Identity no responden | Reintentar más tarde |
 
 ## 16. Consultar la trazabilidad de la empresa (auditoría)
@@ -1711,7 +1716,7 @@ curl -X GET \
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "application_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
       "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-      "username_snapshot": "ventas.test",
+      "username_snapshot": "operario.dao",
       "action": "CONFIRM_SALE",
       "entity_type": "Sale",
       "entity_id": "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a",
@@ -1869,7 +1874,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "application_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
       "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-      "username_snapshot": "ventas.test",
+      "username_snapshot": "operario.dao",
       "action": "CREATE_SALE",
       "entity_type": "Sale",
       "entity_id": "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a",
@@ -1894,7 +1899,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
       "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
       "application_user_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
       "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-      "username_snapshot": "ventas.test",
+      "username_snapshot": "operario.dao",
       "action": "CONFIRM_SALE",
       "entity_type": "Sale",
       "entity_id": "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a",
@@ -1948,7 +1953,7 @@ Las ventas y las compras reciben su número (`V-000123`, `C-000045`) al **confir
 - Tras asignar el primer número, `prefix`, `separator`, `number_length`, `series_code`, `reset_policy`, `initial_number` y `branch_id` son inmutables (`409 SEQUENCE_IN_USE`); solo `maximum_number` puede cambiar, y nunca por debajo del último número asignado.
 - Estas API exigen membresía `ACTIVE` en la empresa; sin ella responden `404`. No exigen asignación a la sucursal.
 
-**Cómo resolver `409 SEQUENCE_NOT_CONFIGURED` al confirmar:** (1) consultar las secuencias ([API 18](#18-consultar-las-secuencias-de-numeración)) y comprobar si existe una para la `branch_id` del documento, o una de empresa (`branch_id: null`), con `is_active: true`; (2) si existe pero está inactiva, reactivarla ([API 20](#20-desactivar-o-reactivar-una-secuencia)); (3) si no existe, crearla ([API 19](#19-crear-una-secuencia-de-numeración)); (4) repetir la confirmación con la misma `Idempotency-Key` y la `version` actual del documento. No hace falta recrear el borrador.
+**Cómo resolver `409 SEQUENCE_NOT_CONFIGURED` al confirmar:** (1) consultar las secuencias ([API 18](#18-consultar-las-secuencias-de-numeración)) y comprobar si existe una para la `branch_id` del documento, o una de empresa (`branch_id: null`), con `is_active: true`; (2) si existe pero está inactiva, reactivarla ([API 20](#20-desactivar-o-reactivar-una-secuencia)); (3) si no existe, crearla ([API 19](#19-crear-una-secuencia-de-numeración)); (4) repetir la confirmación con la misma `Idempotency-Key` (y, si se envía, la `version` actual del documento). No hace falta recrear el borrador.
 
 ## 18. Consultar las secuencias de numeración
 
@@ -2202,7 +2207,7 @@ El número resultante (`prefix` + `separator` + consecutivo) no puede superar 80
 | `id` | UUID | El nuevo [sequence_id](../parametros/sequence-id.md) para las [API 20](#20-desactivar-o-reactivar-una-secuencia) y [21](#21-consultar-y-modificar-una-secuencia) |
 | `is_active` | boolean | `true`: desde ahora las confirmaciones de ese alcance usan esta secuencia |
 | `counters` | array | Vacío hasta que se confirme el primer documento |
-| `version` | integer | `1`; necesaria para modificar o desactivar |
+| `version` | integer | `1`; opcional al modificar o desactivar (detecta cambios simultáneos) |
 
 ### Posibles errores
 
@@ -2238,7 +2243,7 @@ Ejemplo de `409`:
 
 Cambia qué secuencia está en uso. **Desactivar** es `HIGH_RISK`: desde ese momento las confirmaciones de ese alcance fallan con `409 SEQUENCE_NOT_CONFIGURED`, salvo que exista la secuencia de respaldo de la empresa; pedir confirmación al usuario. **Reactivar** vuelve a poner en uso una secuencia inactiva, siempre que no haya otra activa en el mismo alcance. Los contadores no se reinician al desactivar y reactivar: la numeración continúa donde quedó. El procedimiento habitual para cambiar de serie es desactivar la actual y luego crear o reactivar la nueva.
 
-Antes necesita: el `sequence_id` y su `version` actual ([API 18](#18-consultar-las-secuencias-de-numeración)).
+Antes necesita: el `sequence_id` ([API 18](#18-consultar-las-secuencias-de-numeración)); su `version` es opcional.
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -2313,7 +2318,7 @@ Modelo `VersionIn` (rechaza campos desconocidos):
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `version` | integer ≥ 1 | Sí | Versión actual de la secuencia | `1` | `items[].version` de la [API 18](#18-consultar-las-secuencias-de-numeración) |
+| `version` | integer ≥ 1 | No | Versión actual de la secuencia; opcional (se acepta `{}` o ningún cuerpo) | `1` | `items[].version` de la [API 18](#18-consultar-las-secuencias-de-numeración) |
 
 ### Respuesta exitosa
 
@@ -2359,9 +2364,9 @@ Modelo `VersionIn` (rechaza campos desconocidos):
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `SALES.NOT_FOUND` / `PURCHASE.NOT_FOUND` | Secuencia inexistente en la empresa o sin membresía `ACTIVE` | Volver a leer la lista ([API 18](#18-consultar-las-secuencias-de-numeración)) |
-| `409` | `SALES.VERSION_CONFLICT` / `PURCHASE.VERSION_CONFLICT` | `version` desactualizada | Releer y repetir |
+| `409` | `SALES.VERSION_CONFLICT` / `PURCHASE.VERSION_CONFLICT` | `version` enviada desactualizada | Releer y repetir |
 | `409` | `SALES.SEQUENCE_ALREADY_ACTIVE` / `PURCHASE.SEQUENCE_ALREADY_ACTIVE` | Al reactivar: ya hay otra secuencia activa en el mismo alcance | Desactivar la otra primero |
-| `422` | `SALES.VALIDATION_ERROR` / `PURCHASE.VALIDATION_ERROR` | Falta `version` o hay campos desconocidos | Corregir el cuerpo |
+| `422` | `SALES.VALIDATION_ERROR` / `PURCHASE.VALIDATION_ERROR` | Campos desconocidos o `version` inválida (< 1) | Corregir el cuerpo |
 
 ## 21. Consultar y modificar una secuencia
 
@@ -2371,9 +2376,9 @@ Modelo `VersionIn` (rechaza campos desconocidos):
 
 ### ¿Qué hace esta API?
 
-`GET` devuelve una secuencia con sus contadores. `PUT` reemplaza su configuración: permite ajustar el formato **solo mientras no se haya asignado ningún número**; una vez usada, lo único que puede cambiar es `maximum_number` (ampliar o quitar el tope), y nunca por debajo del último número asignado. El cuerpo del `PUT` es el de la [API 19](#19-crear-una-secuencia-de-numeración) más `version`, y debe enviarse completo con los valores actuales de los campos que no cambian.
+`GET` devuelve una secuencia con sus contadores. `PUT` modifica su configuración (parcial): permite ajustar el formato **solo mientras no se haya asignado ningún número**; una vez usada, lo único que puede cambiar es `maximum_number` (ampliar o quitar el tope), y nunca por debajo del último número asignado. El cuerpo del `PUT` lleva solo los campos de la [API 19](#19-crear-una-secuencia-de-numeración) que cambian y, opcionalmente, `version`; los campos ausentes no cambian.
 
-Antes necesita: el `sequence_id` y, para `PUT`, la secuencia actual completa con su `version` (`GET` de esta misma API).
+Antes necesita: el `sequence_id`. Recomendado para `PUT`: la secuencia actual con su `version` (`GET` de esta misma API).
 
 ### ¿Cómo se realiza la solicitud?
 
@@ -2423,7 +2428,7 @@ Las mismas dos llamadas para compras usan `https://sio-purchase-dev.onrender.com
 
 ### Cuerpo de la solicitud (Body)
 
-`GET`: no requiere Body. `PUT`: modelo `SequenceUpdateIn`, los campos de la [API 19](#19-crear-una-secuencia-de-numeración) más `version`:
+`GET`: no requiere Body. `PUT`: modelo `SequenceUpdateIn` (parcial), los campos de la [API 19](#19-crear-una-secuencia-de-numeración), todos opcionales, y `version` opcional. El ejemplo envía la configuración completa, lo cual también es válido:
 
 ```json
 {
@@ -2441,9 +2446,9 @@ Las mismas dos llamadas para compras usan `https://sio-purchase-dev.onrender.com
 
 | Campo | Tipo | Obligatorio | Descripción | Ejemplo | Origen |
 |---|---|---|---|---|---|
-| `branch_id`, `series_code`, `prefix`, `separator`, `initial_number`, `number_length`, `reset_policy` | como en la [API 19](#19-crear-una-secuencia-de-numeración) | Sí (salvo `branch_id`, que acepta `null`) | Deben repetir el valor actual si la secuencia ya asignó números | — | `GET` de esta API |
+| `branch_id`, `series_code`, `prefix`, `separator`, `initial_number`, `number_length`, `reset_policy` | como en la [API 19](#19-crear-una-secuencia-de-numeración) | No; no admiten `null` (salvo `branch_id`, que acepta `null`) | Omitirlos si no cambian; tras asignar números no pueden cambiar | — | `GET` de esta API |
 | `maximum_number` | integer \| null | No; acepta `null` | Nuevo tope; no puede ser menor que `initial_number` ni que el último número asignado | `9999999` | Formulario |
-| `version` | integer ≥ 1 | Sí | Versión actual | `1` | `GET` de esta API |
+| `version` | integer ≥ 1 | No | Versión actual; opcional | `1` | `GET` de esta API |
 
 ### Respuesta exitosa
 
@@ -2489,19 +2494,19 @@ Las mismas dos llamadas para compras usan `https://sio-purchase-dev.onrender.com
 | HTTP | Código | Motivo | Qué debe hacer el frontend |
 |---|---|---|---|
 | `404` | `SALES.NOT_FOUND` / `PURCHASE.NOT_FOUND` | Secuencia inexistente en la empresa o sin membresía `ACTIVE` | Volver a leer la lista ([API 18](#18-consultar-las-secuencias-de-numeración)) |
-| `409` | `SALES.VERSION_CONFLICT` / `PURCHASE.VERSION_CONFLICT` | `version` desactualizada (`PUT`) | Releer y repetir |
+| `409` | `SALES.VERSION_CONFLICT` / `PURCHASE.VERSION_CONFLICT` | `version` enviada desactualizada (`PUT`) | Releer y repetir |
 | `409` | `SALES.SEQUENCE_IN_USE` / `PURCHASE.SEQUENCE_IN_USE` | La secuencia ya asignó números y se intentó cambiar `prefix`, `separator`, `number_length`, `series_code`, `reset_policy`, `initial_number` o `branch_id` (la respuesta indica los campos) | Dejar esos campos como están; para otro formato, desactivarla y crear una nueva |
 | `409` | `SALES.REFERENCES_NOT_ELIGIBLE` / `PURCHASE.REFERENCES_NOT_ELIGIBLE` | `branch_id` de una sucursal `INACTIVE` | Elegir una sucursal activa |
 | `422` | `SALES.VALIDATION_ERROR` / `PURCHASE.VALIDATION_ERROR` | `maximum_number` menor que el último número asignado (`errors[].code: MAXIMUM_NUMBER_BELOW_CURRENT`) o que `initial_number`; `branch_id` ajeno (`BRANCH_NOT_FOUND`); formato inválido; campo desconocido | Corregir el formulario |
 
 ## Orden recomendado y efectos automáticos
 
-1. Identidad de la organización en Party Identity → 2. Empresa ([API 1](#1-crear-empresa)) → 3. Sucursales ([API 5](#5-crear-una-sucursal)) → 4. Identidad de cada persona en Party Identity → 5. Membresía ([API 10](#10-asociar-un-usuario-a-una-empresa-crear-membresía)) → 6. Asignación de sucursales ([API 12](#12-asignar-un-usuario-a-una-sucursal)) → 7. Secuencias de numeración de ventas y compras ([API 19](#19-crear-una-secuencia-de-numeración)).
+1. Identidad de la organización en Party Identity → 2. Empresa ([API 1](#1-crear-empresa)) → 3. Sucursales ([API 5](#5-crear-una-sucursal)) → 4. Identidad de cada persona en Party Identity → 5. Membresía ([API 10](#10-asociar-un-usuario-a-una-empresa-crear-membresía)) → 6. Asignación de sucursales, opcional e informativa ([API 12](#12-asignar-un-usuario-a-una-sucursal)) → 7. Secuencias de numeración de ventas y compras ([API 19](#19-crear-una-secuencia-de-numeración)).
 
-Ningún paso crea automáticamente el siguiente: crear la empresa no crea sucursales ni membresías; crear la membresía no asigna sucursales; las secuencias no se crean solas y sin ellas no se confirman documentos. El ejemplo [Crear una empresa y una sucursal](../ejemplos/crear-empresa-y-sucursal.md) recorre la cadena completa con cuerpos y respuestas.
+Ningún paso crea automáticamente el siguiente: crear la empresa no crea sucursales ni membresías; crear la membresía no asigna sucursales (no hace falta: la membresía `ACTIVE` ya da acceso a todas las sucursales activas); las secuencias no se crean solas y sin ellas no se confirman documentos. El ejemplo [Crear una empresa y una sucursal](../ejemplos/crear-empresa-y-sucursal.md) recorre la cadena completa con cuerpos y respuestas.
 
 ## Dependencias con otros módulos
 
 - [Acceso y contexto operativo](acceso-y-contexto-operativo.md) refleja al instante las membresías y asignaciones creadas aquí.
 - [Gestión de clientes](gestion-de-clientes.md) y [Gestión de proveedores](gestion-de-proveedores.md) usan las mismas identidades de Party Identity que este módulo.
-- [Ventas](ventas.md) y [Compras](compras.md) exigen la secuencia activa ([API 19](#19-crear-una-secuencia-de-numeración)) y que el usuario tenga asignada la sucursal sobre la que opera (`403 BRANCH_ACCESS_DENIED` en caso contrario); sus anulaciones y confirmaciones quedan registradas en la auditoría ([API 16](#16-consultar-la-trazabilidad-de-la-empresa-auditoría) y [17](#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto)).
+- [Ventas](ventas.md) y [Compras](compras.md) exigen la secuencia activa ([API 19](#19-crear-una-secuencia-de-numeración)) y que la sucursal y la empresa sobre las que opera estén activas (`403 BRANCH_ACCESS_DENIED` en caso contrario; no exigen asignación a la sucursal); sus anulaciones y confirmaciones quedan registradas en la auditoría ([API 16](#16-consultar-la-trazabilidad-de-la-empresa-auditoría) y [17](#17-consultar-el-historial-de-una-venta-una-compra-o-un-producto)).

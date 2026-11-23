@@ -1,5 +1,7 @@
 # Parámetro `payment_method_id`
 
+> **Autor:** pipicano25 Anderson Daniel Pipicano Ruiz
+
 [← Parámetros](README.md) · [← Índice](../index.md) · Servicio propietario: [Payment Reference](../servicios/payment-reference.md)
 
 | Propiedad | Valor |
