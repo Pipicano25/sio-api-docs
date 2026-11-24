@@ -514,7 +514,7 @@ Modelo `CompanyUpdate` (parcial): los mismos campos de la [API 1](#1-crear-empre
 
 Registra un punto de operación de la empresa (tienda, bodega, farmacia) donde se venderá, comprará y controlará inventario. La empresa debe estar `ACTIVE`. El `code` es único dentro de la empresa y se guarda en mayúsculas. Si no se envía `timezone`, la sucursal hereda la de la empresa (la respuesta lo muestra en `effective_timezone`).
 
-Efecto verificado: crear la sucursal **no la asigna a ningún usuario**, y no hace falta: todos los miembros `ACTIVE` de la empresa pueden operar en ella desde que se crea, según sus permisos. La asignación con la [API 12](#12-asignar-un-usuario-a-una-sucursal) es opcional e informativa (sede habitual). Para confirmar ventas o compras en ella hará falta además una secuencia de numeración ([API 19](#19-crear-una-secuencia-de-numeración)) propia o de la empresa.
+Efecto verificado: crear la sucursal **no la asigna a ningún usuario**, y no hace falta: todos los miembros `ACTIVE` de la empresa pueden operar en ella desde que se crea, según sus permisos. La asignación con la [API 12](#12-asignar-un-usuario-a-una-sucursal) es opcional e informativa (sede habitual). Al crearla, Operational Context le deja numeración de compras (`OC-<código>`) y de ventas (`FV-<código>`) y lo informa en `numbering`; si no pudo, avisa en `warnings` y la numeración se crea sola al confirmar la primera compra o venta. Crear una secuencia a mano ([API 19](#19-crear-una-secuencia-de-numeración)) es opcional y, si existe, tiene prioridad.
 
 Antes necesita: el `company_id` de una empresa `ACTIVE` en la que el administrador tenga membresía (o `platform:administer`) y, si lleva dirección, los identificadores geográficos.
 
@@ -1949,7 +1949,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 
 ## Numeración de documentos comerciales
 
-Las ventas y las compras reciben su número (`V-000123`, `C-000045`) al **confirmarse**, tomándolo de una **secuencia** del servicio correspondiente: Sales numera ventas y Purchase numera compras, con API simétricas. Sin secuencia activa aplicable, la confirmación falla con `409 SEQUENCE_NOT_CONFIGURED`. Reglas verificadas en el código:
+Las ventas y las compras reciben su número (`V-000123`, `C-000045`) al **confirmarse**, tomándolo de una **secuencia** del servicio correspondiente: Sales numera ventas y Purchase numera compras, con API simétricas. Las secuencias son **opcionales**: cada sucursal nueva recibe `OC-<código>` en Purchase y `FV-<código>` en Sales (por ejemplo `OC-PPAL-000001` y `FV-PPAL-000001`; separador `-`, 6 dígitos, sin reinicio), y si al confirmar aún no hay secuencia aplicable, la confirmación la crea y sigue. La numeración de ventas es interna: la resolución de facturación de la DIAN queda pendiente. Reglas verificadas en el código:
 
 - Una secuencia pertenece a la empresa y, opcionalmente, a una sucursal (`branch_id`). Al confirmar se usa la secuencia **activa de la sucursal** del documento y, si no hay, la **activa de la empresa** (`branch_id: null`).
 - A lo sumo **una secuencia activa** por empresa, sucursal (o ninguna) y tipo documental; activar otra en el mismo alcance responde `409 SEQUENCE_ALREADY_ACTIVE`. El `series_code` es único dentro de ese mismo alcance.
@@ -1957,7 +1957,7 @@ Las ventas y las compras reciben su número (`V-000123`, `C-000045`) al **confir
 - Tras asignar el primer número, `prefix`, `separator`, `number_length`, `series_code`, `reset_policy`, `initial_number` y `branch_id` son inmutables (`409 SEQUENCE_IN_USE`); solo `maximum_number` puede cambiar, y nunca por debajo del último número asignado.
 - Estas API exigen membresía `ACTIVE` en la empresa; sin ella responden `404`. No exigen asignación a la sucursal.
 
-**Cómo resolver `409 SEQUENCE_NOT_CONFIGURED` al confirmar:** (1) consultar las secuencias ([API 18](#18-consultar-las-secuencias-de-numeración)) y comprobar si existe una para la `branch_id` del documento, o una de empresa (`branch_id: null`), con `is_active: true`; (2) si existe pero está inactiva, reactivarla ([API 20](#20-desactivar-o-reactivar-una-secuencia)); (3) si no existe, crearla ([API 19](#19-crear-una-secuencia-de-numeración)); (4) repetir la confirmación con la misma `Idempotency-Key` (y, si se envía, la `version` actual del documento). No hace falta recrear el borrador.
+**Cómo resolver `409 SEQUENCE_NOT_CONFIGURED` al confirmar** (solo ocurre si la numeración automática de la sucursal fue desactivada o la sucursal no tiene código): (1) consultar las secuencias ([API 18](#18-consultar-las-secuencias-de-numeración)) y comprobar si existe una para la `branch_id` del documento, o una de empresa (`branch_id: null`), con `is_active: true`; (2) si existe pero está inactiva, reactivarla ([API 20](#20-desactivar-o-reactivar-una-secuencia)); (3) si no existe, crearla ([API 19](#19-crear-una-secuencia-de-numeración)); (4) repetir la confirmación con la misma `Idempotency-Key` (y, si se envía, la `version` actual del documento). No hace falta recrear el borrador.
 
 ## 18. Consultar las secuencias de numeración
 

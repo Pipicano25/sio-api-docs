@@ -96,11 +96,6 @@ curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/brands/82bf
 | 22 | `GET` | `/categories/{category_id}/children` | Hijas directas | `categories:read` | `READ` | [Ver](#22-get-categoriescategory_idchildren) |
 | 23 | `GET` | `/categories/{category_id}/descendants` | Descendientes | `categories:read` | `READ` | [Ver](#23-get-categoriescategory_iddescendants) |
 | 24 | `GET` | `/categories/{category_id}/ancestors` | Ancestros (raíz → categoría) | `categories:read` | `READ` | [Ver](#24-get-categoriescategory_idancestors) |
-| 25 | `GET` | `/categories/{category_id}/attributes` | Atributos asociados | `categories:read` | `READ` | [Ver](#25-get-categoriescategory_idattributes) |
-| 26 | `POST` | `/categories/{category_id}/attributes` | Asociar atributo | `categories:update` | `WRITE` | [Ver](#26-post-categoriescategory_idattributes) |
-| 27 | `PUT` | `/categories/{category_id}/attributes/{association_id}` | Modificar asociación | `categories:update` | `WRITE` | [Ver](#27-put-categoriescategory_idattributesassociation_id) |
-| 28 | `POST` | `/categories/{category_id}/attributes/{association_id}/deactivate` | Inactivar asociación | `categories:deactivate` | `WRITE` | [Ver](#28-post-categoriescategory_idattributesassociation_iddeactivate) |
-| 29 | `POST` | `/categories/{category_id}/attributes/{association_id}/reactivate` | Reactivar asociación | `categories:deactivate` | `WRITE` | [Ver](#29-post-categoriescategory_idattributesassociation_idreactivate) |
 | 30 | `GET` | `/categories` | Listar categorías | `categories:read` | `READ` | [Ver](#30-get-categories) |
 | 31 | `POST` | `/categories` | Crear categoría | `categories:update` | `WRITE` | [Ver](#31-post-categories) |
 | 32 | `GET` | `/categories/{item_id}` | Consultar | `categories:read` | `READ` | [Ver](#32-get-categoriesitem_id) |
@@ -126,7 +121,6 @@ curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/brands/82bf
 | 52 | `GET` | `/products/by-identifier/{value}` | Buscar por código escaneado | `products:read` | `READ` | [Ver](#52-get-productsby-identifiervalue) |
 | 53 | `GET` | `/products/{product_id}` | Consultar producto | `products:read` | `READ` | [Ver](#53-get-productsproduct_id) |
 | 54 | `PUT` | `/products/{product_id}` | Modificar producto | `products:update` | `WRITE` | [Ver](#54-put-productsproduct_id) |
-| 55 | `GET` | `/products/{product_id}/applicable-attributes` | Atributos aplicables | `products:read` | `READ` | [Ver](#55-get-productsproduct_idapplicable-attributes) |
 | 56 | `GET` | `/products/{product_id}/completeness` | Completitud | `products:read` | `READ` | [Ver](#56-get-productsproduct_idcompleteness) |
 | 57 | `POST` | `/products/{product_id}/deactivate` | Inactivar producto | `products:deactivate` | `HIGH_RISK` | [Ver](#57-post-productsproduct_iddeactivate) |
 | 58 | `POST` | `/products/{product_id}/reactivate` | Reactivar producto | `products:deactivate` | `WRITE` | [Ver](#58-post-productsproduct_idreactivate) |
@@ -176,8 +170,10 @@ curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/brands/82bf
 | 102 | `POST` | `/products/{product_id}/assets/{asset_id}/reactivate` | Reactivar activo | `products:deactivate` | `WRITE` | [Ver](#102-post-productsproduct_idassetsasset_idreactivate) |
 | 103 | `POST` | `/products/{product_id}/first-use` | Primer uso por adopción | `first-use:register` (cuenta técnica) | `HIGH_RISK` | [Ver](#103-post-productsproduct_idfirst-use) |
 | 104 | `POST` | `/products/{product_id}/first-use/manual` | Primer uso manual | `first-use:register-manual` | `HIGH_RISK` | [Ver](#104-post-productsproduct_idfirst-usemanual) |
+| 105 | `POST` | `/products:ensure` | Crear o completar un producto con categorías, presentaciones e identificadores | `products:create` y `products:update` | `WRITE` | [Ver](#105-post-productsensure) |
+| 106 | `POST` | `/attribute-definitions:ensure` | Crear o completar una característica con sus opciones | `attribute-definitions:create` y `attribute-definitions:update` | `WRITE` | [Ver](#106-post-attribute-definitionsensure) |
 
-La numeración de esta tabla es la de las fichas siguientes (las referencias de la tabla de permisos usan estos mismos números).
+La numeración de esta tabla es la de las fichas siguientes (las referencias de la tabla de permisos usan estos mismos números). Los números 25 a 29 (asociar características a una categoría) y 55 (características aplicables por categoría) quedaron libres: esas rutas se retiraron el 2026-11-24, porque las características ya no dependen de la categoría.
 
 Spec 024: las 8 operaciones de imágenes por presentación (I-1 a I-8) aún no están en el contrato desplegado en Render y se documentan aparte, en [Imágenes por presentación](#imágenes-por-presentación-spec-024-operaciones-i-1-a-i-8), sin alterar esta numeración.
 
@@ -1687,351 +1683,6 @@ Códigos HTTP:
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
-### 25. `GET /categories/{category_id}/attributes`
-
-| | |
-|---|---|
-| Clasificación | `READ` |
-| Descripción | Atributos asociados |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/categories/{category_id}/attributes` |
-| Permiso | `perm:product-catalog:categories:read` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization` |
-
-Notas: **Array** de `CategoryAttributeResponse` (`id`, `global_category_id`, `attribute_definition_id`, `is_required`, `is_filterable`, `display_order`, `status`, `version`); filtro `status`
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
-| `status` | query | string \| null | No | patrón `^(ACTIVE|INACTIVE)$` | — |
-
-Esta operación no recibe cuerpo.
-
-Ejemplo de solicitud (sin cuerpo):
-
-```bash
-curl -sS 'https://sio-product-catalog-dev.onrender.com/api/v1/categories/b583a629-3fe1-4575-8ba1-7314e10419cc/attributes' \
-  -H "Authorization: Bearer $ACCESS_TOKEN"
-```
-
-Ejemplo de respuesta `200` (`None`; valores ilustrativos):
-
-```json
-[
-  {
-    "id": "cb3f20d2-d67f-4944-8a4d-97bc9aa54f94",
-    "version": 1,
-    "created_at": "2026-10-19T15:04:05Z",
-    "updated_at": "2026-10-19T15:04:05Z",
-    "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-    "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-    "status": "ACTIVE",
-    "global_category_id": "0a1a164d-b834-4ea1-8413-d5b6fc5b5ef3",
-    "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-    "is_required": true,
-    "is_filterable": true,
-    "display_order": 1
-  }
-]
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `200` | Successful Response |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
-### 26. `POST /categories/{category_id}/attributes`
-
-| | |
-|---|---|
-| Clasificación | `WRITE` |
-| Descripción | Asociar atributo |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/categories/{category_id}/attributes` |
-| Permiso | `perm:product-catalog:categories:update` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization`, `Content-Type: application/json` |
-
-Notas: Cuerpo (`CategoryAttributeCreate`): `attribute_definition_id` (obligatorio), `is_required` (`false`), `is_filterable` (`false`), `display_order` (0–32767). `409 DUPLICATE_ASSOCIATION`
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
-
-Cuerpo (`CategoryAttributeCreate`; rechaza campos adicionales):
-
-| Campo | Tipo | Obligatorio | Validación |
-|---|---|---|---|
-| `attribute_definition_id` | UUID | Sí | — |
-| `is_required` | boolean | No | por defecto `false` |
-| `is_filterable` | boolean | No | por defecto `false` |
-| `display_order` | integer | No | ≥ 0; ≤ 32767; por defecto `0` |
-
-Cómo obtener los identificadores del cuerpo: `attribute_definition_id`: Operación 41.
-
-Ejemplo de solicitud (valores ilustrativos):
-
-```bash
-curl -sS -X POST 'https://sio-product-catalog-dev.onrender.com/api/v1/categories/b583a629-3fe1-4575-8ba1-7314e10419cc/attributes' \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-    "is_required": true,
-    "is_filterable": true,
-    "display_order": 1
-  }'
-```
-
-Ejemplo de respuesta `201` (`CategoryAttributeResponse`; valores ilustrativos):
-
-```json
-{
-  "id": "be7140d8-db8a-4ea2-8194-729d32436e2e",
-  "version": 1,
-  "created_at": "2026-10-19T15:04:05Z",
-  "updated_at": "2026-10-19T15:04:05Z",
-  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "status": "ACTIVE",
-  "global_category_id": "0a1a164d-b834-4ea1-8413-d5b6fc5b5ef3",
-  "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-  "is_required": true,
-  "is_filterable": true,
-  "display_order": 1
-}
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `201` | `CategoryAttributeResponse` |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
-### 27. `PUT /categories/{category_id}/attributes/{association_id}`
-
-| | |
-|---|---|
-| Clasificación | `WRITE` |
-| Descripción | Modificar asociación |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/categories/{category_id}/attributes/{association_id}` |
-| Permiso | `perm:product-catalog:categories:update` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization`, `Content-Type: application/json` |
-
-Notas: Cuerpo parcial: `is_required`, `is_filterable`, `display_order` (opcionales; no admiten `null`) y `version` (opcional)
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
-| `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
-
-Cuerpo (`CategoryAttributeUpdate`, parcial: solo los campos que cambian, al menos uno además de `version`; rechaza campos adicionales):
-
-| Campo | Tipo | Obligatorio | Validación |
-|---|---|---|---|
-| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `is_required` | boolean | No | no admite `null` |
-| `is_filterable` | boolean | No | no admite `null` |
-| `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
-
-Ejemplo de solicitud (valores ilustrativos):
-
-```bash
-curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/categories/b583a629-3fe1-4575-8ba1-7314e10419cc/attributes/da6195d4-1082-43d8-8a1d-d8ea15ed6d17' \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "version": 1,
-    "is_required": true,
-    "is_filterable": true,
-    "display_order": 1
-  }'
-```
-
-Ejemplo de respuesta `200` (`CategoryAttributeResponse`; valores ilustrativos):
-
-```json
-{
-  "id": "da6195d4-1082-43d8-8a1d-d8ea15ed6d17",
-  "version": 1,
-  "created_at": "2026-10-19T15:04:05Z",
-  "updated_at": "2026-10-19T15:04:05Z",
-  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "status": "ACTIVE",
-  "global_category_id": "0a1a164d-b834-4ea1-8413-d5b6fc5b5ef3",
-  "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-  "is_required": true,
-  "is_filterable": true,
-  "display_order": 1
-}
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `200` | `CategoryAttributeResponse` |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
-### 28. `POST /categories/{category_id}/attributes/{association_id}/deactivate`
-
-| | |
-|---|---|
-| Clasificación | `WRITE` |
-| Descripción | Inactivar asociación |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/categories/{category_id}/attributes/{association_id}/deactivate` |
-| Permiso | `perm:product-catalog:categories:deactivate` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization`, `Content-Type: application/json` |
-
-Notas: `{"version": n}` (`version` opcional)
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
-| `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
-
-Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
-
-| Campo | Tipo | Obligatorio | Validación |
-|---|---|---|---|
-| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-
-Ejemplo de solicitud (valores ilustrativos):
-
-```bash
-curl -sS -X POST 'https://sio-product-catalog-dev.onrender.com/api/v1/categories/b583a629-3fe1-4575-8ba1-7314e10419cc/attributes/da6195d4-1082-43d8-8a1d-d8ea15ed6d17/deactivate' \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "version": 1
-  }'
-```
-
-Ejemplo de respuesta `200` (`CategoryAttributeResponse`; valores ilustrativos):
-
-```json
-{
-  "id": "da6195d4-1082-43d8-8a1d-d8ea15ed6d17",
-  "version": 1,
-  "created_at": "2026-10-19T15:04:05Z",
-  "updated_at": "2026-10-19T15:04:05Z",
-  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "status": "ACTIVE",
-  "global_category_id": "0a1a164d-b834-4ea1-8413-d5b6fc5b5ef3",
-  "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-  "is_required": true,
-  "is_filterable": true,
-  "display_order": 1
-}
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `200` | `CategoryAttributeResponse` |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
-### 29. `POST /categories/{category_id}/attributes/{association_id}/reactivate`
-
-| | |
-|---|---|
-| Clasificación | `WRITE` |
-| Descripción | Reactivar asociación |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/categories/{category_id}/attributes/{association_id}/reactivate` |
-| Permiso | `perm:product-catalog:categories:deactivate` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization`, `Content-Type: application/json` |
-
-Notas: `{"version": n}` (`version` opcional)
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `category_id` | ruta | UUID | Sí | — | Campo `id` de una categoría (operaciones 30 o 32) |
-| `association_id` | ruta | UUID | Sí | — | Campo `id` de la asociación (operación 25) |
-
-Cuerpo (`VersionRequest`; rechaza campos adicionales; se acepta `{}` o ningún cuerpo):
-
-| Campo | Tipo | Obligatorio | Validación |
-|---|---|---|---|
-| `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-
-Ejemplo de solicitud (valores ilustrativos):
-
-```bash
-curl -sS -X POST 'https://sio-product-catalog-dev.onrender.com/api/v1/categories/b583a629-3fe1-4575-8ba1-7314e10419cc/attributes/da6195d4-1082-43d8-8a1d-d8ea15ed6d17/reactivate' \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "version": 1
-  }'
-```
-
-Ejemplo de respuesta `200` (`CategoryAttributeResponse`; valores ilustrativos):
-
-```json
-{
-  "id": "da6195d4-1082-43d8-8a1d-d8ea15ed6d17",
-  "version": 1,
-  "created_at": "2026-10-19T15:04:05Z",
-  "updated_at": "2026-10-19T15:04:05Z",
-  "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
-  "status": "ACTIVE",
-  "global_category_id": "0a1a164d-b834-4ea1-8413-d5b6fc5b5ef3",
-  "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-  "is_required": true,
-  "is_filterable": true,
-  "display_order": 1
-}
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `200` | `CategoryAttributeResponse` |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
-| `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
 ### 30. `GET /categories`
 
 | | |
@@ -2785,7 +2436,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization` |
 
-Notas: Filtros `status`, `code`, `search`, `data_type`, paginación
+Notas: Filtros `status`, `code`, `search`, `data_type`, paginación. Cada característica trae `options` (id, código, nombre, descripción, orden y estado de cada opción, activas e inactivas, en su orden); vacía si no es de tipo `OPTION`. Igual en las operaciones 42 a 46
 
 Parámetros:
 
@@ -2824,7 +2475,8 @@ Ejemplo de respuesta `200` (`PaginatedResponse_AttributeDefinitionResponse_`; va
       "name": "Concentración",
       "description": "Descripción ilustrativa",
       "data_type": "TEXT",
-      "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+      "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+      "options": []
     }
   ],
   "page": 1,
@@ -2899,7 +2551,8 @@ Ejemplo de respuesta `201` (`AttributeDefinitionResponse`; valores ilustrativos)
   "name": "Concentración",
   "description": "Concentración del principio activo",
   "data_type": "TEXT",
-  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  "options": []
 }
 ```
 
@@ -2954,7 +2607,8 @@ Ejemplo de respuesta `200` (`AttributeDefinitionResponse`; valores ilustrativos)
   "name": "Concentración",
   "description": "Descripción ilustrativa",
   "data_type": "TEXT",
-  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  "options": []
 }
 ```
 
@@ -3024,7 +2678,8 @@ Ejemplo de respuesta `200` (`AttributeDefinitionResponse`; valores ilustrativos)
   "name": "Acetaminofén 500 mg",
   "description": "Descripción ilustrativa",
   "data_type": "TEXT",
-  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  "options": []
 }
 ```
 
@@ -3091,7 +2746,8 @@ Ejemplo de respuesta `200` (`AttributeDefinitionResponse`; valores ilustrativos)
   "name": "Concentración",
   "description": "Descripción ilustrativa",
   "data_type": "TEXT",
-  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  "options": []
 }
 ```
 
@@ -3158,7 +2814,8 @@ Ejemplo de respuesta `200` (`AttributeDefinitionResponse`; valores ilustrativos)
   "name": "Concentración",
   "description": "Descripción ilustrativa",
   "data_type": "TEXT",
-  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"
+  "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  "options": []
 }
 ```
 
@@ -3187,7 +2844,7 @@ Base `…/api/v1/products`. Objeto `ProductResponse`:
 | `global_brand_id`, `manufacturer_organization_id` | UUID \| null | Marca (operación 16) y fabricante (identidad de organización en Party Identity) |
 | `base_unit_id` | UUID | Unidad base (operación 4). **Inmutable tras el primer uso** (`422 BASE_UNIT_LOCKED_BY_FIRST_USE`) |
 | `first_used_at`, `first_use_source` | — | Marca irreversible de primer uso (adopción o manual) |
-| `completeness` | objeto | `is_complete`, `issues[]` (códigos), `missing_attribute_definition_ids[]`, `out_of_classification_value_ids[]` |
+| `completeness` | objeto | `is_complete`, `issues[]` (códigos). Las características son opcionales y no cuentan |
 | `eligible_for_adoption` | boolean | Si una empresa puede adoptarlo en Commercial Relationship |
 | `warnings[]` | `{code, message, matching_product_ids[]}` | Avisos no bloqueantes, por ejemplo posibles duplicados |
 | `detail` | objeto \| null | Solo con `expand=detail`: `categories[]`, `presentations[]`, `identifiers[]`, `attribute_values[]`, `group_assignments[]`, `assets[]` |
@@ -3376,7 +3033,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization` |
 
-Notas: Filtros: `status`, `search` (≤ 200), `category_id` + `include_descendants`, `brand_id`, `manufacturer_organization_id`, `group_id`, `identifier` (≤ 120; código de barras), `attribute_filters` (repetible, `CODIGO:valor`, solo atributos filtrables: `422 ATTRIBUTE_NOT_FILTERABLE`), paginación. Ejemplo completo en [global_product_id](../parametros/global-product-id.md)
+Notas: Filtros: `status`, `search` (≤ 200), `category_id` + `include_descendants`, `brand_id`, `manufacturer_organization_id`, `group_id`, `identifier` (≤ 120; código de barras), `attribute_filters` (repetible, `CODIGO:valor`, con cualquier característica; si no existe, `422 VALIDATION_ERROR`), paginación. Ejemplo completo en [global_product_id](../parametros/global-product-id.md)
 
 Parámetros:
 
@@ -3390,7 +3047,7 @@ Parámetros:
 | `manufacturer_organization_id` | query | UUID \| null | No | — | [organization_identity_id](../parametros/organization-identity-id.md) |
 | `group_id` | query | UUID \| null | No | — | Campo `id` de un grupo (operaciones 82 u 84) |
 | `identifier` | query | string \| null | No | ≤ 120 car. | — |
-| `attribute_filters` | query | array<string> | No | por defecto `[]` — Filtros `CODIGO:valor` sobre atributos filtrables; repetible. | — |
+| `attribute_filters` | query | array<string> | No | por defecto `[]` — Filtros `CODIGO:valor` sobre las características de los productos (cualquiera); repetible. | — |
 | `page` | query | integer | No | ≥ 1; por defecto `1` — Número de página solicitado. | — |
 | `page_size` | query | integer | No | ≥ 1; ≤ 100; por defecto `20` — Cantidad de registros por página. | — |
 
@@ -3426,9 +3083,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_ProductResponse_`; valores ilustr
       "first_use_source": "MANUAL",
       "completeness": {
         "is_complete": true,
-        "issues": [],
-        "missing_attribute_definition_ids": [],
-        "out_of_classification_value_ids": []
+        "issues": []
       },
       "eligible_for_adoption": true,
       "warnings": [],
@@ -3515,9 +3170,7 @@ Ejemplo de respuesta `201` (`ProductResponse`; valores ilustrativos):
   "first_use_source": "MANUAL",
   "completeness": {
     "is_complete": true,
-    "issues": [],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": []
   },
   "eligible_for_adoption": true,
   "warnings": [],
@@ -3646,9 +3299,7 @@ Ejemplo de respuesta `200` (`IdentifierLookupResponse`; valores ilustrativos):
     "first_use_source": "MANUAL",
     "completeness": {
       "is_complete": true,
-      "issues": [],
-      "missing_attribute_definition_ids": [],
-      "out_of_classification_value_ids": []
+      "issues": []
     },
     "eligible_for_adoption": true,
     "warnings": [],
@@ -3755,9 +3406,7 @@ Ejemplo de respuesta `200` (`ProductResponse`; valores ilustrativos):
   "first_use_source": "MANUAL",
   "completeness": {
     "is_complete": true,
-    "issues": [],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": []
   },
   "eligible_for_adoption": true,
   "warnings": [],
@@ -3845,9 +3494,7 @@ Ejemplo de respuesta `200` (`ProductResponse`; valores ilustrativos):
   "first_use_source": "MANUAL",
   "completeness": {
     "is_complete": true,
-    "issues": [],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": []
   },
   "eligible_for_adoption": true,
   "warnings": [],
@@ -3864,65 +3511,6 @@ Códigos HTTP:
 | `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
 | `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
 | `409 PRODUCT_CATALOG.VERSION_CONFLICT` | `version` enviada distinta de la actual |
-| `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
-| `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
-
-### 55. `GET /products/{product_id}/applicable-attributes`
-
-| | |
-|---|---|
-| Clasificación | `READ` |
-| Descripción | Atributos aplicables |
-| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/products/{product_id}/applicable-attributes` |
-| Permiso | `perm:product-catalog:products:read` |
-| Alcance | Global (catálogo compartido por todas las empresas) |
-| Cabeceras | `Authorization` |
-
-Notas: **Array** de atributos aplicables según sus categorías (sin herencia): `attribute_definition_id`, `code`, `name`, `data_type`, `unit_of_measure_id`, `is_required`, `is_filterable`, `display_order`, `category_ids[]`
-
-Parámetros:
-
-| Nombre | Dónde | Tipo | Obligatorio | Validación | Cómo obtenerlo |
-|---|---|---|---|---|---|
-| `product_id` | ruta | UUID | Sí | — | [global_product_id](../parametros/global-product-id.md) |
-
-Esta operación no recibe cuerpo.
-
-Ejemplo de solicitud (sin cuerpo):
-
-```bash
-curl -sS 'https://sio-product-catalog-dev.onrender.com/api/v1/products/f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72/applicable-attributes' \
-  -H "Authorization: Bearer $ACCESS_TOKEN"
-```
-
-Ejemplo de respuesta `200` (`None`; valores ilustrativos):
-
-```json
-[
-  {
-    "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
-    "code": "CONCENTRACION",
-    "name": "Concentración",
-    "data_type": "TEXT",
-    "unit_of_measure_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
-    "is_required": true,
-    "is_filterable": true,
-    "display_order": 1,
-    "category_ids": [
-      "b583a629-3fe1-4575-8ba1-7314e10419cc"
-    ]
-  }
-]
-```
-
-Códigos HTTP:
-
-| HTTP | Significado |
-|---|---|
-| `200` | Successful Response |
-| `401` | Token ausente o inválido ([Autenticación](../guias/autenticacion.md)) |
-| `403 PRODUCT_CATALOG.FORBIDDEN` | Sin el permiso indicado |
-| `404 PRODUCT_CATALOG.NOT_FOUND` | El recurso de la ruta no existe |
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
@@ -3959,9 +3547,7 @@ Ejemplo de respuesta `200` (`CompletenessResponse`; valores ilustrativos):
 ```json
 {
   "is_complete": true,
-  "issues": [],
-  "missing_attribute_definition_ids": [],
-  "out_of_classification_value_ids": []
+  "issues": []
 }
 ```
 
@@ -4033,9 +3619,7 @@ Ejemplo de respuesta `200` (`ProductResponse`; valores ilustrativos):
   "first_use_source": "MANUAL",
   "completeness": {
     "is_complete": true,
-    "issues": [],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": []
   },
   "eligible_for_adoption": true,
   "warnings": [],
@@ -4112,9 +3696,7 @@ Ejemplo de respuesta `200` (`ProductResponse`; valores ilustrativos):
   "first_use_source": "MANUAL",
   "completeness": {
     "is_complete": true,
-    "issues": [],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": []
   },
   "eligible_for_adoption": true,
   "warnings": [],
@@ -4402,7 +3984,7 @@ Códigos HTTP:
 
 ### Valores de atributo (operaciones 63–65)
 
-Base `…/api/v1/products/{product_id}/attribute-values`. Objeto `AttributeValueResponse`: `id`, `global_product_id`, `attribute_definition_id`, `option_id`, `text_value`, `integer_value`, `decimal_value`, `boolean_value`, `date_value`, `out_of_classification` (el atributo ya no aplica por las categorías actuales), `version`, trazabilidad.
+Base `…/api/v1/products/{product_id}/attribute-values`. Objeto `AttributeValueResponse`: `id`, `global_product_id`, `attribute_definition_id`, `option_id`, `text_value`, `integer_value`, `decimal_value`, `boolean_value`, `date_value`, `version`, trazabilidad. A cualquier producto activo se le puede poner cualquier característica activa del catálogo: no depende de sus categorías y es opcional.
 
 ### 63. `GET /products/{product_id}/attribute-values`
 
@@ -4415,7 +3997,7 @@ Base `…/api/v1/products/{product_id}/attribute-values`. Objeto `AttributeValue
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization` |
 
-Notas: **Array**
+Notas: **Array**. Cada valor trae también `product` (nombre y descripción del producto), `attribute_definition` (código, nombre, descripción y tipo de la característica) y `option` (código, nombre y descripción de la opción; `null` si la característica no es de tipo `OPTION`)
 
 Parámetros:
 
@@ -4444,14 +4026,30 @@ Ejemplo de respuesta `200` (`None`; valores ilustrativos):
     "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
     "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
     "global_product_id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72",
+    "product": {
+      "id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72",
+      "product_type": "GOOD",
+      "canonical_name": "Acetaminofén 500 mg tableta",
+      "description": null,
+      "status": "ACTIVE"
+    },
     "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
+    "attribute_definition": {
+      "id": "a3111396-177a-4ee4-89c9-912fc733af0e",
+      "code": "CONCENTRACION",
+      "name": "Concentración",
+      "description": "Concentración del principio activo",
+      "data_type": "TEXT",
+      "unit_of_measure_id": null,
+      "status": "ACTIVE"
+    },
     "option_id": null,
+    "option": null,
     "text_value": "500 mg",
     "integer_value": null,
     "decimal_value": null,
     "boolean_value": null,
-    "date_value": null,
-    "out_of_classification": false
+    "date_value": null
   }
 ]
 ```
@@ -4478,7 +4076,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`AttributeValuePut`): exactamente el campo de valor que corresponde al `data_type` (`option_id` para `OPTION`, `text_value`, `integer_value`, `decimal_value`, `boolean_value` o `date_value`; `422 VALUE_TYPE_MISMATCH`, `OPTION_NOT_IN_DEFINITION`) y `version` (opcional; si se envía y el valor ya existe con otra versión → `409 VERSION_CONFLICT`). El atributo debe aplicar al producto (`422 ATTRIBUTE_NOT_APPLICABLE`). `201` al crear, `200` al reemplazar
+Notas: Cuerpo (`AttributeValuePut`): exactamente el campo de valor que corresponde al `data_type` (`option_id` para `OPTION`, `text_value`, `integer_value`, `decimal_value`, `boolean_value` o `date_value`; `422 VALUE_TYPE_MISMATCH`, `OPTION_NOT_IN_DEFINITION`) y `version` (opcional; si se envía y el valor ya existe con otra versión → `409 VERSION_CONFLICT`). La característica debe existir y estar activa; no hace falta que la categoría del producto la tenga. `201` al crear, `200` al reemplazar. La respuesta trae `product`, `attribute_definition` y `option` igual que la operación 63
 
 Parámetros:
 
@@ -4524,14 +4122,30 @@ Ejemplo de respuesta `200` (`AttributeValueResponse`; valores ilustrativos):
   "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
   "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
   "global_product_id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72",
+  "product": {
+    "id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72",
+    "product_type": "GOOD",
+    "canonical_name": "Acetaminofén 500 mg tableta",
+    "description": null,
+    "status": "ACTIVE"
+  },
   "attribute_definition_id": "a3111396-177a-4ee4-89c9-912fc733af0e",
+  "attribute_definition": {
+    "id": "a3111396-177a-4ee4-89c9-912fc733af0e",
+    "code": "CONCENTRACION",
+    "name": "Concentración",
+    "description": "Concentración del principio activo",
+    "data_type": "TEXT",
+    "unit_of_measure_id": null,
+    "status": "ACTIVE"
+  },
   "option_id": null,
+  "option": null,
   "text_value": "500 mg",
   "integer_value": null,
   "decimal_value": null,
   "boolean_value": null,
-  "date_value": null,
-  "out_of_classification": false
+  "date_value": null
 }
 ```
 
@@ -7508,6 +7122,311 @@ Códigos HTTP:
 | `422 PRODUCT_CATALOG.VALIDATION_ERROR` | Datos inválidos; `errors[]` indica el campo. Otros códigos `422`/`409` propios en las notas |
 | `503 PRODUCT_CATALOG.DEPENDENCY_UNAVAILABLE` | `dependency`: `database`, `party-identity` o almacenamiento |
 
+### 105. `POST /products:ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · todo o nada en una sola transacción |
+| Descripción | Crear o completar un producto con sus categorías, su presentación base, sus demás presentaciones y sus identificadores |
+| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/products:ensure` |
+| Permisos | `perm:product-catalog:products:create` **y** `perm:product-catalog:products:update` (`superadmin` y `admin`) |
+| Alcance | Global (catálogo compartido por todas las empresas) |
+| Cabeceras | `Authorization`, `Content-Type: application/json`; opcional `Idempotency-Key` (1 a 150 caracteres ASCII visibles, sin espacios) |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Product Catalog |
+
+Reúne en una sola solicitud «Crear producto» (50), «Asignar categoría», «Crear presentación» y «Registrar
+identificador». **Nunca modifica lo que ya existe**: solo crea o asigna lo que falta.
+
+**Cómo encuentra el producto:**
+
+| Se envía | Busca | Si no lo encuentra | Si lo encuentra |
+|---|---|---|---|
+| `product_id` | Ese producto | `404` | Lo completa (`422 PRODUCT_INACTIVE` si está inactivo) |
+| `canonical_name` (con `product_type` y `base_unit_id`) | 1.º por los identificadores enviados (GTIN, EAN, UPC, BARCODE, IUM): si un código ya es de un producto, se usa ese aunque el nombre esté escrito distinto (aviso `NAME_DIFFERS`). 2.º por el nombre normalizado (sin mayúsculas, tildes ni espacios de más) y la misma marca | Lo crea | Lo completa; si hay varios, `409 PRODUCT_AMBIGUOUS` con `candidates` |
+
+Con `product_id` se ignoran `product_type`, `canonical_name`, `description`, `base_unit_id`,
+`global_brand_id` y `manufacturer_organization_id`. Si el producto ya existía y se enviaron datos distintos, no
+se cambian y se avisa con `PRODUCT_FIELDS_IGNORED` (para cambiarlos: operación 51). «Acetaminofén 500 mg,
+tableta» y «Acetaminofen 500mg tableta» **no** son el mismo nombre: conviene buscar primero o enviar un
+identificador.
+
+**Qué completa:**
+
+| Parte | Si ya existe | Si no existe |
+|---|---|---|
+| `category_ids[]` | `ALREADY_ASSIGNED` | `ASSIGNED`; si el producto no tenía principal, la primera queda como principal |
+| `base_presentation` | Si ya tiene una base vigente: `ALREADY_EXISTS` (aviso `BASE_PRESENTATION_EXISTS` si el código es otro) | `CREATED`, con `base_quantity` 1 e `is_base` verdadero |
+| `presentations[]` (por `code`) | `ALREADY_EXISTS`, sin cambiarla | `CREATED` |
+| `identifiers[]` | En este producto: `ALREADY_EXISTS`. En **otro** producto: `409 IDENTIFIER_COLLISION` y no se guarda nada | `CREATED`; `presentation_code` lo liga a una presentación de la solicitud o del producto |
+
+Si una parte falla no se guarda nada; el error trae `failed_part` (por ejemplo `presentations[0]` o
+`category_ids[1]`) y el campo dentro de esa parte en `errors[0].field`. Repetir la misma solicitud es seguro: la
+segunda vez todo sale `FOUND` / `ALREADY_…` y responde `200`. Con `Idempotency-Key`, la misma clave y el mismo
+cuerpo devuelven exactamente la primera respuesta (cabecera `Idempotent-Replayed: true`); la misma clave con otro
+cuerpo responde `422 IDEMPOTENCY_KEY_REUSED`.
+
+Cuerpo (`ProductEnsureRequest`; rechaza campos adicionales):
+
+| Campo | Tipo | Obligatorio | Validación |
+|---|---|---|---|
+| `product_id` | UUID \| null | Uno de los dos | Producto existente |
+| `canonical_name` | string \| null | Uno de los dos | ≤ 400 car.; con él, `product_type` y `base_unit_id` son obligatorios |
+| `product_type` | `GOOD` \| null | Con `canonical_name` | — |
+| `description` | string \| null | No | — |
+| `base_unit_id` | UUID \| null | Con `canonical_name` | Unidad activa (operación 4) |
+| `global_brand_id` | UUID \| null | No | Marca activa; cuenta para buscar por nombre |
+| `manufacturer_organization_id` | UUID \| null | No | Organización en Party Identity |
+| `category_ids` | UUID[] | No | ≤ 20, sin repetidas, categorías activas |
+| `base_presentation` | objeto \| null | No | Campos de «Crear presentación»: `code` (≤ 120), `name` (≤ 320), `packaging_type_id`, `base_quantity` (debe ser 1), `content_quantity`, `content_unit_id`, `display_order` (0–32767), `is_base` (debe ser `true`) |
+| `presentations` | objeto[] | No | ≤ 50; mismos campos, `is_base` debe ser `false`; códigos sin repetir (tampoco con la base) |
+| `identifiers` | objeto[] | No | ≤ 50, sin repetidos: `identifier_type` (`GTIN`, `EAN`, `UPC`, `BARCODE`, `OTHER`, `IUM`), `value` (≤ 200), `presentation_code` (código de una presentación) o `null` (queda en el producto), `is_primary` |
+
+Ejemplo de solicitud por nombre (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-product-catalog-dev.onrender.com/api/v1/products:ensure' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -H 'Idempotency-Key: producto-acetaminofen-500-0001' \
+  -d '{
+    "product_id": null,
+    "product_type": "GOOD",
+    "canonical_name": "Acetaminofén 500 mg, tableta",
+    "description": "Analgésico y antipirético",
+    "base_unit_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+    "global_brand_id": null,
+    "manufacturer_organization_id": null,
+    "category_ids": ["c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f"],
+    "base_presentation": {
+      "code": "UNIT",
+      "name": "Unidad",
+      "packaging_type_id": null,
+      "base_quantity": "1",
+      "content_quantity": null,
+      "content_unit_id": null,
+      "display_order": 0,
+      "is_base": true
+    },
+    "presentations": [
+      {
+        "code": "BOX-10",
+        "name": "Caja x 10 tabletas",
+        "packaging_type_id": "a9b8c7d6-e5f4-4a3b-9c2d-1e0f9a8b7c6d",
+        "base_quantity": "10",
+        "content_quantity": null,
+        "content_unit_id": null,
+        "display_order": 1,
+        "is_base": false
+      }
+    ],
+    "identifiers": [
+      {
+        "identifier_type": "GTIN",
+        "value": "7702057079369",
+        "presentation_code": "UNIT",
+        "is_primary": true
+      }
+    ]
+  }'
+```
+
+Por id es la misma solicitud con `"product_id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72"` y sin
+`canonical_name`.
+
+Ejemplo de respuesta `201` (`ProductEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "product": {
+    "result": "CREATED",
+    "matched_by": null,
+    "id": "f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72",
+    "canonical_name": "Acetaminofén 500 mg, tableta",
+    "product_type": "GOOD",
+    "base_unit_id": "d1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+    "global_brand_id": null,
+    "manufacturer_organization_id": null,
+    "status": "ACTIVE",
+    "version": 1
+  },
+  "categories": [
+    {
+      "result": "ASSIGNED",
+      "category_id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+      "association_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+      "is_primary": true
+    }
+  ],
+  "base_presentation": {
+    "result": "CREATED",
+    "id": "e6d7d0c7-a0be-4f4b-8bca-631867ff85c8",
+    "code": "UNIT",
+    "name": "Unidad",
+    "is_base": true,
+    "status": "ACTIVE",
+    "version": 1
+  },
+  "presentations": [
+    {
+      "result": "CREATED",
+      "id": "b5c6d7e8-f9a0-4b1c-8d2e-3f4a5b6c7d8e",
+      "code": "BOX-10",
+      "name": "Caja x 10 tabletas",
+      "is_base": false,
+      "status": "ACTIVE",
+      "version": 1
+    }
+  ],
+  "identifiers": [
+    {
+      "result": "CREATED",
+      "id": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+      "identifier_type": "GTIN",
+      "value": "7702057079369",
+      "global_product_presentation_id": "e6d7d0c7-a0be-4f4b-8bca-631867ff85c8",
+      "is_primary": true,
+      "status": "ACTIVE",
+      "version": 1
+    }
+  ],
+  "warnings": []
+}
+```
+
+En `product.matched_by` llega cómo se encontró: `product_id`, `identifier`, `canonical_name`, o `null` si se creó.
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `201` | Se creó o asignó al menos una parte | — |
+| `200` | El producto y todas las partes ya existían | — |
+| `403 PRODUCT_CATALOG.FORBIDDEN` | Falta `products:create` o `products:update` | Lo hacen `superadmin` y `admin` |
+| `404 PRODUCT_CATALOG.NOT_FOUND` | `product_id` no existe | Buscar el producto (operación 49) |
+| `409 …PRODUCT_AMBIGUOUS` | Varios productos con ese nombre y marca, o los identificadores son de productos distintos (`candidates`) | Reenviar con `product_id` |
+| `409 …IDENTIFIER_COLLISION` | Un identificador ya es de otro producto (`conflict`) | Revisar el código o usar ese producto |
+| `409 …DUPLICATE_CODE` | La base trae el código de una presentación no base que ya existe | Usar otro código |
+| `422 …PRODUCT_INACTIVE` | El producto encontrado está inactivo | Reactivarlo antes |
+| `422 …REFERENCE_NOT_FOUND` / `REFERENCE_INACTIVE` | Unidad, marca, categoría o empaque inexistente o inactivo (`failed_part`) | Corregir el id |
+| `422 …VALIDATION_ERROR` | Cuerpo inválido: sin `product_id` ni `canonical_name`, los dos a la vez, repetidos, base con cantidad distinta de 1, `presentation_code` desconocido, `Idempotency-Key` mal formada | Corregir el campo de `errors[0].field` |
+| `422 …IDEMPOTENCY_KEY_REUSED` | La clave ya se usó con otro cuerpo | Usar una clave nueva |
+| `503 …DEPENDENCY_UNAVAILABLE` | Base de datos o Party Identity (al validar el fabricante) | Repetir la solicitud |
+
+### 106. `POST /attribute-definitions:ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · todo o nada en una sola transacción |
+| Descripción | Crear o completar una característica con sus opciones |
+| URL | `https://sio-product-catalog-dev.onrender.com/api/v1/attribute-definitions:ensure` |
+| Permisos | `perm:product-catalog:attribute-definitions:create` **y** `perm:product-catalog:attribute-definitions:update` (`superadmin` y `admin`) |
+| Alcance | Global (catálogo compartido por todas las empresas) |
+| Cabeceras | `Authorization`, `Content-Type: application/json` |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Product Catalog |
+
+Reúne en una sola solicitud «Crear atributo» (42) y «Crear opción» (37). Una característica es un dato extra de
+los productos, como «Sabor»; sus opciones son los valores permitidos (Fresa, Menta). Se crea **una vez** en el
+catálogo y después se le pone a **cualquier producto** con la operación 64 (Sabor = Fresa): no depende de las
+categorías del producto, es opcional y siempre se puede filtrar (`attribute_filters=SABOR:FRESA` en la operación
+49). **Nunca modifica lo que ya existe**: solo crea lo que falta.
+
+| Parte | Si ya existe | Si no existe |
+|---|---|---|
+| La característica (por `code`, sin distinguir mayúsculas) | `FOUND`, sin cambiarla; si `name`, `description`, `data_type` o `unit_of_measure_id` son distintos, aviso `ATTRIBUTE_FIELDS_IGNORED` (el nombre y la descripción se cambian con la operación 44; el tipo y la unidad no se pueden cambiar). Inactiva: `422 REFERENCE_INACTIVE` | `CREATED` |
+| `options[]` (por `code`) | `ALREADY_EXISTS`, sin cambiarla | `CREATED` |
+
+Para agregarle opciones más adelante se reenvía la misma solicitud con las opciones nuevas (las que ya tenía salen
+`ALREADY_EXISTS`), o se usa la operación 37. Si una parte falla no se guarda nada; el error trae `failed_part`
+(`attribute`, `options[1]`…) y el campo en `errors[0].field`. Repetir la misma solicitud es seguro: responde
+`200` y no duplica nada.
+
+Cuerpo (`AttributeEnsureRequest`; rechaza campos adicionales):
+
+| Campo | Tipo | Obligatorio | Validación |
+|---|---|---|---|
+| `code` | string | Sí | ≤ 80 car. tras normalizar |
+| `name` | string | Sí | ≤ 120 car. |
+| `description` | string | Sí | No vacía |
+| `data_type` | `TEXT` \| `INTEGER` \| `DECIMAL` \| `BOOLEAN` \| `DATE` \| `OPTION` | Sí | — |
+| `unit_of_measure_id` | UUID \| null | No | Solo con `INTEGER` o `DECIMAL`; unidad activa |
+| `options` | objeto[] | No | Solo con `OPTION`; ≤ 100, códigos sin repetir: `code` (≤ 80), `name` (≤ 120), `description` (opcional), `display_order` (0–32767) |
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-product-catalog-dev.onrender.com/api/v1/attribute-definitions:ensure' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "code": "SABOR",
+    "name": "Sabor",
+    "description": "Sabor del producto",
+    "data_type": "OPTION",
+    "unit_of_measure_id": null,
+    "options": [
+      { "code": "FRESA", "name": "Fresa", "description": null, "display_order": 1 },
+      { "code": "MENTA", "name": "Menta", "description": null, "display_order": 2 }
+    ]
+  }'
+```
+
+Ejemplo de respuesta `201` (`AttributeEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "attribute": {
+    "result": "CREATED",
+    "id": "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f",
+    "code": "SABOR",
+    "name": "Sabor",
+    "description": "Sabor del producto",
+    "data_type": "OPTION",
+    "unit_of_measure_id": null,
+    "status": "ACTIVE",
+    "version": 1
+  },
+  "options": [
+    {
+      "result": "CREATED",
+      "id": "4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a",
+      "code": "FRESA",
+      "name": "Fresa",
+      "display_order": 1,
+      "status": "ACTIVE",
+      "version": 1
+    },
+    {
+      "result": "CREATED",
+      "id": "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b",
+      "code": "MENTA",
+      "name": "Menta",
+      "display_order": 2,
+      "status": "ACTIVE",
+      "version": 1
+    }
+  ],
+  "warnings": []
+}
+```
+
+Después, para ponérsela a un producto (operación 64):
+
+```bash
+curl -sS -X PUT 'https://sio-product-catalog-dev.onrender.com/api/v1/products/f4a5b6c7-d8e9-4f0a-9b1c-2d3e4f5a6b72/attribute-values/3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{ "option_id": "4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a" }'
+```
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `201` | Se creó la característica o al menos una opción | — |
+| `200` | La característica y sus opciones ya existían | — |
+| `403 PRODUCT_CATALOG.FORBIDDEN` | Falta `attribute-definitions:create` o `attribute-definitions:update` | Lo hacen `superadmin` y `admin` |
+| `422 …REFERENCE_INACTIVE` | La característica o la unidad están inactivas | Reactivarlas antes |
+| `422 …REFERENCE_NOT_FOUND` | La unidad de medida no existe | Corregir `unit_of_measure_id` |
+| `422 …DEFINITION_NOT_OPTION` | Se enviaron `options` para una característica existente que no es `OPTION` | Quitar `options` |
+| `422 …VALIDATION_ERROR` | Cuerpo inválido: `options` sin ser `OPTION`, unidad en un tipo no numérico, opciones repetidas o campos que no existen (como `categories`) | Corregir el campo indicado |
+| `503 …DEPENDENCY_UNAVAILABLE` | Base de datos | Repetir la solicitud |
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -7516,7 +7435,7 @@ Códigos HTTP:
 | `409 PRODUCT_CATALOG.DUPLICATE_CODE` / `CODE_USED_BY_*` | Código repetido | Elegir otro código |
 | `409 …IDENTIFIER_COLLISION` | El código de barras ya pertenece a otro producto o presentación | Buscar con la operación 52 |
 | `422 …INVALID_GTIN_FORMAT` / `INVALID_CHECK_DIGIT` | GTIN/EAN/UPC inválido | Verificar el dígito de control |
-| `422 …ATTRIBUTE_NOT_APPLICABLE` / `VALUE_TYPE_MISMATCH` | Atributo fuera de las categorías del producto o valor de tipo incorrecto | Usar la operación 55 para saber qué atributos aplican |
+| `422 …VALUE_TYPE_MISMATCH` | Valor de un tipo distinto al de la característica | Enviar el campo del tipo (`text_value`, `decimal_value`, `option_id`…) |
 | `422 …BASE_UNIT_LOCKED_BY_FIRST_USE` / `PRESENTATION_LOCKED_BY_FIRST_USE` | El producto ya fue adoptado | Crear una presentación nueva en lugar de modificar |
 | `409 …BASE_PRESENTATION_EXISTS` / `422 BASE_QUANTITY_MUST_BE_ONE` | Reglas de la presentación base | Una sola base con cantidad 1 |
 | `409 …HAS_ACTIVE_CHILDREN` / `422 HIERARCHY_CYCLE` / `PARENT_INACTIVE` | Jerarquías | Revisar padre e hijos |
@@ -7540,8 +7459,8 @@ Códigos HTTP:
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 104 |
-| Operaciones documentadas | 104 |
+| Operaciones en el OpenAPI desplegado | 104 (la 105 y la 106 llegan con el próximo despliegue) |
+| Operaciones documentadas | 100 (106 números; 25–29 y 55 retirados) |
 | Permisos contrastados con el código | Sí (`api/simple_catalog_router.py`, `units_of_measure.py`, `categories.py`, `attribute_definitions.py`, `group_types.py`, `products.py`, `product_summaries.py`, `product_categories.py`, `product_attribute_values.py`, `presentations.py`, `identifiers.py`, `product_group_assignments.py`, `assets.py`, `first_use.py`) |
 | Esquemas contrastados | Sí (OpenAPI desplegado; `application/exceptions.py`; docstrings de los servicios) |
 | Pendiente | Despliegue en Render de las rutas de imágenes por presentación (I-1 a I-8, spec 024) y de los campos de imagen de la operación 66; disponibilidad de la ruta pública de imágenes en Render; códigos exactos de `completeness.issues[]` |

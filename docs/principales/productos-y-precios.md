@@ -43,6 +43,7 @@ Ventas, Compras e Inventario trabajan **siempre** con la capa de empresa (`compa
 | 25 | Cambiar el porcentaje de una política | `POST https://sio-commercial-relationship-dev.onrender.com/api/v1/pricing-policies/{policy_id}/percentage` | `perm:commercial-relationship:pricing_policies:update` | [CR 68](../servicios/commercial-relationship.md#68-post-pricing-policiespolicy_idpercentage) |
 | 26 | Verificar la cobertura de políticas | `POST https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/pricing-policies/coverage` | `perm:commercial-relationship:pricing_policy_coverage:read` | [CR 60](../servicios/commercial-relationship.md#60-post-companiescompany_idpricing-policiescoverage) |
 | 27 | Consultar las actualizaciones automáticas de precio | `GET https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/automatic-price-applications` | `perm:commercial-relationship:automatic_price_applications:read` | [CR 72](../servicios/commercial-relationship.md#72-get-companiescompany_idautomatic-price-applications) |
+| 28 | Crear o completar un producto global en una sola solicitud (categorías, presentación base, demás presentaciones e identificadores; todo o nada) | `POST https://sio-product-catalog-dev.onrender.com/api/v1/products:ensure` | `perm:product-catalog:products:create` y `perm:product-catalog:products:update` | [PC 105](../servicios/product-catalog.md#105-post-productsensure) |
 
 Operaciones relacionadas que no se consideran principales (ver las fichas): modificar, inactivar o reactivar productos, presentaciones e identificadores globales (PC 54, 57, 58, 70–72, 75–77); consultar marcas, categorías y tipos de empaque (PC 16, 30, 10, citados donde se usan); atributos, grupos y archivos del producto (PC 63–65, 78–102; spec 024: las imágenes pasan a las rutas por presentación); la búsqueda progresiva y las consultas por lotes de productos y presentaciones de la empresa (CR 5, 6, 28, 29); modificar, inactivar o reactivar productos y presentaciones de la empresa (CR 8–10, 31–33); el impuesto de compra por lotes (CR 12); consultar, inactivar o reactivar una lista o un precio (CR 48, 50, 51, 54, 57, 58); la resolución del precio que usa Sales internamente (CR 59); consultar, renombrar e inactivar una política y su historial (CR 63–66, 70); el detalle y la resolución administrativa de una actualización automática (CR 73, 74). La solicitud de actualización automática (CR 71) es exclusiva de la cuenta técnica de Purchase.
 
@@ -148,9 +149,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
       "first_use_source": "ADOPTION",
       "completeness": {
         "is_complete": true,
-        "issues": [],
-        "missing_attribute_definition_ids": [],
-        "out_of_classification_value_ids": []
+        "issues": []
       },
       "eligible_for_adoption": true,
       "warnings": [],
@@ -169,7 +168,7 @@ Los parámetros de consulta se agregan al final de la URL: el primero después d
 | `items[].id` | UUID | El [global_product_id](../parametros/global-product-id.md) que se envía en la [API 8](#8-adoptar-un-producto-global-en-la-empresa) y que es el `product_id` de las API 4 a 7 |
 | `items[].canonical_name` | string | Nombre canónico para mostrar |
 | `items[].global_brand_id`, `base_unit_id`, `manufacturer_organization_id` | UUID \| null | Marca, unidad base y fabricante; la unidad base se describe con la [API 2](#2-consultar-las-unidades-de-medida) |
-| `items[].completeness.issues[]` | string[] | Lo que le falta para estar completo: `MISSING_MINIMUM_DATA`, `BASE_UNIT_NOT_FOUND`, `NO_ACTIVE_CATEGORY`, `NO_PRIMARY_CATEGORY`, `MISSING_REQUIRED_ATTRIBUTE`, `INCONSISTENT_REQUIRED_VALUE`, `NO_ACTIVE_PRESENTATION` |
+| `items[].completeness.issues[]` | string[] | Lo que le falta para estar completo: `MISSING_MINIMUM_DATA`, `BASE_UNIT_NOT_FOUND`, `NO_ACTIVE_CATEGORY`, `NO_PRIMARY_CATEGORY`, `NO_ACTIVE_PRESENTATION` (las características son opcionales y no cuentan) |
 | `items[].eligible_for_adoption` | boolean | `true` solo si el producto está `ACTIVE` y completo; solo esos se adoptan |
 | `items[].first_used_at`, `first_use_source` | fecha, string \| null | Primer uso del producto por una empresa; desde entonces la unidad base queda bloqueada |
 | `items[].detail` | null | Siempre `null` en la lista; el detalle completo se pide en la consulta individual con `expand=detail` (PC 53) |
@@ -353,9 +352,7 @@ curl -X POST \
   "first_use_source": null,
   "completeness": {
     "is_complete": false,
-    "issues": ["NO_ACTIVE_CATEGORY", "NO_ACTIVE_PRESENTATION"],
-    "missing_attribute_definition_ids": [],
-    "out_of_classification_value_ids": []
+    "issues": ["NO_ACTIVE_CATEGORY", "NO_ACTIVE_PRESENTATION"]
   },
   "eligible_for_adoption": false,
   "warnings": [],

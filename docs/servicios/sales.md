@@ -63,7 +63,7 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Operaciones (`sale_operations`) | Cada confirmación o anulación crea una operación `CONFIRM` o `CANCEL` con estado `PENDING` → `SUCCEEDED` o `FAILED`. Mientras exista una `PENDING`, la venta tiene `pending_operation_id` y toda escritura responde `409 SALES.OPERATION_IN_PROGRESS` |
 | Idempotencia | Confirmación y anulación exigen `Idempotency-Key` ([Primeros pasos §6](../guias/primeros-pasos.md#6-idempotencia-en-operaciones-de-negocio)) |
 | Fecha de negocio | `operation_date` y `due_date` las fija el servicio al confirmar (fecha del día en la zona horaria de la sucursal). No se envían |
-| Numeración | Al confirmar se asigna `number` (`prefix` + `separator` + número con `number_length` dígitos) desde la secuencia activa de la sucursal o, si no hay, de la empresa |
+| Numeración | Al confirmar se asigna `number` (`prefix` + `separator` + número con `number_length` dígitos) desde la secuencia activa de la sucursal o, si no hay, de la empresa. Crear secuencias es **opcional**: cada sucursal nueva recibe `FV-<código>` (por ejemplo `FV-PPAL-000001`) y, si aún no tiene ninguna, la confirmación la crea antes de la salida de Inventory (operación 24). Es numeración interna, sin resolución DIAN (pendiente) |
 
 Ejemplo de `PUT` parcial (solo cambia `observations`, sin `version`):
 
@@ -101,6 +101,7 @@ curl -sS -X PUT 'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e2
 | 21 | `POST` | `/companies/{company_id}/sale-sequences/{sequence_id}/reactivate` | Activar secuencia | `perm:sales:sale_sequences:update` | `WRITE` | [Ver](#21-post-companiescompany_idsale-sequencessequence_idreactivate) |
 | 22 | `GET` | `/companies/{company_id}/sales-aggregates/by-product` | Ventas efectivas por producto | `perm:sales:sales:read` | `READ` | [Ver](#22-get-companiescompany_idsales-aggregatesby-product) |
 | 23 | `GET` | `/companies/{company_id}/sales-aggregates/by-branch` | Ventas efectivas por sucursal | `perm:sales:sales:read` | `READ` | [Ver](#23-get-companiescompany_idsales-aggregatesby-branch) |
+| 24 | `POST` | `/companies/{company_id}/sale-sequences:ensure-branch` | Dejar numeración a una sucursal (`FV-<código>` si no tiene) | `perm:sales:sale_sequences:create` | `WRITE` | [Ver](#24-post-companiescompany_idsale-sequencesensure-branch) |
 
 ## Objetos
 
@@ -1099,7 +1100,7 @@ Secuencia verificada en el código:
 1. Acceso a la sucursal; idempotencia (la clave queda ligada a la venta, al tipo de operación y al usuario); si hay una operación en curso, `409 OPERATION_IN_PROGRESS`; después, versión (si se envió).
 2. Revalidación de cliente, productos, presentaciones y usuario operativo, y **nueva resolución del precio** con la intención original de cada línea. Si el precio, la lista o el ítem cambiaron → `409 SALES.PRICES_CHANGED` sin efectos: el frontend debe mostrar los nuevos precios y pedir confirmación de nuevo (la venta actualizada se obtiene con la operación 5).
 3. Consulta informativa de existencias; la barrera real es Inventory. Sin existencias suficientes → `409 SALES.INSUFFICIENT_STOCK`; si Inventory rechaza por otra causa → `409 SALES.INVENTORY_REJECTED`.
-4. Se busca la secuencia activa de la sucursal o, si no hay, de la empresa, para el período de la fecha del día en la zona horaria de la sucursal: sin secuencia → `409 SEQUENCE_NOT_CONFIGURED`; agotada → `409 SEQUENCE_EXHAUSTED`.
+4. Se busca la secuencia activa de la sucursal o, si no hay, de la empresa, para el período de la fecha del día en la zona horaria de la sucursal. Sin secuencia se crea la de la sucursal (`FV-<código>`, operación 24) y se sigue; solo si no se puede (su serie está desactivada o Operational Context no informa el código) → `409 SEQUENCE_NOT_CONFIGURED`. Agotada → `409 SEQUENCE_EXHAUSTED`.
 5. Se registra la operación `CONFIRM` `PENDING`, se fijan `operation_date` y `due_date`, se congelan los *snapshots* y se envía la salida a Inventory con la clave = `id` de la operación.
 6. Con la salida aplicada se copian los costos FIFO, se calcula el margen, se asigna el número y la venta pasa a `CONFIRMED`.
 
@@ -1339,7 +1340,7 @@ Cuerpo (`SequenceIn`; rechaza campos adicionales):
 |---|---|---|---|
 | `branch_id` | UUID \| null | No | `null` = secuencia de la empresa; con valor, de esa sucursal |
 | `series_code` | string | Sí | `^[A-Z0-9_-]{1,40}$` |
-| `prefix` | string | Sí | `^[A-Z0-9]{1,20}$` |
+| `prefix` | string | Sí | ≤ 20; letras mayúsculas y dígitos con guiones internos `^[A-Z0-9]+(-[A-Z0-9]+)*$` (por ejemplo `FV-PPAL`) |
 | `separator` | enum | Sí | `-`, `/`, `.`, `_` o cadena vacía |
 | `initial_number` | integer | Sí | 1 a 10¹⁷ |
 | `maximum_number` | integer \| null | No | 1 a 10¹⁸; ≥ contadores existentes |
@@ -1515,7 +1516,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 20. `POST /companies/{company_id}/sale-sequences/{sequence_id}/deactivate`
 
-`HIGH_RISK`: sin secuencia activa aplicable, las confirmaciones de esa sucursal o empresa fallan con `409 SEQUENCE_NOT_CONFIGURED`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/deactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo).
+`HIGH_RISK`: sin secuencia activa aplicable, la confirmación crea la automática `FV-<código>` de la sucursal; si la desactivada es justamente esa, las confirmaciones fallan con `409 SEQUENCE_NOT_CONFIGURED`. URL `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences/{sequence_id}/deactivate`; permiso `perm:sales:sale_sequences:update`. Cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1710,6 +1711,60 @@ Ejemplo de respuesta `200` (`ByBranchOut`; valores ilustrativos):
 }
 ```
 
+### 24. `POST /companies/{company_id}/sale-sequences:ensure-branch`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` |
+| URL | `https://sio-sales-dev.onrender.com/api/v1/companies/{company_id}/sale-sequences:ensure-branch` |
+| Permiso | `perm:sales:sale_sequences:create` |
+| Alcance | Membresía `ACTIVE` en la empresa |
+
+Deja numeración de ventas a una sucursal. Si la sucursal ya tiene una secuencia activa, o la empresa tiene una para todas sus sucursales, no crea nada y responde `200` con esa (`ALREADY_EXISTS`): las secuencias creadas a mano conservan su prioridad. Si no hay ninguna, crea `FV-<código de la sucursal>` (código y prefijo iguales, separador `-`, 6 dígitos, sin reinicio, sin máximo) y responde `201` (`CREATED`). Es numeración **interna**: no lleva resolución de facturación de la DIAN (prefijo, rango y vigencia autorizados), que queda pendiente para la facturación electrónica. La llama Operational Context al crear una sucursal; también la usa la confirmación cuando falta numeración.
+
+Cuerpo (`SequenceEnsureIn`): `branch_id` (UUID, obligatorio).
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-sales-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/sale-sequences:ensure-branch' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+  }'
+```
+
+Ejemplo de respuesta `201` (`SequenceEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "result": "CREATED",
+  "sequence": {
+    "id": "4e5f6a7b-8c9d-4e0f-9a1b-2c3d4e5f6a7b",
+    "company_id": "550e8400-e29b-41d4-a716-446655440000",
+    "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "document_kind": "SALE",
+    "series_code": "FV-PPAL",
+    "prefix": "FV-PPAL",
+    "separator": "-",
+    "initial_number": 1,
+    "maximum_number": null,
+    "number_length": 6,
+    "reset_policy": "NEVER",
+    "is_active": true,
+    "version": 1,
+    "created_at": "2026-11-24T15:04:05Z",
+    "updated_at": "2026-11-24T15:04:05Z",
+    "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "counters": []
+  }
+}
+```
+
+Errores: `422 VALIDATION_ERROR` con `BRANCH_NOT_FOUND` (sucursal de otra empresa o inexistente); `409 REFERENCES_NOT_ELIGIBLE` con `BRANCH_INACTIVE`; `409 SEQUENCE_IN_USE` si la serie `FV-<código>` existe pero alguien la desactivó (no se vuelve a crear); `409 SEQUENCE_NOT_CONFIGURED` si Operational Context no informa un código de sucursal utilizable.
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -1723,7 +1778,7 @@ Ejemplo de respuesta `200` (`ByBranchOut`; valores ilustrativos):
 | `409 SALES.REFERENCES_NOT_ELIGIBLE` | Cliente, producto, presentación, método de pago o lista no utilizables | Mostrar el `detail`; elegir otra referencia |
 | `409 SALES.PRICES_CHANGED` | El precio cambió entre el borrador y la confirmación | Recargar la venta, mostrar precios y volver a confirmar |
 | `409 SALES.INSUFFICIENT_STOCK` / `INVENTORY_REJECTED` | Inventory no pudo aplicar la salida | Revisar disponibilidad (operación 15) |
-| `409 SALES.SEQUENCE_NOT_CONFIGURED` / `SEQUENCE_EXHAUSTED` | Falta secuencia activa o se agotó | Configurar secuencia (operaciones 16 a 21) |
+| `409 SALES.SEQUENCE_NOT_CONFIGURED` / `SEQUENCE_EXHAUSTED` | La numeración automática de la sucursal está desactivada (o la sucursal no tiene código), o la secuencia se agotó | Reactivar o crear una secuencia (operaciones 16 a 21) |
 | `409 SALES.IDEMPOTENCY_KEY_CONFLICT` | Misma clave con otro cuerpo u otra venta | Generar una clave nueva por operación |
 | `422 SALES.SALE_WITHOUT_LINES` | Confirmar un borrador vacío | Agregar líneas |
 | `422 SALES.VALIDATION_ERROR` | Ver `errors[].field` y `errors[].code` | Marcar el campo |
@@ -1733,7 +1788,7 @@ Ejemplo de respuesta `200` (`ByBranchOut`; valores ilustrativos):
 
 | Servicio | Uso |
 |---|---|
-| Operational Context | Membresía y acceso a la sucursal (`operational-access`, con el token del usuario) |
+| Operational Context | Membresía y acceso a la sucursal (`operational-access`, con el token del usuario); código de la sucursal para la numeración automática. Al crear una sucursal llama a la operación 24 |
 | Commercial Relationship | Cliente, productos, presentaciones y resolución de precios (`applicable-prices/resolve`) |
 | Product Catalog | Unidades y datos globales de los productos |
 | Party Identity | Identificación del cliente para el *snapshot* |
@@ -1746,8 +1801,8 @@ Ejemplo de respuesta `200` (`ByBranchOut`; valores ilustrativos):
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 23 |
-| Operaciones documentadas | 23 |
+| Operaciones en el OpenAPI desplegado | 24 |
+| Operaciones documentadas | 24 |
 | Permisos contrastados con el código | Sí (`api/sales.py`, `operations.py`, `availability.py`, `sequences.py`, `sales_aggregates.py`, `profitability.py`, `identity.py`) |
 | Esquemas contrastados | Sí (`api/schemas/sales.py`, `api/schemas/sales_aggregates.py`, OpenAPI desplegado) |
 | Verificado | Lista de ventas ordenada por `operation_date` desc, `created_at` desc, `id`; al eliminar una línea las demás conservan su número |

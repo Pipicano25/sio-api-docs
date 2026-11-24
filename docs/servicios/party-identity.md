@@ -23,7 +23,7 @@ Party Identity es el **registro global de identidades**: personas naturales y or
 | Salud | `https://sio-party-identity-dev.onrender.com/health/live`, `/health/ready` |
 | Swagger / OpenAPI | [/docs](https://sio-party-identity-dev.onrender.com/docs) · [/openapi.json](https://sio-party-identity-dev.onrender.com/openapi.json) |
 | Formato de error | Problem Details con `code` `PARTY_IDENTITY.*` y `trace_id` |
-| Operaciones en el contrato desplegado | 54 (52 de negocio + 2 de salud) |
+| Operaciones en el contrato desplegado | 54 (52 de negocio + 2 de salud); la 55 llega con el próximo despliegue |
 | Verificación | OpenAPI de Render del 2026-10-19 cruzado con `services/party-identity-service` |
 
 ## Autenticación y permisos
@@ -126,6 +126,7 @@ curl -sS -X PUT 'https://sio-party-identity-dev.onrender.com/api/v1/person-ident
 | 52 | `GET` | `/organization-legal-representatives/{representative_id}` | Consultar representante | `organization_legal_representatives:read` | `READ` | [Ver](#52-get-organization-legal-representativesrepresentative_id) |
 | 53 | `PUT` | `/organization-legal-representatives/{representative_id}` | Modificar cargo o referencia | `organization_legal_representatives:update` | `WRITE` | [Ver](#53-put-organization-legal-representativesrepresentative_id) |
 | 54 | `POST` | `/organization-legal-representatives/{representative_id}:close` | Cerrar representación | `organization_legal_representatives:delete` | `WRITE` | [Ver](#54-post-organization-legal-representativesrepresentative_idclose) |
+| 55 | `POST` | `/person-identities:ensure` | Crear o completar la persona y su contacto | `person_identities:create`, `person_identities:read` y, si llega el perfil, `person_contact_profiles:create` | `WRITE` | [Ver](#55-post-person-identitiesensure) |
 
 ## Validación de números de identificación
 
@@ -2227,6 +2228,123 @@ Ejemplo de respuesta `200` (`LegalRepresentativeResponse`; valores ilustrativos)
 }
 ```
 
+### 55. `POST /person-identities:ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · crea o completa en una sola solicitud, todo o nada |
+| URL | `https://sio-party-identity-dev.onrender.com/api/v1/person-identities:ensure` |
+| Permiso | `perm:party-identity:person_identities:create` y `perm:party-identity:person_identities:read`; si llega `contact_profile`, además `perm:party-identity:person_contact_profiles:create` |
+
+Une la búsqueda (operación 3), la creación de la persona (operación 4) y el registro de su perfil de contacto. La
+persona se busca por país, sigla y número de documento, normalizados como al crear:
+
+- **No existe**: se crea con las mismas validaciones de la operación 4 (regla de la sigla, dígito del NIT, edad y
+  país). `person.result` = `CREATED`.
+- **Existe**: no se modifica. Si los nombres, la fecha o el estado de verificación enviados son distintos, se avisa
+  `PERSON_FIELDS_IGNORED`; se corrigen con la operación 6. `person.result` = `FOUND`. Si está inactiva →
+  `422 PERSON_IDENTITY_INACTIVE`.
+
+`contact_profile` es **opcional** y no lleva `version`; se registra igual que en el registro del perfil de contacto:
+
+| `contact_profile.result` | Cuándo |
+|---|---|
+| `CREATED` | La persona no tenía perfil vigente |
+| `REPLACED` | Tenía otro: se crea una versión nueva y la anterior queda en el historial |
+| `UNCHANGED` | Era idéntico (datos y empresa que confirma): no se escribe nada |
+| `OMITTED` | No se envió `contact_profile` |
+
+Responde `201` si creó la persona o creó o reemplazó el perfil, y `200` si todo ya estaba igual. Un error no guarda
+nada, ni siquiera la persona nueva, y trae `failed_part` (`person` o `contact_profile`); los campos que el error
+menciona llevan la parte como prefijo (por ejemplo `contact_profile.email`). La auditoría deja los mismos eventos que
+las operaciones por separado (`CREATE_PERSON_IDENTITY`, `REGISTER_PERSON_CONTACT_PROFILE`); sin cambios, ninguno.
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-party-identity-dev.onrender.com/api/v1/person-identities:ensure' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "person": {
+      "identification_country_id": "c1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+      "identification_type": "CC",
+      "identification_number": "1099000048",
+      "first_name": "Carlos",
+      "middle_name": "Alberto",
+      "last_name": "Mendoza",
+      "second_last_name": "Ramírez",
+      "birth_date": "1995-06-15",
+      "verification_status": "UNVERIFIED"
+    },
+    "contact_profile": {
+      "email": "cliente@ejemplo-ficticio.co",
+      "phone": "+57 300 555 0148",
+      "address_line": "Calle 5 # 10-20, Centro",
+      "country_id": "c1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+      "administrative_division_id": "d2b3c4d5-e6f7-4a81-9b0c-1d2e3f4a5b6c",
+      "city_id": "e3c4d5e6-f7a8-4b92-8c1d-2e3f4a5b6c7d",
+      "postal_code": "190001",
+      "confirmed_by_company_id": "6a1d0000-0000-4000-8000-000000000001"
+    }
+  }'
+```
+
+Ejemplo de respuesta `201` (valores ilustrativos):
+
+```json
+{
+  "person": {
+    "result": "FOUND",
+    "id": "a0e1d2c3-b4a5-4968-8776-655443322110",
+    "identification_country_id": "c1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+    "identification_type": "CC",
+    "identification_number": "1099000048",
+    "first_name": "Carlos",
+    "middle_name": "Alberto",
+    "last_name": "Mendoza",
+    "second_last_name": "Ramírez",
+    "birth_date": "1995-06-15",
+    "verification_status": "UNVERIFIED",
+    "status": "ACTIVE",
+    "version": 1,
+    "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "created_at": "2026-10-19T15:04:05Z",
+    "updated_at": "2026-10-19T15:04:05Z"
+  },
+  "contact_profile": {
+    "result": "CREATED",
+    "id": "b1f2e3d4-c5b6-4a79-8887-766554433221",
+    "person_identity_id": "a0e1d2c3-b4a5-4968-8776-655443322110",
+    "email": "cliente@ejemplo-ficticio.co",
+    "phone": "+57 300 555 0148",
+    "address_line": "Calle 5 # 10-20, Centro",
+    "country_id": "c1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+    "administrative_division_id": "d2b3c4d5-e6f7-4a81-9b0c-1d2e3f4a5b6c",
+    "city_id": "e3c4d5e6-f7a8-4b92-8c1d-2e3f4a5b6c7d",
+    "postal_code": "190001",
+    "is_active": true,
+    "valid_from": "2026-10-19T15:04:05Z",
+    "valid_to": null,
+    "confirmed_by_company_id": "6a1d0000-0000-4000-8000-000000000001",
+    "confirmed_by_user_id": "7b2e1111-0000-4000-8000-000000000001",
+    "version": 1,
+    "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "created_at": "2026-10-19T15:04:05Z",
+    "updated_at": "2026-10-19T15:04:05Z"
+  },
+  "warnings": [
+    {
+      "code": "PERSON_FIELDS_IGNORED",
+      "fields": ["birth_date"],
+      "message": "La persona ya existía; sus datos no se cambian (use «Actualizar la persona»)."
+    }
+  ]
+}
+```
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -2254,8 +2372,8 @@ Ejemplo de respuesta `200` (`LegalRepresentativeResponse`; valores ilustrativos)
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 54 |
-| Operaciones documentadas | 54 |
+| Operaciones en el OpenAPI desplegado | 54 (la 55 llega con el próximo despliegue) |
+| Operaciones documentadas | 55 |
 | Permisos contrastados con el código | Sí (`api/person_identities.py`, `organization_identities.py`, `identification_type_rules.py`, `contact_profiles.py`, `contact_persons.py`, `business_sectors.py`, `legal_representatives.py`) |
 | Esquemas contrastados | Sí (OpenAPI desplegado; `application/exceptions.py`; `application/identification_rules.py`) |
 | Verificado | `valid_from` omitido en sectores económicos y representantes legales toma la fecha y hora actuales del servicio |

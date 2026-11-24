@@ -64,7 +64,7 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>` 
 | Totales | `subtotal` (Σ cantidad × costo − descuento), `tax_total`, `discount_total`, `total`. Cadenas decimales |
 | Operaciones | `CONFIRM` (local, siempre `SUCCEEDED`), `RECEIVE` y `CANCEL` (distribuidas con Inventory; `PENDING` → `SUCCEEDED`/`FAILED`). Con una `PENDING`, `pending_operation_id` está informado y toda escritura responde `409 OPERATION_IN_PROGRESS` |
 | Idempotencia | Confirmación, recepción y anulación exigen `Idempotency-Key` ([Primeros pasos §6](../guias/primeros-pasos.md#6-idempotencia-en-operaciones-de-negocio)) |
-| Numeración | Al confirmar se asigna `number` desde la secuencia activa de la sucursal o, si no hay, de la empresa |
+| Numeración | Al confirmar se asigna `number` desde la secuencia activa de la sucursal o, si no hay, de la empresa. Crear secuencias es **opcional**: cada sucursal nueva recibe `OC-<código>` (por ejemplo `OC-PPAL-000001`) y, si aún no tiene ninguna, la confirmación la crea (operación 26) |
 | Política de ganancia | Al confirmar, cada presentación debe tener una política de ganancia aplicable en Commercial Relationship; si no, `409 PRICING_POLICY_NOT_CONFIGURED`. Tras recibir, Purchase envía los costos reales a Commercial Relationship para la actualización automática de precios |
 
 Ejemplo de `PUT` parcial (solo cambia `observations`, sin `version`):
@@ -105,6 +105,7 @@ curl -sS -X PUT 'https://sio-purchase-dev.onrender.com/api/v1/companies/550e8400
 | 23 | `POST` | `/companies/{company_id}/purchase-sequences/{sequence_id}/reactivate` | Activar secuencia | `perm:purchase:purchase_sequences:update` | `WRITE` | [Ver](#23-post-companiescompany_idpurchase-sequencessequence_idreactivate) |
 | 24 | `GET` | `/companies/{company_id}/purchase-reports/period` | Compras del período con totales por categoría | `perm:purchase:purchases:read` | `READ` | [Ver](#24-get-companiescompany_idpurchase-reportsperiod) |
 | 25 | `GET` | `/companies/{company_id}/purchase-history` | Historial de un documento del proveedor: todas sus compras | `perm:purchase:purchases:read` | `READ` | [Ver](#25-get-companiescompany_idpurchase-history) |
+| 26 | `POST` | `/companies/{company_id}/purchase-sequences:ensure-branch` | Dejar numeración a una sucursal (`OC-<código>` si no tiene) | `perm:purchase:purchase_sequences:create` | `WRITE` | [Ver](#26-post-companiescompany_idpurchase-sequencesensure-branch) |
 
 ## Objetos
 
@@ -1059,7 +1060,7 @@ Ejemplo de respuesta `200` (`PurchaseResponse`; valores ilustrativos):
 
 Secuencia verificada en el código: acceso a la sucursal e idempotencia; validación completa de referencias (solo contado, método de pago, presentaciones, costos) fuera de transacción; después, en una transacción: revalida estado, versión, líneas y operación en curso, refresca y congela *snapshots* y `due_date`, asigna el número del período y pasa a `CONFIRMED`; la operación `CONFIRM` queda `SUCCEEDED`. La confirmación es **local y atómica**: un error de numeración responde `409` sin efectos.
 
-Errores propios: `422 PURCHASE_WITHOUT_LINES`; `409 PURCHASE_TAX_NOT_CONFIGURED` («Una o más líneas no tienen tasa de impuesto de compra: configure la tasa del producto (0 es válido) o ajuste la de la línea antes de confirmar.»; `errors[]` indica las líneas); `409 PURCHASE_TAX_CHANGED` (la tasa predeterminada del producto cambió desde que se guardó la línea: vuelva a guardar la línea); `409 PRICING_POLICY_NOT_CONFIGURED` (presentaciones sin política de ganancia aplicable en una lista activa y vigente de la moneda de la compra: configúrela en Commercial Relationship); `409 SEQUENCE_NOT_CONFIGURED` / `SEQUENCE_EXHAUSTED`; `409 DUPLICATE_PRESENTATION_IN_PURCHASE`; `409 INVALID_STATUS`, `VERSION_CONFLICT`, `OPERATION_IN_PROGRESS`, `IDEMPOTENCY_KEY_CONFLICT`, `REFERENCES_NOT_ELIGIBLE`; `422 IDEMPOTENCY_KEY_REQUIRED`. En todos los casos el borrador se conserva.
+Errores propios: `422 PURCHASE_WITHOUT_LINES`; `409 PURCHASE_TAX_NOT_CONFIGURED` («Una o más líneas no tienen tasa de impuesto de compra: configure la tasa del producto (0 es válido) o ajuste la de la línea antes de confirmar.»; `errors[]` indica las líneas); `409 PURCHASE_TAX_CHANGED` (la tasa predeterminada del producto cambió desde que se guardó la línea: vuelva a guardar la línea); `409 PRICING_POLICY_NOT_CONFIGURED` (presentaciones sin política de ganancia aplicable en una lista activa y vigente de la moneda de la compra: configúrela en Commercial Relationship); `409 SEQUENCE_NOT_CONFIGURED` (solo si no hay secuencia y no se puede crear la de la sucursal: su serie `OC-<código>` está desactivada o Operational Context no informa el código) / `SEQUENCE_EXHAUSTED`; `409 DUPLICATE_PRESENTATION_IN_PURCHASE`; `409 INVALID_STATUS`, `VERSION_CONFLICT`, `OPERATION_IN_PROGRESS`, `IDEMPOTENCY_KEY_CONFLICT`, `REFERENCES_NOT_ELIGIBLE`; `422 IDEMPOTENCY_KEY_REQUIRED`. En todos los casos el borrador se conserva.
 
 ### 12. `POST /companies/{company_id}/purchases/{purchase_id}/receipt`
 
@@ -1435,7 +1436,7 @@ Respuesta `200` (`TimelineResponse`):
 
 ### 18. `POST /companies/{company_id}/purchase-sequences`
 
-`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences`; permiso `perm:purchase:purchase_sequences:create`. Cuerpo (`SequenceIn`), respuesta (`SequenceResponse` con `document_kind: "PURCHASE"`) y reglas **idénticas** a las secuencias de Sales ([ver Sales, operación 16](sales.md#16-post-companiescompany_idsale-sequences)): `branch_id` opcional, `series_code` `^[A-Z0-9_-]{1,40}$`, `prefix` `^[A-Z0-9]{1,20}$`, `separator` (`-`, `/`, `.`, `_`, vacío), `initial_number` (1–10¹⁷), `maximum_number` (opcional, ≤ 10¹⁸), `number_length` (1–18), `reset_policy` (`NEVER`, `YEARLY`, `MONTHLY`). A lo sumo una secuencia activa por alcance (`409 SEQUENCE_ALREADY_ACTIVE`).
+`WRITE`. URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences`; permiso `perm:purchase:purchase_sequences:create`. Cuerpo (`SequenceIn`), respuesta (`SequenceResponse` con `document_kind: "PURCHASE"`) y reglas **idénticas** a las secuencias de Sales ([ver Sales, operación 16](sales.md#16-post-companiescompany_idsale-sequences)): `branch_id` opcional, `series_code` `^[A-Z0-9_-]{1,40}$`, `prefix` (≤ 20, letras mayúsculas y dígitos con guiones internos: `^[A-Z0-9]+(-[A-Z0-9]+)*$`, por ejemplo `OC-PPAL`), `separator` (`-`, `/`, `.`, `_`, vacío), `initial_number` (1–10¹⁷), `maximum_number` (opcional, ≤ 10¹⁸), `number_length` (1–18), `reset_policy` (`NEVER`, `YEARLY`, `MONTHLY`). A lo sumo una secuencia activa por alcance (`409 SEQUENCE_ALREADY_ACTIVE`).
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1596,7 +1597,7 @@ Ejemplo de respuesta `200` (`SequenceResponse`; valores ilustrativos):
 
 ### 22. `POST /companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`
 
-`HIGH_RISK` (sin secuencia activa, las confirmaciones fallan con `409 SEQUENCE_NOT_CONFIGURED`). URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`; cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo); respuesta `200` con `is_active: false`.
+`HIGH_RISK` (sin secuencia activa aplicable, la confirmación crea la automática `OC-<código>` de la sucursal; si la desactivada es justamente esa, falla con `409 SEQUENCE_NOT_CONFIGURED`). URL `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences/{sequence_id}/deactivate`; cuerpo `{"version": 1}` (`version` opcional; se acepta `{}` o ningún cuerpo); respuesta `200` con `is_active: false`.
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -1828,6 +1829,60 @@ Respuesta `200` (`PurchasePage`, los mismos campos de la ficha 4; valores ilustr
 
 Errores: sin `supplier_document_number` → `422 PURCHASE.VALIDATION_ERROR`; sin membresía en la empresa → `404 PURCHASE.NOT_FOUND`. Un documento que no está en ninguna compra devuelve `items: []`.
 
+### 26. `POST /companies/{company_id}/purchase-sequences:ensure-branch`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` |
+| URL | `https://sio-purchase-dev.onrender.com/api/v1/companies/{company_id}/purchase-sequences:ensure-branch` |
+| Permiso | `perm:purchase:purchase_sequences:create` |
+| Alcance | Membresía `ACTIVE` en la empresa |
+
+Deja numeración de compras a una sucursal. Si la sucursal ya tiene una secuencia activa, o la empresa tiene una para todas sus sucursales, no crea nada y responde `200` con esa (`ALREADY_EXISTS`): las secuencias creadas a mano conservan su prioridad. Si no hay ninguna, crea `OC-<código de la sucursal>` (código y prefijo iguales, separador `-`, 6 dígitos, sin reinicio, sin máximo) y responde `201` (`CREATED`). La llama Operational Context al crear una sucursal; también la usa la confirmación cuando falta numeración.
+
+Cuerpo (`SequenceEnsureIn`): `branch_id` (UUID, obligatorio).
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-purchase-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/purchase-sequences:ensure-branch' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+  }'
+```
+
+Ejemplo de respuesta `201` (`SequenceEnsureResponse`; valores ilustrativos):
+
+```json
+{
+  "result": "CREATED",
+  "sequence": {
+    "id": "4e5f6a7b-8c9d-4e0f-9a1b-2c3d4e5f6a7b",
+    "company_id": "550e8400-e29b-41d4-a716-446655440000",
+    "branch_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "document_kind": "PURCHASE",
+    "series_code": "OC-PPAL",
+    "prefix": "OC-PPAL",
+    "separator": "-",
+    "initial_number": 1,
+    "maximum_number": null,
+    "number_length": 6,
+    "reset_policy": "NEVER",
+    "is_active": true,
+    "version": 1,
+    "created_at": "2026-11-24T15:04:05Z",
+    "updated_at": "2026-11-24T15:04:05Z",
+    "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "counters": []
+  }
+}
+```
+
+Errores: `422 VALIDATION_ERROR` con `BRANCH_NOT_FOUND` (sucursal de otra empresa o inexistente); `409 REFERENCES_NOT_ELIGIBLE` con `BRANCH_INACTIVE`; `409 SEQUENCE_IN_USE` si la serie `OC-<código>` existe pero alguien la desactivó (no se vuelve a crear); `409 SEQUENCE_NOT_CONFIGURED` si Operational Context no informa un código de sucursal utilizable.
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -1848,7 +1903,7 @@ Errores: sin `supplier_document_number` → `422 PURCHASE.VALIDATION_ERROR`; sin
 
 | Servicio | Uso |
 |---|---|
-| Operational Context | Membresía y acceso a la sucursal |
+| Operational Context | Membresía y acceso a la sucursal; código de la sucursal para la numeración automática. Al crear una sucursal llama a la operación 26 |
 | Commercial Relationship | Proveedor, productos, presentaciones, productos del proveedor, condiciones de pago, tasa de impuesto de compra, políticas de ganancia; recibe los costos de cada recepción |
 | Product Catalog | Unidades y datos globales |
 | Party Identity | Identificación del proveedor para el *snapshot* |
@@ -1860,8 +1915,8 @@ Errores: sin `supplier_document_number` → `422 PURCHASE.VALIDATION_ERROR`; sin
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 25 |
-| Operaciones documentadas | 25 |
+| Operaciones en el OpenAPI desplegado | 26 |
+| Operaciones documentadas | 26 |
 | Permisos contrastados con el código | Sí (`api/purchases.py`, `operations.py`, `lifecycle_events.py`, `sequences.py`, `purchase_reports.py`, `identity.py`) |
 | Esquemas contrastados | Sí (`api/schemas/purchases.py`, `domain/lifecycle.py`, `domain/status.py`, OpenAPI desplegado) |
 | Verificado | Lista de compras ordenada por `operation_date` desc, `created_at` desc, `id`; `full_receipt_confirmed: false` → `422 FULL_RECEIPT_NOT_CONFIRMED`; `inventory_unit_cost` sin impuestos |

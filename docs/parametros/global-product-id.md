@@ -56,9 +56,7 @@ Respuesta `200` (modelo `PaginatedResponse[ProductResponse]`; valores ilustrativ
       "first_use_source": "ADOPTION",
       "completeness": {
         "is_complete": true,
-        "issues": [],
-        "missing_attribute_definition_ids": [],
-        "out_of_classification_value_ids": []
+        "issues": []
       },
       "eligible_for_adoption": true,
       "warnings": [],

@@ -36,14 +36,14 @@ Todas las rutas salvo `/health/*` exigen `Authorization: Bearer <ACCESS_TOKEN>`.
 | `company_products` | 3–10, resumen de empresas (25) | Todos los grupos | `superadmin`, `admin` (incluido `delete`) |
 | `company_product_purchase_taxes` (`update`) | Tasa de impuesto de compra (11, 12) | — | `superadmin` (`perm:all:all:all`), `admin` (`perm:commercial-relationship:all:update`) |
 | `company_customers` | 13–18 | Todos | `superadmin`, `admin`; `Ventas` lee y crea (`company_customers:create`); `Compras` solo lee |
-| `company_suppliers` | 19–24 | Todos | `superadmin`, `admin` (incluido `block`, que usa `delete`) |
+| `company_suppliers` | 19–24, 82 (`update`) | Todos | `superadmin`, `admin` (incluido `block`, que usa `delete`) |
 | `company_product_presentations` | 26–33 | Todos | `superadmin`, `admin` |
 | `supplier_products` | 34–39 | Todos | Ídem |
 | `supplier_payment_conditions` | 40–45 | Todos | Ídem |
-| `price_lists` | 46–51 | Todos | Ídem |
+| `price_lists` | 46–51, 81 (`create`) | Todos | Ídem |
 | `price_list_items` | 52–58, resolución de precio (59) | Todos | Ídem |
 | `pricing_policy_coverage` (`read`) | Cobertura (60) | `superadmin`, `admin` (comodines) | — |
-| `pricing_policies` | 61–70 | `superadmin`, `admin` | `superadmin`, `admin` (incluido `delete`) |
+| `pricing_policies` | 61–70, 81 (`create` y `update`) | `superadmin`, `admin` | `superadmin`, `admin` (incluido `delete`) |
 | `automatic_price_update_requests` (`submit`) | 71 | — | Solo identidad técnica de Purchase |
 | `automatic_price_applications` (`read`, `resolve`) | 72–74 | `superadmin`, `admin` | `resolve`: `superadmin`, `admin` (explícito) |
 | `platform:lookup` | Lecturas por UUID sin membresía | Cuentas técnicas | — |
@@ -163,8 +163,10 @@ curl -sS -X PUT 'https://sio-commercial-relationship-dev.onrender.com/api/v1/com
 | 78 | `POST` | `/companies/{company_id}/company-suppliers/ensure` | Asegurar el proveedor de una compra (Purchase) | `company_suppliers:ensure` + identidad técnica | `WRITE` | [Ver](#78-post-companiescompany_idcompany-suppliersensure) |
 | 79 | `GET` | `/companies/{company_id}/customer-candidates` | Personas u organizaciones que pueden ser clientes y si ya lo son | `company_customers:read` | `READ` | [Ver](#79-get-companiescompany_idcustomer-candidates) |
 | 80 | `POST` | `/companies/{company_id}/company-customers/ensure` | Asegurar el cliente de una venta (Sales) | `company_customers:ensure` + identidad técnica | `WRITE` | [Ver](#80-post-companiescompany_idcompany-customersensure) |
+| 81 | `POST` | `/companies/{company_id}/pricing-policies:ensure` | Crear o completar la lista y su política de ganancia | `price_lists:create`, `pricing_policies:create`, `pricing_policies:update` | `WRITE` | [Ver](#81-post-companiescompany_idpricing-policiesensure) |
+| 82 | `PUT` | `/company-suppliers/{company_supplier_id}/with-organization` | Actualizar el proveedor y su organización | `company_suppliers:update`, `perm:party-identity:organization_identities:update` | `WRITE` | [Ver](#82-put-company-supplierscompany_supplier_idwith-organization) |
 
-Las operaciones 75 y 76 (bloqueo y desbloqueo del proveedor) se numeran al final para no alterar las referencias a las demás; con las dos de salud la tabla cubre las 76 operaciones del contrato. Las 77 y 78 (compra con cualquier proveedor) y las 79 y 80 (venta a cualquier cliente) están en el código y aún no en el contrato desplegado.
+Las operaciones 75 y 76 (bloqueo y desbloqueo del proveedor) se numeran al final para no alterar las referencias a las demás; con las dos de salud la tabla cubre las 76 operaciones del contrato. Las 77 y 78 (compra con cualquier proveedor) y las 79 y 80 (venta a cualquier cliente) están en el código y aún no en el contrato desplegado, igual que la 81 (crear o completar la lista y su política de ganancia) y la 82 (actualizar el proveedor y su organización).
 
 ## Operaciones
 
@@ -3518,6 +3520,164 @@ Ejemplo de respuesta `201` (`CustomerEnsureResponse`; valores ilustrativos):
   "display_name": "Carlos Alberto Mendoza Ramírez",
   "preferred_contact_person_id": null,
   "outcome": "CREATED"
+}
+```
+
+### 81. `POST /companies/{company_id}/pricing-policies:ensure`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · Crear o completar la lista de precios y su política de ganancia |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/{company_id}/pricing-policies:ensure` |
+| Permiso | `perm:commercial-relationship:price_lists:create`, `perm:commercial-relationship:pricing_policies:create` y `perm:commercial-relationship:pricing_policies:update` (los tres) |
+| Alcance | Empresa (membresía de escritura y empresa `ACTIVE`) |
+| Cabeceras | `Authorization`, `Content-Type: application/json` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_id` | ruta | UUID | Sí | `GET /me/operational-context` de Operational Context |
+
+Cuerpo (`PricingEnsureRequest`; rechaza campos adicionales):
+
+- `price_list`: los mismos campos que crear una lista (47): `code`, `name`, `currency_code`, `description`, `valid_from`, `valid_to`, `is_default`.
+- `policy`: `name` (1–120), `markup_percentage` (0–1000) y `company_product_presentation_ids` (1 a 100 presentaciones de la empresa, activas y vendibles).
+
+Efecto, todo o nada en una sola transacción (une las operaciones 47, 62 y 67):
+
+1. **Lista**: se busca por `code` en la empresa, sin distinguir mayúsculas. Si no existe se crea como en la 47. Si existe no se modifica; si los datos enviados son otros, se avisa con `PRICE_LIST_FIELDS_IGNORED` y los campos en `fields`. Si existe pero está `INACTIVE` → `422 PRICE_LIST_INACTIVE`.
+2. **Política**: se busca por `name` entre las activas de la lista, sin distinguir mayúsculas. Si no existe se crea con el porcentaje. Si existe no se cambia su porcentaje; si es otro, se avisa con `MARKUP_PERCENTAGE_IGNORED` (`current` y `requested`). El porcentaje se cambia con la 68.
+3. **Presentaciones**: se asignan las que falten (`ASSIGNED`); las que ya estaban salen `ALREADY_ASSIGNED`. Si alguna está en **otra** política activa de la misma lista → `409 PRESENTATION_ALREADY_IN_POLICY` con `conflict` (`pricing_policy_id` y `name` de esa política) y no se guarda nada.
+
+`201` con `Location` de la política si se creó o asignó algo; `200` si todo ya existía. Un error trae `failed_part` con la parte que falló: `price_list`, `policy` o `presentations[i]` (posición en la lista enviada, sin repetidos). Cada parte deja el mismo evento de auditoría que si se hiciera por separado (`CREATE_PRICE_LIST`, `CREATE_PRICING_POLICY`, `ASSIGN_PRICING_POLICY_PRESENTATION`). Ninguna parte modifica precios: rigen desde la siguiente recepción.
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X POST 'https://sio-commercial-relationship-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/pricing-policies:ensure' \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "price_list": {
+      "code": "PUBLICO",
+      "name": "Precios al público",
+      "description": "Lista de precios de venta al público",
+      "currency_code": "COP",
+      "valid_from": null,
+      "valid_to": null,
+      "is_default": true
+    },
+    "policy": {
+      "name": "Medicamentos 50%",
+      "markup_percentage": "50",
+      "company_product_presentation_ids": ["b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e"]
+    }
+  }'
+```
+
+Ejemplo de respuesta `201` (`PricingEnsureResponse`; valores ilustrativos, campos de auditoría abreviados):
+
+```json
+{
+  "price_list": {
+    "result": "CREATED",
+    "id": "c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
+    "company_id": "550e8400-e29b-41d4-a716-446655440000",
+    "code": "PUBLICO",
+    "name": "Precios al público",
+    "description": "Lista de precios de venta al público",
+    "currency_code": "COP",
+    "is_default": true,
+    "valid_from": null,
+    "valid_to": null,
+    "status": "ACTIVE",
+    "version": 1
+  },
+  "policy": {
+    "result": "CREATED",
+    "id": "d3e4f5a6-b7c8-4d9e-8f1a-2b3c4d5e6f7a",
+    "price_list_id": "c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
+    "name": "Medicamentos 50%",
+    "markup_percentage": "50.0000",
+    "presentation_count": 1,
+    "deactivated_at": null,
+    "deactivation_reason": null,
+    "status": "ACTIVE",
+    "version": 1
+  },
+  "presentations": [
+    { "company_product_presentation_id": "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e", "result": "ASSIGNED" }
+  ],
+  "warnings": []
+}
+```
+
+### 82. `PUT /company-suppliers/{company_supplier_id}/with-organization`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · Actualizar el proveedor y su organización de Party Identity en una sola solicitud |
+| URL | `https://sio-commercial-relationship-dev.onrender.com/api/v1/company-suppliers/{company_supplier_id}/with-organization` |
+| Permiso | `perm:commercial-relationship:company_suppliers:update` y `perm:party-identity:organization_identities:update` (los dos) |
+| Alcance | Empresa del proveedor (membresía de escritura y empresa `ACTIVE`) |
+| Cabeceras | `Authorization`, `Content-Type: application/json` |
+
+| Nombre | Dónde | Tipo | Obligatorio | Cómo obtenerlo |
+|---|---|---|---|---|
+| `company_supplier_id` | ruta | UUID | Sí | `GET /companies/{company_id}/company-suppliers` (19) |
+
+Cuerpo (`SupplierWithOrganizationUpdate`; rechaza campos adicionales; al menos una de las dos partes, cada una parcial):
+
+- `organization`: `legal_name`, `trade_name`, `organization_type`, `registration_status`, `website` y `version` opcional. Solo lo que cambia; `null` borra un campo opcional (`legal_name` no admite `null`). El NIT (`identification_type`, `identification_number`) y el país **no** se cambian aquí: si llegan → `422`.
+- `supplier`: los mismos campos que la 22 (`internal_code`, `display_name`, `preferred_contact_person_id`) y `version` opcional.
+
+Efecto, en orden (une la actualización de la organización en Party Identity con la 22):
+
+1. **Revisiones del proveedor**, sin escribir: código interno no repetido y contacto preferido válido. Si fallan, no se toca nada.
+2. **Organización**: se envía a Party Identity, con el token de quien llama, solo lo que cambia (`UNCHANGED` sin llamar si nada cambia). La organización la comparten **todas las empresas**: el cambio aplica para todas. Party Identity deja su propia auditoría.
+3. **Proveedor**: si su `display_name` era igual a la razón social anterior y la razón social cambia, sigue a la nueva (aviso `DISPLAY_NAME_FOLLOWS_LEGAL_NAME`), salvo que la solicitud traiga su propio `display_name`. Deja `UPDATE_COMPANY_SUPPLIER` solo si algo cambia.
+
+`200` con `result` (`UPDATED` o `UNCHANGED`) y `changed_fields` por parte; una parte que no se envió ni se tocó sale `null`. **No es todo o nada entre servicios**: si falla el proveedor después de cambiar la organización, el error trae `failed_part: "supplier"` y `supplier_update` con lo que ya cambió; repetir la misma solicitud lo deja todo bien (la organización sale `UNCHANGED`). Errores con `failed_part: "organization"`: `422 ORGANIZATION_UPDATE_REJECTED` (Party Identity rechazó los datos; trae `provider_code` y `provider_errors`), `422` si la organización no existe, `403 PARTY_IDENTITY_ACCESS_DENIED`. Con `failed_part: "supplier"`: `409 DUPLICATE_INTERNAL_CODE`, `409 VERSION_CONFLICT` o el error del contacto preferido.
+
+Ejemplo de solicitud (valores ilustrativos):
+
+```bash
+curl -sS -X PUT 'https://sio-commercial-relationship-dev.onrender.com/api/v1/company-suppliers/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d/with-organization' \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organization": {
+      "legal_name": "EUROFARMA COLOMBIA S.A.S.",
+      "trade_name": "Eurofarma",
+      "website": "https://www.eurofarma.com.co"
+    },
+    "supplier": {
+      "internal_code": "PRV-EUROFARMA"
+    }
+  }'
+```
+
+Ejemplo de respuesta `200` (`SupplierWithOrganizationResponse`; valores ilustrativos):
+
+```json
+{
+  "organization": {
+    "result": "UPDATED",
+    "id": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b",
+    "changed_fields": ["legal_name", "website"]
+  },
+  "supplier": {
+    "result": "UPDATED",
+    "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "changed_fields": ["internal_code", "display_name"],
+    "version": 3,
+    "display_name": "EUROFARMA COLOMBIA S.A.S."
+  },
+  "warnings": [
+    {
+      "code": "DISPLAY_NAME_FOLLOWS_LEGAL_NAME",
+      "message": "El nombre del proveedor era igual a la razón social anterior y se actualizó con la nueva."
+    }
+  ]
 }
 ```
 

@@ -545,9 +545,19 @@ curl -sS -X POST 'https://sio-operational-context-dev.onrender.com/api/v1/compan
   }'
 ```
 
-Respuesta `201`: `BranchResponse`; su `id` es el [branch_id](../parametros/branch-id.md). Para que un usuario opere en ella hay que asignársela (operación 22).
+Respuesta `201`: `BranchCreatedResponse` = `BranchResponse` + `numbering` + `warnings`; su `id` es el [branch_id](../parametros/branch-id.md). Para que un usuario opere en ella hay que asignársela (operación 22).
 
-Ejemplo de respuesta `201` (`BranchResponse`; valores ilustrativos):
+**Numeración automática.** Guardada la sucursal, Operational Context pide a Purchase y a Sales que le dejen numeración, con el mismo token de quien la crea (`POST …/purchase-sequences:ensure-branch` y `POST …/sale-sequences:ensure-branch`). El prefijo sale del código de la sucursal: `OC-<código>` para compras y `FV-<código>` para ventas, separador `-`, 6 dígitos y sin reinicio (`OC-SUC-002-000001`, `FV-SUC-002-000001`). Para el prefijo, el código pasa a mayúsculas sin tildes, cada grupo de caracteres que no sean letras ni dígitos queda como un guion y se recorta a 20 caracteres en total.
+
+| `numbering.purchases.result` / `numbering.sales.result` | Significado |
+|---|---|
+| `CREATED` | Se creó la numeración de la sucursal; trae `sequence_id` y `prefix` |
+| `ALREADY_EXISTS` | La sucursal o la empresa ya tenía una secuencia activa (creada a mano): se conserva y tiene prioridad; trae la que aplica |
+| `FAILED` | No se pudo (por ejemplo, el usuario no tiene `perm:purchase:purchase_sequences:create` o el servicio no respondió); `sequence_id` y `prefix` en `null` y un texto en `warnings` |
+
+La sucursal **nunca** falla por la numeración: la escritura en los tres servicios no es atómica y un `FAILED` deja la sucursal creada. En ese caso la numeración se crea sola al confirmar la primera compra o venta de la sucursal. La numeración de ventas es interna: no lleva resolución de facturación de la DIAN (pendiente).
+
+Ejemplo de respuesta `201` (`BranchCreatedResponse`; valores ilustrativos):
 
 ```json
 {
@@ -572,7 +582,22 @@ Ejemplo de respuesta `201` (`BranchResponse`; valores ilustrativos):
   "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
   "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
   "created_at": "2026-10-19T15:04:05Z",
-  "updated_at": "2026-10-19T15:04:05Z"
+  "updated_at": "2026-10-19T15:04:05Z",
+  "numbering": {
+    "purchases": {
+      "result": "CREATED",
+      "sequence_id": "4e5f6a7b-8c9d-4e0f-9a1b-2c3d4e5f6a7b",
+      "prefix": "OC-SUC-01"
+    },
+    "sales": {
+      "result": "FAILED",
+      "sequence_id": null,
+      "prefix": null
+    }
+  },
+  "warnings": [
+    "No se pudo crear la numeración de ventas de la sucursal (FORBIDDEN). Se creará sola al confirmar la primera venta."
+  ]
 }
 ```
 
@@ -2021,6 +2046,7 @@ Ejemplo de respuesta `200` (valores ilustrativos):
 |---|---|
 | Party Identity | Crear o buscar por documento la organización y la persona en el alta de empresa (operación 35) y la persona en el registro y la actualización de empleados (operaciones 37 y 38). Validar identidades de organización (empresas) y de persona (usuarios, asesores), y leer nombre e identificación para `/me/operational-context` y el listado de empleados por sucursal (sin guardarlos), con el token del usuario |
 | Geography | Validar país, división y ciudad activos y coherentes, con el token del usuario |
+| Purchase, Sales | Dejar la numeración automática de la sucursal nueva (operación 10, `:ensure-branch`), con el token del usuario; si fallan, la sucursal se crea igual |
 | Keycloak (Admin API) | Verificar la cuenta al crear o reactivar usuarios operativos y leer roles efectivos en la vía técnica, con la cuenta de servicio del propio Operational Context. En el alta de empresa (operación 35) crea la cuenta con el token del superadministrador; en el registro de empleados (operación 37) la cuenta de servicio crea la cuenta del empleado (solo grupos del operario) y en su actualización (operación 38) le copia nombres y correo; en el cambio de contraseña inicial (operación 36) la cuenta de servicio fija la contraseña nueva |
 | Audit | Eventos de auditoría |
 
