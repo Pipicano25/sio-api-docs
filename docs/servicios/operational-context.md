@@ -88,6 +88,10 @@ El alcance se calcula en **cada solicitud** a partir de las membresías `ACTIVE`
 | 32 | `GET` | `/me/operational-context` | Contexto operativo propio | `application_users:read` | `READ` | [Ver](#32-get-meoperational-context) |
 | 33 | `GET` | `/operational-access` | Comprobar acceso operativo | `application_users:read` | `READ` | [Ver](#33-get-operational-access) |
 | 34 | `GET` | `/companies/{company_id}/branch-employees` | Empleados separados por sucursal | `user_branches:read` + `branches:read` + `application_users:read` | `READ` | [Ver](#34-get-companiescompany_idbranch-employees) |
+| 35 | `POST` | `/companies:onboard` | Dar de alta una empresa con su administrador | `companies:create` + `application_users:create` + `platform:administer` | `HIGH_RISK` | [Ver](#35-post-companiesonboard) |
+| 36 | `POST` | `/account/initial-password` | Cambiar la contraseña temporal en el primer ingreso | Ninguno (sin token) | `HIGH_RISK` | [Ver](#36-post-accountinitial-password) |
+| 37 | `POST` | `/companies/{company_id}/employees:onboard` | Registrar un empleado: persona, cuenta y usuario operativo | `application_users:create` | `HIGH_RISK` | [Ver](#37-post-companiescompany_idemployeesonboard) |
+| 38 | `PUT` | `/application-users/{application_user_id}/employee` | Actualizar un empleado: persona, cuenta de Keycloak y usuario operativo | `application_users:update` | `HIGH_RISK` | [Ver](#38-put-application-usersapplication_user_idemployee) |
 
 Todos los permisos de la tabla empiezan por `perm:operational-context:`.
 
@@ -765,9 +769,12 @@ Ejemplo de solicitud (sin cuerpo):
 curl -sS 'https://sio-operational-context-dev.onrender.com/api/v1/companies/550e8400-e29b-41d4-a716-446655440000/application-users?page_size=20' \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
-Respuesta `200`: `PaginatedResponse[ApplicationUserResponse]`.
+Respuesta `200`: `PaginatedResponse[ApplicationUserListItem]`: cada usuario operativo con los nombres de su
+persona, leídos de Party Identity con el token de quien consulta y sin guardarlos. Si Party Identity no responde o
+la persona no se encuentra, los nombres vienen en `null` y el listado sale igual. Dependencia: Party Identity
+(una consulta por persona de la página).
 
-Ejemplo de respuesta `200` (`PaginatedResponse_ApplicationUserResponse_`; valores ilustrativos):
+Ejemplo de respuesta `200` (`PaginatedResponse_ApplicationUserListItem_`; valores ilustrativos):
 
 ```json
 {
@@ -785,7 +792,11 @@ Ejemplo de respuesta `200` (`PaginatedResponse_ApplicationUserResponse_`; valore
       "created_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
       "updated_by": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
       "created_at": "2026-10-19T15:04:05Z",
-      "updated_at": "2026-10-19T15:04:05Z"
+      "updated_at": "2026-10-19T15:04:05Z",
+      "first_name": "Ana",
+      "middle_name": null,
+      "last_name": "Pérez",
+      "second_last_name": "Gómez"
     }
   ],
   "page": 1,
@@ -795,7 +806,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_ApplicationUserResponse_`; valore
 }
 ```
 
-`ApplicationUserResponse`:
+`ApplicationUserListItem` (los campos de `ApplicationUserResponse` más los nombres):
 
 | Campo | Tipo | Significado |
 |---|---|---|
@@ -806,6 +817,7 @@ Ejemplo de respuesta `200` (`PaginatedResponse_ApplicationUserResponse_`; valore
 | `display_name` | string (≤ 160) | Nombre para mostrar |
 | `reference_email` | email \| null | Correo de referencia propio de SIO |
 | `status`, `version`, trazabilidad | — | — |
+| `first_name`, `middle_name`, `last_name`, `second_last_name` | string \| null | Nombres de la persona en Party Identity; solo en el listado (no en la consulta por id); `null` si Party Identity no respondió |
 
 ### 16. `POST /companies/{company_id}/application-users`
 
@@ -1586,6 +1598,409 @@ Ejemplo de respuesta `200` (`PaginatedResponse_BranchEmployeesResponse_`; valore
 
 Un empleado asignado a varias sucursales aparece en cada una; una sucursal sin empleados trae `employees: []`. Errores: `404 NOT_FOUND` (empresa o sucursal), `403` si falta alguno de los tres permisos. Dependencias: Party Identity (opcional para la respuesta).
 
+### 35. `POST /companies:onboard`
+
+| | |
+|---|---|
+| Clasificación | `HIGH_RISK` · crea la organización, la empresa, la persona, la cuenta de Keycloak y el usuario operativo del administrador |
+| URL | `https://sio-operational-context-dev.onrender.com/api/v1/companies:onboard` |
+| Permisos | `perm:operational-context:companies:create` **y** `perm:operational-context:application_users:create` **y** `perm:operational-context:platform:administer` (solo `superadmin`) |
+| Keycloak | El token del superadministrador debe traer el rol `manage-users` del cliente `realm-management` (lo tiene el grupo `superadmin`): la cuenta se crea con ese token |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Operational Context |
+
+Reúne en una sola solicitud los pasos que antes se hacían uno por uno: crear la organización en Party Identity
+(operación `POST /organization-identities`), la empresa (operación 4), la persona en Party Identity
+(`POST /person-identities`), la cuenta en Keycloak y el usuario operativo (operación 16). Cada pieza que ya
+existe se reutiliza (`FOUND`) y la que falta se crea (`CREATED`):
+
+| Pieza | Se reutiliza si | Si no existe |
+|---|---|---|
+| `organization` | Se envía `organization_identity_id`, o ya hay una organización con el mismo `country_id` + `identification_type` + `identification_number` | Se crea en Party Identity con el token del superadministrador |
+| `company` | La organización ya tiene empresa **sin usuarios activos** o con el administrador pedido entre ellos | Se crea con los datos de `company` |
+| `person` | Se envía `person_identity_id`, o ya hay una persona con el mismo documento | Se crea en Party Identity |
+| `account` | Ya hay una cuenta con ese `username`: **no se cambia su contraseña**; solo se le agregan los grupos que le falten | Se crea habilitada, con contraseña temporal y la acción obligatoria de cambiarla |
+| `application_user` | La persona ya es usuario activo de la empresa | Se crea con `display_name` y `reference_email` |
+
+No es atómico: cada pieza queda guardada en su servicio en cuanto se crea. Si un paso falla, la respuesta de
+error trae en `failed_step` el paso que falló y en `onboarding` el resultado de cada pieza (`CREATED`, `FOUND`,
+`FAILED`, `NOT_STARTED`); al corregir la causa se repite **la misma solicitud** y continúa desde donde quedó.
+Si la empresa ya tiene otros usuarios activos y ninguno es esa persona, responde `409 COMPANY_EXISTS` sin crear
+nada: para agregar otro administrador se usan las operaciones de usuarios operativos.
+
+Cuerpo (`CompanyOnboardingRequest`):
+
+| Campo | Tipo | Obligatorio | Validación / valor por defecto | Cómo obtenerlo |
+|---|---|---|---|---|
+| `organization.organization_identity_id` | UUID \| null | No | Si se envía, los demás campos de `organization` se ignoran | [organization_identity_id](../parametros/organization-identity-id.md) |
+| `organization.country_id` | UUID | Sí, sin id | País de registro | [Geography](geography.md) |
+| `organization.identification_type` | string | Sí, sin id | 1–40; sigla con regla activa (p. ej. `NIT`) | [Party Identity](party-identity.md) |
+| `organization.identification_number` | string | Sí, sin id | 1–40; el NIT va con guion y dígito de verificación (`900123456-8`) | — |
+| `organization.legal_name` | string | Sí, sin id | 1–200; al menos una letra | — |
+| `organization.trade_name` | string \| null | No | ≤ 200 | — |
+| `organization.organization_type` | string \| null | No | ≤ 40 (p. ej. `SAS`) | — |
+| `organization.registration_status` | string \| null | No | ≤ 30 (p. ej. `VIGENTE`) | — |
+| `organization.website` | string \| null | No | ≤ 300; URL válida | — |
+| `company.*` | | No | Los mismos campos de la operación 4 menos `organization_identity_id`: `email`, `phone`, `address_line`, `country_id`, `administrative_division_id`, `city_id`, `postal_code`, `latitude`, `longitude`, `timezone` (`America/Bogota`), `default_currency` (`COP`) | [Geography](geography.md) |
+| `admin.person.person_identity_id` | UUID \| null | No | Si se envía, los demás campos de `person` se ignoran | — |
+| `admin.person.identification_country_id` | UUID | Sí, sin id | País del documento | [Geography](geography.md) |
+| `admin.person.identification_type` | string | Sí, sin id | 1–40 (p. ej. `CC`) | [Party Identity](party-identity.md) |
+| `admin.person.identification_number` | string | Sí, sin id | 1–40 | — |
+| `admin.person.first_name`, `last_name` | string | Sí, sin id | 1–100; solo letras, espacios, apóstrofo, punto o guion | — |
+| `admin.person.middle_name`, `second_last_name` | string \| null | No | ≤ 100 | — |
+| `admin.person.birth_date` | date \| null | No | Desde 1900-01-01 y no posterior a hoy | — |
+| `admin.person.verification_status` | string | No | `UNVERIFIED` (por defecto), `VERIFIED`, `SUSPENDED` | — |
+| `admin.account.username` | string | Sí | 3–60; minúsculas, dígitos, `.`, `_`, `-`, `@`; se guarda en minúsculas | — |
+| `admin.account.email` | email | Sí | Único en Keycloak (`409 ACCOUNT_CONFLICT`) | — |
+| `admin.account.temporary_password` | string \| null | No | Si se omite, se genera una de 16 caracteres. Política: 12+ caracteres, mayúscula, minúscula y dígito | — |
+| `admin.account.groups` | string[] \| null | No | Por defecto `admin`, `Compras`, `Ventas`, `Inventario`. Solo esos cuatro; `superadmin` → `422 GROUP_NOT_ALLOWED` | — |
+| `admin.display_name` | string \| null | No | 1–160; por defecto, nombres y apellidos de la persona | — |
+| `admin.reference_email` | email \| null | No | Por defecto, `admin.account.email` | — |
+
+Ejemplo de solicitud (los ids de país, departamento y ciudad se toman de Geography antes de enviarla):
+
+```bash
+curl -sS -X POST 'https://sio-operational-context-dev.onrender.com/api/v1/companies:onboard' \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organization": {
+      "organization_identity_id": null,
+      "country_id": "'"$COUNTRY_ID"'",
+      "identification_type": "NIT",
+      "identification_number": "900123456-8",
+      "legal_name": "FERRETERIA EJEMPLO S.A.S.",
+      "trade_name": "Ferretería Ejemplo",
+      "organization_type": "SAS",
+      "registration_status": "VIGENTE",
+      "website": "https://ferreteria-ejemplo.test"
+    },
+    "company": {
+      "email": "contacto@ferreteria-ejemplo.test",
+      "phone": "+57 602 000 0000",
+      "address_line": "Calle 1 # 2-3",
+      "country_id": "'"$COUNTRY_ID"'",
+      "administrative_division_id": "'"$DIVISION_ID"'",
+      "city_id": "'"$CITY_ID"'",
+      "postal_code": "190001",
+      "latitude": null,
+      "longitude": null,
+      "timezone": "America/Bogota",
+      "default_currency": "COP"
+    },
+    "admin": {
+      "person": {
+        "person_identity_id": null,
+        "identification_country_id": "'"$COUNTRY_ID"'",
+        "identification_type": "CC",
+        "identification_number": "1020304050",
+        "first_name": "Laura",
+        "middle_name": null,
+        "last_name": "Gómez",
+        "second_last_name": null,
+        "birth_date": "1990-05-17",
+        "verification_status": "UNVERIFIED"
+      },
+      "account": {
+        "username": "admin.ferreteria",
+        "email": "admin@ferreteria-ejemplo.test",
+        "temporary_password": null,
+        "groups": ["admin", "Compras", "Ventas", "Inventario"]
+      },
+      "display_name": "Laura Gómez",
+      "reference_email": "admin@ferreteria-ejemplo.test"
+    }
+  }'
+```
+
+Respuesta `201` si se creó alguna pieza, `200` si todas ya existían. `Location` apunta a la empresa. La
+contraseña temporal **solo** aparece cuando la cuenta se crea en esta solicitud: no se guarda en ningún servicio
+ni se escribe en logs o auditoría, así que hay que entregársela al administrador por un canal seguro. Mientras no
+la cambie, Keycloak no le entrega token (operación 36).
+
+Ejemplo de respuesta `201` (valores ilustrativos):
+
+```json
+{
+  "organization": { "result": "CREATED", "organization_identity_id": "0f1e2d3c-4b5a-4968-8776-655443322110" },
+  "company": { "result": "CREATED", "company_id": "550e8400-e29b-41d4-a716-446655440000" },
+  "person": { "result": "FOUND", "person_identity_id": "6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d" },
+  "account": {
+    "result": "CREATED",
+    "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "username": "admin.ferreteria",
+    "groups": ["admin", "Compras", "Ventas", "Inventario"],
+    "temporary_password": "<contraseña temporal de 16 caracteres>",
+    "must_change_password": true
+  },
+  "application_user": { "result": "CREATED", "application_user_id": "7c6b5a49-3827-4615-a4b3-c2d1e0f9a8b7" },
+  "next_step": "Entregue al administrador su usuario y su contraseña temporal por un canal seguro: no se vuelve a mostrar. ..."
+}
+```
+
+Una cuenta que ya existía responde `"account": {"result": "FOUND", "keycloak_user_id": "…", "username": "…",
+"groups": […], "groups_added": […]}`, sin contraseña.
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `403 OPERATIONAL_CONTEXT.FORBIDDEN` | Falta `platform:administer`, o el token no tiene `manage-users` en Keycloak o permiso de alta en Party Identity | Solo `superadmin` |
+| `409 …COMPANY_EXISTS` (con `company_id`) | La empresa ya tiene otros usuarios activos | Agregar el usuario con las operaciones 16 y siguientes |
+| `409 …ACCOUNT_CONFLICT` | Otra cuenta de Keycloak ya usa ese correo | Usar otro correo |
+| `422 …IDENTITY_REJECTED` (con `provider_code` y `provider_errors`) | Party Identity rechazó la organización o la persona (sigla sin regla, NIT con dígito inválido…) | Corregir el campo indicado en `errors[0].field` |
+| `422 …ORGANIZATION_IDENTITY_INACTIVE` / `PERSON_IDENTITY_INACTIVE` | Ya existe con ese documento, pero inactiva | Reactivarla en Party Identity |
+| `422 …GROUP_NOT_ALLOWED` / `PASSWORD_POLICY` | Grupo fuera de la lista o contraseña temporal débil | Corregir el cuerpo |
+| `503` con `dependency` | Party Identity, Geography o Keycloak no respondió | Repetir la misma solicitud |
+
+### 36. `POST /account/initial-password`
+
+| | |
+|---|---|
+| Clasificación | `HIGH_RISK` · cambia la contraseña de una cuenta de Keycloak |
+| URL | `https://sio-operational-context-dev.onrender.com/api/v1/account/initial-password` |
+| Permisos | Ninguno: es pública, porque la cuenta todavía no puede obtener token |
+| Límite | 5 intentos cada 15 minutos por usuario y por IP (`429 TOO_MANY_ATTEMPTS` con `Retry-After`); por debajo sigue la protección contra fuerza bruta de Keycloak (5 fallos bloquean la cuenta un tiempo) |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Operational Context |
+
+El administrador creado con la operación 35 cambia aquí la contraseña temporal por la definitiva. El servicio
+comprueba la contraseña temporal con Keycloak (cliente `sio-web`) y, si es correcta y la cuenta tiene el cambio
+pendiente, fija la nueva con su cuenta de servicio (rol `manage-users`, que solo usa para esta operación). Después
+el administrador inicia sesión normalmente (guía de [autenticación](../guias/autenticacion.md)).
+
+También puede cambiarla en el navegador, en la página de cuenta de Keycloak
+(`https://<keycloak>/realms/sio/account`): al iniciar sesión con la contraseña temporal, Keycloak le pide la nueva.
+
+| Campo | Tipo | Obligatorio | Validación |
+|---|---|---|---|
+| `username` | string | Sí | El de la cuenta; se compara en minúsculas |
+| `temporary_password` | string | Sí | La que entregó la operación 35 |
+| `new_password` | string | Sí | 12+ caracteres, mayúscula, minúscula y dígito; distinta de la temporal |
+
+```bash
+read -s -p 'Contraseña temporal: ' TEMPORAL; echo
+read -s -p 'Contraseña nueva: ' NUEVA; echo
+curl -sS -X POST 'https://sio-operational-context-dev.onrender.com/api/v1/account/initial-password' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "admin.ferreteria",
+    "temporary_password": "'"$TEMPORAL"'",
+    "new_password": "'"$NUEVA"'"
+  }'
+```
+
+Respuesta `204` sin cuerpo.
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `401 …INVALID_TEMPORARY_PASSWORD` | Usuario o contraseña temporal incorrectos, o la cuenta ya no tiene el cambio pendiente (el mensaje es el mismo para no revelar cuál) | Revisar los datos; si ya la cambió, iniciar sesión con la nueva |
+| `422 …PASSWORD_POLICY` | La contraseña nueva no cumple la política o es igual a la temporal | El `detail` dice qué regla falta |
+| `429 …TOO_MANY_ATTEMPTS` | Más de 5 intentos en 15 minutos | Esperar los segundos de `Retry-After` |
+| `503` con `dependency` `keycloak` | Keycloak no respondió o el cliente `sio-web` no admite el flujo de contraseña | Reintentar; revisar la configuración del realm |
+
+### 37. `POST /companies/{company_id}/employees:onboard`
+
+| | |
+|---|---|
+| Clasificación | `HIGH_RISK` · crea la persona, la cuenta de Keycloak y el usuario operativo de un empleado |
+| URL | `https://sio-operational-context-dev.onrender.com/api/v1/companies/{company_id}/employees:onboard` |
+| Permisos | `perm:operational-context:application_users:create`, y membresía activa en la empresa o `platform:administer` (`superadmin` y `admin` de la empresa) |
+| Party Identity | La persona se crea con el token de quien llama (el grupo `admin` tiene alta de personas) |
+| Keycloak | La cuenta la crea la **cuenta de servicio** de Operational Context (roles `manage-users`, `view-users` y `query-groups` de `realm-management`); quien llama no necesita permisos en Keycloak |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Operational Context |
+
+Reúne en una sola solicitud «crear la persona» (`POST /person-identities` de Party Identity), «crear la cuenta
+en Keycloak» (que antes se hacía a mano) y «hacerla empleada» (operación 16). Cada pieza que ya existe se
+reutiliza (`FOUND`) y la que falta se crea (`CREATED`):
+
+| Pieza | Se reutiliza si | Si no existe |
+|---|---|---|
+| `person` | Se envía `person_identity_id`, o ya hay una persona con el mismo documento | Se crea en Party Identity |
+| `account` | Ya hay una cuenta con ese `username`: **no se cambia su contraseña**; solo se le agregan los grupos que le falten (con los límites de abajo) | Se crea habilitada, con contraseña temporal y la acción obligatoria de cambiarla |
+| `application_user` | La persona ya es usuario activo de la empresa | Se crea con `display_name` y `reference_email` |
+
+Tres datos los fija **siempre el servidor**; el cliente no los envía (si llegan, `422`):
+
+| Dato | Valor |
+|---|---|
+| Contraseña | Temporal, generada de 16 caracteres (política del realm), con cambio obligatorio al iniciar sesión |
+| Grupos de la cuenta | Los del operario: `Compras`, `Ventas` e `Inventario` |
+| `verification_status` de la persona | `UNVERIFIED` |
+
+Límites, porque la cuenta la crea la identidad técnica del servicio:
+
+- Nunca se asignan `admin` ni `superadmin`.
+- La empresa se comprueba antes de crear nada: una empresa sin membresía de quien llama responde `404`, igual
+  que un id que no existe.
+- Sobre una cuenta que ya existe, el administrador de la empresa recibe `409 ACCOUNT_CONFLICT` si la cuenta
+  está en el grupo `admin` o `superadmin`, o si trabaja en otra empresa y le faltan grupos (los grupos valen en
+  todas sus empresas). En esos casos la registra un superadministrador.
+
+No es atómico: si un paso falla, la respuesta de error trae `failed_step` y `onboarding` con el resultado de
+cada pieza; al corregir la causa se repite **la misma solicitud** y continúa desde donde quedó.
+
+Parámetro de ruta: `company_id` ([company_id](../parametros/company-id.md)).
+
+Cuerpo (`EmployeeOnboardingRequest`):
+
+| Campo | Tipo | Obligatorio | Validación / valor por defecto | Cómo obtenerlo |
+|---|---|---|---|---|
+| `person.*` | | Sí | Los mismos campos y reglas de `admin.person` de la operación 35 (`person_identity_id`, o documento, nombres, apellidos y `birth_date`), **sin** `verification_status` | [Party Identity](party-identity.md) |
+| `account.username` | string | Sí | 3–60; minúsculas, dígitos, `.`, `_`, `-`, `@`; se guarda en minúsculas | — |
+| `account.email` | email | Sí | Único en Keycloak (`409 ACCOUNT_CONFLICT`) | — |
+| `display_name` | string \| null | No | 1–160; por defecto, nombres y apellidos de la persona | — |
+| `reference_email` | email \| null | No | Por defecto, `account.email` | — |
+
+Ejemplo de solicitud (la hace el administrador de la empresa con su propio token):
+
+```bash
+curl -sS -X POST "https://sio-operational-context-dev.onrender.com/api/v1/companies/$COMPANY_ID/employees:onboard" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "person": {
+      "person_identity_id": null,
+      "identification_country_id": "'"$COUNTRY_ID"'",
+      "identification_type": "CC",
+      "identification_number": "1000000002",
+      "first_name": "Operario",
+      "middle_name": null,
+      "last_name": "Ejemplo",
+      "second_last_name": null,
+      "birth_date": "1995-08-20"
+    },
+    "account": {
+      "username": "operario.ejemplo",
+      "email": "operario@ferreteria-ejemplo.test"
+    },
+    "display_name": "Operario Ejemplo",
+    "reference_email": "operario@ferreteria-ejemplo.test"
+  }'
+```
+
+Respuesta `201` si se creó alguna pieza, `200` si todas ya existían. `Location` apunta al usuario operativo
+(operación 17). Cuando la cuenta se crea, la respuesta trae **su usuario** (`account.username`) y **su contraseña
+temporal** (`account.temporary_password`) una sola vez: no se guarda en ningún servicio ni se escribe en logs o
+auditoría, así que hay que entregársela al empleado por un canal seguro. El empleado la cambia en su primer
+ingreso (operación 36).
+
+Ejemplo de respuesta `201` (valores ilustrativos):
+
+```json
+{
+  "person": { "result": "CREATED", "person_identity_id": "6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d" },
+  "account": {
+    "result": "CREATED",
+    "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "username": "operario.ejemplo",
+    "groups": ["Compras", "Ventas", "Inventario"],
+    "temporary_password": "<contraseña temporal de 16 caracteres>",
+    "must_change_password": true
+  },
+  "application_user": { "result": "CREATED", "application_user_id": "7c6b5a49-3827-4615-a4b3-c2d1e0f9a8b7" },
+  "next_step": "Entregue al empleado su usuario (account.username) y su contraseña temporal (account.temporary_password) por un canal seguro: no se vuelve a mostrar. ..."
+}
+```
+
+Una cuenta que ya existía responde `"account": {"result": "FOUND", "keycloak_user_id": "…", "username": "…",
+"groups": […], "groups_added": […]}`, sin contraseña.
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `403 OPERATIONAL_CONTEXT.FORBIDDEN` | Falta `application_users:create`, o el token no tiene alta de personas en Party Identity | Lo hacen `superadmin` y `admin` |
+| `404 …NOT_FOUND` | La empresa no existe o quien llama no es miembro de ella | Usar una empresa propia |
+| `409 …ACCOUNT_CONFLICT` | Otra cuenta ya usa ese correo, o la cuenta existente es de un administrador o trabaja en otra empresa y le faltan grupos | Usar otro correo o usuario, enviar solo los grupos que ya tiene, o pedírselo a un superadministrador |
+| `409 …DUPLICATE_MEMBERSHIP` | Esa cuenta ya es usuario activo de la empresa con otra persona | Revisar el usuario y el documento |
+| `422 …IDENTITY_REJECTED` (con `provider_code`) | Party Identity rechazó la persona | Corregir el campo indicado en `errors[0].field` (`person.…`) |
+| `422 …PERSON_IDENTITY_INACTIVE` | Ya existe con ese documento, pero inactiva | Reactivarla en Party Identity |
+| `422 …VALIDATION_ERROR` | Se envió `temporary_password`, `groups` o `verification_status`, que fija el servidor, u otro campo desconocido | Quitarlos del cuerpo |
+| `503` con `dependency` | Party Identity o Keycloak no respondió | Repetir la misma solicitud |
+
+### 38. `PUT /application-users/{application_user_id}/employee`
+
+| | |
+|---|---|
+| Clasificación | `HIGH_RISK` · cambia la persona, la cuenta de Keycloak y el usuario operativo de un empleado |
+| URL | `https://sio-operational-context-dev.onrender.com/api/v1/application-users/{application_user_id}/employee` |
+| Permisos | `perm:operational-context:application_users:update`, y membresía activa en la empresa del empleado o `platform:administer` (`superadmin` y `admin` de la empresa) |
+| Party Identity | La persona se cambia con el token de quien llama (el grupo `admin` puede modificar personas) |
+| Keycloak | La cuenta la cambia la **cuenta de servicio** de Operational Context (`manage-users` y `view-users` de `realm-management`) |
+| Disponibilidad | Nueva; disponible tras el próximo despliegue de Operational Context |
+
+Reúne «Actualizar la persona» (`PUT /person-identities/{id}` de Party Identity) y «Actualizar el usuario
+operativo» (operación 18), y además mantiene al día la copia que guarda Keycloak. Es un `PUT` parcial: solo
+cambia lo enviado.
+
+| Si se envía | Cambia en Party Identity | Cambia en Keycloak | Cambia en el usuario operativo |
+|---|---|---|---|
+| `person.first_name`, `middle_name`, `last_name` o `second_last_name` | La persona | `firstName` (nombres) y `lastName` (apellidos), con los nombres que quedaron en Party Identity | Nada (`display_name` no se recalcula) |
+| `person.identification_*` o `person.birth_date` | La persona | Nada | Nada |
+| `display_name` | — | Nada | El nombre visible |
+| `reference_email` | — | El correo de la cuenta (queda sin verificar) | El correo de referencia |
+
+Antes de cambiar nada se comprueba que la cuenta se pueda tocar. Un administrador de empresa recibe
+`409 ACCOUNT_CONFLICT` si la cuenta del empleado es de otro administrador (la suya sí la puede cambiar) o si el
+empleado también trabaja en otra empresa, porque el nombre y el correo de la cuenta valen en todas: en esos casos
+lo hace un superadministrador. `verification_status`, el usuario de Keycloak (`username`) y el estado no se
+cambian aquí.
+
+No es atómico: si un paso falla, la respuesta de error trae `failed_step` y `employee_update` con el resultado de
+cada pieza (`UPDATED`, `UNCHANGED`, `FAILED`, `NOT_STARTED`); al corregir la causa se repite la misma solicitud.
+
+Parámetro de ruta: `application_user_id` ([application_user_id](../parametros/application-user-id.md)).
+
+Cuerpo (`EmployeeUpdateRequest`, al menos un campo):
+
+| Campo | Tipo | Validación |
+|---|---|---|
+| `person.identification_country_id`, `identification_type`, `identification_number` | UUID / string | No admiten `null`; el número debe cumplir la regla del tipo (`422 IDENTITY_REJECTED`) |
+| `person.first_name`, `person.last_name` | string | 1–100; no admiten `null` |
+| `person.middle_name`, `person.second_last_name` | string \| null | ≤ 100; `null` los borra |
+| `person.birth_date` | date \| null | Desde 1900-01-01 y no posterior a hoy |
+| `display_name` | string | 1–160; no admite `null` |
+| `reference_email` | email \| null | Si se envía con valor, también reemplaza el correo de Keycloak; único en Keycloak (`409 ACCOUNT_CONFLICT`) |
+
+Ejemplo de solicitud:
+
+```bash
+curl -sS -X PUT "https://sio-operational-context-dev.onrender.com/api/v1/application-users/$OPERARIO_USER_ID/employee" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "person": {
+      "middle_name": "Andrés"
+    },
+    "display_name": "Operario Ejemplo - Caja 1",
+    "reference_email": "caja1@ferreteria-ejemplo.test"
+  }'
+```
+
+Ejemplo de respuesta `200` (valores ilustrativos):
+
+```json
+{
+  "person": { "result": "UPDATED", "person_identity_id": "6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d", "fields": ["middle_name"] },
+  "account": {
+    "result": "UPDATED",
+    "keycloak_user_id": "3f2a9c1e-7b4d-4e8a-9c6f-1d2e3f4a5b6c",
+    "username": "operario.ejemplo",
+    "fields": ["first_name", "last_name", "email"]
+  },
+  "application_user": {
+    "result": "UPDATED",
+    "application_user_id": "7c6b5a49-3827-4615-a4b3-c2d1e0f9a8b7",
+    "fields": ["display_name", "reference_email"]
+  }
+}
+```
+
+| Respuesta | Causa | Qué hacer |
+|---|---|---|
+| `403 OPERATIONAL_CONTEXT.FORBIDDEN` | Falta `application_users:update`, o el token no puede modificar personas en Party Identity | Lo hacen `superadmin` y `admin` |
+| `404 …NOT_FOUND` | El usuario operativo no existe o es de otra empresa | Usar un empleado propio |
+| `409 …ACCOUNT_CONFLICT` | Otra cuenta ya usa ese correo, o la cuenta es de otro administrador o trabaja en otra empresa | Usar otro correo, o pedírselo a un superadministrador |
+| `422 …IDENTITY_REJECTED` (con `provider_code`) | Party Identity rechazó la persona | Corregir el campo de `errors[0].field` (`person.…`) |
+| `422 …KEYCLOAK_USER_NOT_FOUND` | La cuenta del empleado ya no existe en Keycloak | Revisar la cuenta |
+| `422 …VALIDATION_ERROR` | Cuerpo vacío, `null` donde no se admite, o campos que no se cambian aquí (`verification_status`, `username`, `version`…) | Corregir el cuerpo |
+| `503` con `dependency` | Party Identity o Keycloak no respondió | Repetir la misma solicitud |
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -1604,9 +2019,9 @@ Un empleado asignado a varias sucursales aparece en cada una; una sucursal sin e
 
 | Servicio | Uso |
 |---|---|
-| Party Identity | Validar identidades de organización (empresas) y de persona (usuarios, asesores), y leer nombre e identificación para `/me/operational-context` y el listado de empleados por sucursal (sin guardarlos), con el token del usuario |
+| Party Identity | Crear o buscar por documento la organización y la persona en el alta de empresa (operación 35) y la persona en el registro y la actualización de empleados (operaciones 37 y 38). Validar identidades de organización (empresas) y de persona (usuarios, asesores), y leer nombre e identificación para `/me/operational-context` y el listado de empleados por sucursal (sin guardarlos), con el token del usuario |
 | Geography | Validar país, división y ciudad activos y coherentes, con el token del usuario |
-| Keycloak (Admin API) | Verificar la cuenta al crear o reactivar usuarios operativos y leer roles efectivos en la vía técnica, con la cuenta de servicio del propio Operational Context |
+| Keycloak (Admin API) | Verificar la cuenta al crear o reactivar usuarios operativos y leer roles efectivos en la vía técnica, con la cuenta de servicio del propio Operational Context. En el alta de empresa (operación 35) crea la cuenta con el token del superadministrador; en el registro de empleados (operación 37) la cuenta de servicio crea la cuenta del empleado (solo grupos del operario) y en su actualización (operación 38) le copia nombres y correo; en el cambio de contraseña inicial (operación 36) la cuenta de servicio fija la contraseña nueva |
 | Audit | Eventos de auditoría |
 
 ## Cobertura
@@ -1614,7 +2029,7 @@ Un empleado asignado a varias sucursales aparece en cada una; una sucursal sin e
 | Verificación | Resultado |
 |---|---|
 | Operaciones en el OpenAPI desplegado | 33 (la 34 se agrega en el próximo despliegue) |
-| Operaciones documentadas | 34 |
+| Operaciones documentadas | 38 (de la 35 a la 38 se agregan en el próximo despliegue) |
 | Permisos contrastados con el código | Sí (`api/companies.py`, `branches.py`, `application_users.py`, `user_branches.py`, `branch_employees.py`, `advisor_assignments.py`, `operational_access.py`) |
 | Esquemas contrastados | Sí (`api/schemas/*.py`, `application/access_scope.py`, `domain/access.py`, `api/errors.py`) |
 | Verificado | En asesores, el inicio de vigencia es el valor enviado o el instante actual; nunca puede ser futuro y debe llevar zona horaria |
