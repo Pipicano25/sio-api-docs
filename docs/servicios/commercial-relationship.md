@@ -3627,7 +3627,7 @@ Ejemplo de respuesta `201` (`PricingEnsureResponse`; valores ilustrativos, campo
 
 Cuerpo (`SupplierWithOrganizationUpdate`; rechaza campos adicionales; al menos una de las dos partes, cada una parcial):
 
-- `organization`: `legal_name`, `trade_name`, `organization_type`, `registration_status`, `website` y `version` opcional. Solo lo que cambia; `null` borra un campo opcional (`legal_name` no admite `null`). El NIT (`identification_type`, `identification_number`) y el país **no** se cambian aquí: si llegan → `422`.
+- `organization`: `legal_name`, `trade_name`, `organization_type`, `registration_status`, `website` y `version` opcional. Solo lo que cambia; `null` borra un campo opcional (`legal_name` no admite `null`). El NIT (`identification_type`, `identification_number`) y el país **no** se cambian aquí: si llegan → `422`. Límites y reglas, los mismos de Party Identity: `legal_name` y `trade_name` ≤ 200 (nombre con al menos una letra), `organization_type` ≤ 40, `registration_status` ≤ 30 y `website` ≤ 300 (sitio web, p. ej. `https://empresa.com.co`); un texto en blanco en un campo opcional equivale a `null`. Si no cumplen → `422 VALIDATION_ERROR`, sin llamar a Party Identity.
 - `supplier`: los mismos campos que la 22 (`internal_code`, `display_name`, `preferred_contact_person_id`) y `version` opcional.
 
 Efecto, en orden (une la actualización de la organización en Party Identity con la 22):

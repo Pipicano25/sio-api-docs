@@ -397,15 +397,15 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`UnitOfMeasureCreate`): `code` (≤ 40), `name` (≤ 160), `symbol` (≤ 32), `measurement_type` (enum), `allows_decimals` (boolean), todos obligatorios. `201`
+Notas: Cuerpo (`UnitOfMeasureCreate`): `code` (≤ 20), `name` (≤ 80), `symbol` (≤ 16), `measurement_type` (enum), `allows_decimals` (boolean), todos obligatorios. `201`
 
 Cuerpo (`UnitOfMeasureCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 40 car. |
-| `name` | string | Sí | ≤ 160 car. |
-| `symbol` | string | Sí | ≤ 32 car. |
+| `code` | string | Sí | ≤ 20 car. |
+| `name` | string | Sí | ≤ 80 car. |
+| `symbol` | string | Sí | ≤ 16 car. |
 | `measurement_type` | enum | Sí | `UNIT`, `MASS`, `VOLUME`, `LENGTH`, `AREA` |
 | `allows_decimals` | boolean | Sí | — |
 
@@ -535,8 +535,8 @@ Cuerpo (`UnitOfMeasureUpdate`, parcial: solo los campos que cambian, al menos un
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 160 car.; no admite `null` |
-| `symbol` | string | No | ≤ 32 car.; no admite `null` |
+| `name` | string | No | ≤ 80 car.; no admite `null` |
+| `symbol` | string | No | ≤ 16 car.; no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
 
@@ -798,14 +798,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`PackagingTypeCreate`): `code` (≤ 100), `name` (≤ 240) obligatorios; `description` opcional. El código no puede coincidir con una unidad de medida (`409 CODE_USED_BY_UNIT_OF_MEASURE`)
+Notas: Cuerpo (`PackagingTypeCreate`): `code` (≤ 50), `name` (≤ 120) obligatorios; `description` opcional. El código no puede coincidir con una unidad de medida (`409 CODE_USED_BY_UNIT_OF_MEASURE`)
 
 Cuerpo (`PackagingTypeCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 100 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 50 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -926,7 +926,7 @@ Cuerpo (`PackagingTypeUpdate`, parcial: solo los campos que cambian, al menos un
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -1183,14 +1183,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`BrandCreate`): `code` (≤ 100), `name` (≤ 240), `description` (opcional)
+Notas: Cuerpo (`BrandCreate`): `code` (≤ 50), `name` (≤ 120), `description` (opcional)
 
 Cuerpo (`BrandCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 100 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 50 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -1311,7 +1311,7 @@ Cuerpo (`BrandUpdate`, parcial: solo los campos que cambian, al menos uno ademá
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string \| null | No | — |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -1764,14 +1764,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`CategoryCreate`): `code` (≤ 100), `name` (≤ 240), `description`, `parent_category_id`
+Notas: Cuerpo (`CategoryCreate`): `code` (≤ 50), `name` (≤ 120), `description`, `parent_category_id`
 
 Cuerpo (`CategoryCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 100 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 50 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string \| null | No | — |
 | `parent_category_id` | UUID \| null | No | — |
 
@@ -1897,7 +1897,7 @@ Cuerpo (`CategoryUpdate`, parcial: solo los campos que cambian, al menos uno ade
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `parent_category_id` | UUID \| null | No | — |
 
@@ -2154,7 +2154,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Solo definiciones `OPTION` activas (`422 DEFINITION_NOT_OPTION`). Cuerpo (`OptionCreate`): `code` (≤ 160), `name` (≤ 240), `description`, `display_order` (0–32767)
+Notas: Solo definiciones `OPTION` activas (`422 DEFINITION_NOT_OPTION`). Cuerpo (`OptionCreate`): `code` (≤ 80), `name` (≤ 120), `description`, `display_order` (0–32767)
 
 Parámetros:
 
@@ -2166,8 +2166,8 @@ Cuerpo (`OptionCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 160 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 80 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string \| null | No | — |
 | `display_order` | integer | No | ≥ 0; ≤ 32767; por defecto `0` |
 
@@ -2240,7 +2240,7 @@ Cuerpo (`OptionUpdate`, parcial: solo los campos que cambian, al menos uno adem�
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 
@@ -2507,14 +2507,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`AttributeDefinitionCreate`): `code` (≤ 160), `name` (≤ 240), `description` (obligatoria), `data_type` (enum), `unit_of_measure_id` (solo para `INTEGER`/`DECIMAL`: `422 UNIT_NOT_ALLOWED_FOR_DATA_TYPE`)
+Notas: Cuerpo (`AttributeDefinitionCreate`): `code` (≤ 80), `name` (≤ 120), `description` (obligatoria), `data_type` (enum), `unit_of_measure_id` (solo para `INTEGER`/`DECIMAL`: `422 UNIT_NOT_ALLOWED_FOR_DATA_TYPE`)
 
 Cuerpo (`AttributeDefinitionCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 160 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 80 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string | Sí | — |
 | `data_type` | enum | Sí | `TEXT`, `INTEGER`, `DECIMAL`, `BOOLEAN`, `DATE`, `OPTION` |
 | `unit_of_measure_id` | UUID \| null | No | — |
@@ -2647,7 +2647,7 @@ Cuerpo (`AttributeDefinitionUpdate`, parcial: solo los campos que cambian, al me
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string | No | no admite `null` |
 
 Ejemplo de solicitud (valores ilustrativos):
@@ -2839,7 +2839,7 @@ Base `…/api/v1/products`. Objeto `ProductResponse`:
 |---|---|---|
 | `id` | UUID | [global_product_id](../parametros/global-product-id.md) (`product_id` en las rutas) |
 | `product_type` | string | Solo `GOOD` en la creación actual |
-| `canonical_name` | string (≤ 400) | Nombre canónico global |
+| `canonical_name` | string (≤ 200) | Nombre canónico global |
 | `description` | string \| null | — |
 | `global_brand_id`, `manufacturer_organization_id` | UUID \| null | Marca (operación 16) y fabricante (identidad de organización en Party Identity) |
 | `base_unit_id` | UUID | Unidad base (operación 4). **Inmutable tras el primer uso** (`422 BASE_UNIT_LOCKED_BY_FIRST_USE`) |
@@ -3118,14 +3118,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: (catálogo global). Cuerpo (`ProductCreate`): `product_type` (`GOOD`), `canonical_name` (≤ 400), `base_unit_id` obligatorios; `description`, `global_brand_id`, `manufacturer_organization_id` opcionales. `201`; `warnings[]` puede avisar de productos parecidos
+Notas: (catálogo global). Cuerpo (`ProductCreate`): `product_type` (`GOOD`), `canonical_name` (≤ 200), `base_unit_id` obligatorios; `description`, `global_brand_id`, `manufacturer_organization_id` opcionales. `201`; `warnings[]` puede avisar de productos parecidos
 
 Cuerpo (`ProductCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `product_type` | string | Sí | — |
-| `canonical_name` | string | Sí | ≤ 400 car. |
+| `canonical_name` | string | Sí | ≤ 200 car. |
 | `description` | string \| null | No | — |
 | `global_brand_id` | UUID \| null | No | — |
 | `manufacturer_organization_id` | UUID \| null | No | — |
@@ -3449,7 +3449,7 @@ Cuerpo (`ProductUpdate`, parcial: solo los campos que cambian, al menos uno adem
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `canonical_name` | string | No | ≤ 400 car.; no admite `null` |
+| `canonical_name` | string | No | ≤ 200 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `global_brand_id` | UUID \| null | No | — |
 | `manufacturer_organization_id` | UUID \| null | No | — |
@@ -4354,7 +4354,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`PresentationCreate`): `code` (≤ 120), `name` (≤ 320) obligatorios; `packaging_type_id`, `base_quantity` (por defecto `1`; > 0), `content_quantity`, `content_unit_id`, `display_order`, `is_base` (`false`). Reglas: una sola presentación base por producto (`409 BASE_PRESENTATION_EXISTS`) y la base debe tener `base_quantity` 1 (`422 BASE_QUANTITY_MUST_BE_ONE`); `code` único por producto
+Notas: Cuerpo (`PresentationCreate`): `code` (≤ 60), `name` (≤ 160) obligatorios; `packaging_type_id`, `base_quantity` (por defecto `1`; > 0), `content_quantity`, `content_unit_id`, `display_order`, `is_base` (`false`). Reglas: una sola presentación base por producto (`409 BASE_PRESENTATION_EXISTS`) y la base debe tener `base_quantity` 1 (`422 BASE_QUANTITY_MUST_BE_ONE`); `code` único por producto
 
 Parámetros:
 
@@ -4366,8 +4366,8 @@ Cuerpo (`PresentationCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 120 car. |
-| `name` | string | Sí | ≤ 320 car. |
+| `code` | string | Sí | ≤ 60 car. |
+| `name` | string | Sí | ≤ 160 car. |
 | `packaging_type_id` | UUID \| null | No | — |
 | `base_quantity` | number \| string | No | por defecto `"1"` |
 | `content_quantity` | number \| string \| null | No | — |
@@ -4517,7 +4517,7 @@ Cuerpo (`PresentationUpdate`, parcial: solo los campos que cambian, al menos uno
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 320 car.; no admite `null` |
+| `name` | string | No | ≤ 160 car.; no admite `null` |
 | `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
 | `packaging_type_id` | UUID \| null | No | — |
 | `base_quantity` | number \| string | No | no admite `null` |
@@ -4806,7 +4806,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`IdentifierCreate`): `identifier_type`, `value` (≤ 200) obligatorios; `global_product_presentation_id` (obligatorio para `IUM`: `422 IUM_REQUIRES_PRESENTATION`; debe ser del producto: `422 PRESENTATION_OF_OTHER_PRODUCT`), `is_primary`. Validaciones: formato y dígito de control GTIN/EAN/UPC (`422 INVALID_GTIN_FORMAT`, `INVALID_CHECK_DIGIT`), un `BARCODE` que es un GTIN válido se rechaza (`422 BARCODE_IS_GTIN`), formato IUM (`422 INVALID_IUM_FORMAT`); el valor canónico es único en todo el catálogo (`409 IDENTIFIER_COLLISION`)
+Notas: Cuerpo (`IdentifierCreate`): `identifier_type`, `value` (≤ 100) obligatorios; `global_product_presentation_id` (obligatorio para `IUM`: `422 IUM_REQUIRES_PRESENTATION`; debe ser del producto: `422 PRESENTATION_OF_OTHER_PRODUCT`), `is_primary`. Validaciones: formato y dígito de control GTIN/EAN/UPC (`422 INVALID_GTIN_FORMAT`, `INVALID_CHECK_DIGIT`), un `BARCODE` que es un GTIN válido se rechaza (`422 BARCODE_IS_GTIN`), formato IUM (`422 INVALID_IUM_FORMAT`); el valor canónico es único en todo el catálogo (`409 IDENTIFIER_COLLISION`)
 
 Parámetros:
 
@@ -4819,7 +4819,7 @@ Cuerpo (`IdentifierCreate`; rechaza campos adicionales):
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `identifier_type` | enum | Sí | `GTIN`, `EAN`, `UPC`, `BARCODE`, `OTHER`, `IUM` |
-| `value` | string | Sí | ≤ 200 car. |
+| `value` | string | Sí | ≤ 100 car. |
 | `global_product_presentation_id` | UUID \| null | No | — |
 | `is_primary` | boolean | No | por defecto `false` |
 
@@ -5426,7 +5426,7 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`GroupCreate`): `code` (≤ 100), `name` (≤ 320), `description`, `parent_group_id` (del mismo tipo)
+Notas: Cuerpo (`GroupCreate`): `code` (≤ 50), `name` (≤ 160), `description`, `parent_group_id` (del mismo tipo)
 
 Parámetros:
 
@@ -5438,8 +5438,8 @@ Cuerpo (`GroupCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 100 car. |
-| `name` | string | Sí | ≤ 320 car. |
+| `code` | string | Sí | ≤ 50 car. |
+| `name` | string | Sí | ≤ 160 car. |
 | `description` | string \| null | No | — |
 | `parent_group_id` | UUID \| null | No | — |
 
@@ -5568,7 +5568,7 @@ Cuerpo (`GroupUpdate`, parcial: solo los campos que cambian, al menos uno ademá
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 320 car.; no admite `null` |
+| `name` | string | No | ≤ 160 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `parent_group_id` | UUID \| null | No | — |
 
@@ -5950,14 +5950,14 @@ Códigos HTTP:
 | Alcance | Global (catálogo compartido por todas las empresas) |
 | Cabeceras | `Authorization`, `Content-Type: application/json` |
 
-Notas: Cuerpo (`GroupTypeCreate`): `code` (≤ 100), `name` (≤ 240), `description`, `allows_multiple` (`false`), `display_order` (0–32767)
+Notas: Cuerpo (`GroupTypeCreate`): `code` (≤ 50), `name` (≤ 120), `description`, `allows_multiple` (`false`), `display_order` (0–32767)
 
 Cuerpo (`GroupTypeCreate`; rechaza campos adicionales):
 
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
-| `code` | string | Sí | ≤ 100 car. |
-| `name` | string | Sí | ≤ 240 car. |
+| `code` | string | Sí | ≤ 50 car. |
+| `name` | string | Sí | ≤ 120 car. |
 | `description` | string \| null | No | — |
 | `allows_multiple` | boolean | No | por defecto `false` |
 | `display_order` | integer | No | ≥ 0; ≤ 32767; por defecto `0` |
@@ -6086,7 +6086,7 @@ Cuerpo (`GroupTypeUpdate`, parcial: solo los campos que cambian, al menos uno ad
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `version` | integer | No | ≥ 1 — Versión esperada del registro; opcional: si se envía y no coincide → `409 VERSION_CONFLICT`. |
-| `name` | string | No | ≤ 240 car.; no admite `null` |
+| `name` | string | No | ≤ 120 car.; no admite `null` |
 | `description` | string \| null | No | — |
 | `allows_multiple` | boolean | No | no admite `null` |
 | `display_order` | integer | No | ≥ 0; ≤ 32767; no admite `null` |
@@ -7170,16 +7170,16 @@ Cuerpo (`ProductEnsureRequest`; rechaza campos adicionales):
 | Campo | Tipo | Obligatorio | Validación |
 |---|---|---|---|
 | `product_id` | UUID \| null | Uno de los dos | Producto existente |
-| `canonical_name` | string \| null | Uno de los dos | ≤ 400 car.; con él, `product_type` y `base_unit_id` son obligatorios |
+| `canonical_name` | string \| null | Uno de los dos | ≤ 200 car.; con él, `product_type` y `base_unit_id` son obligatorios |
 | `product_type` | `GOOD` \| null | Con `canonical_name` | — |
 | `description` | string \| null | No | — |
 | `base_unit_id` | UUID \| null | Con `canonical_name` | Unidad activa (operación 4) |
 | `global_brand_id` | UUID \| null | No | Marca activa; cuenta para buscar por nombre |
 | `manufacturer_organization_id` | UUID \| null | No | Organización en Party Identity |
 | `category_ids` | UUID[] | No | ≤ 20, sin repetidas, categorías activas |
-| `base_presentation` | objeto \| null | No | Campos de «Crear presentación»: `code` (≤ 120), `name` (≤ 320), `packaging_type_id`, `base_quantity` (debe ser 1), `content_quantity`, `content_unit_id`, `display_order` (0–32767), `is_base` (debe ser `true`) |
+| `base_presentation` | objeto \| null | No | Campos de «Crear presentación»: `code` (≤ 60), `name` (≤ 160), `packaging_type_id`, `base_quantity` (debe ser 1), `content_quantity`, `content_unit_id`, `display_order` (0–32767), `is_base` (debe ser `true`) |
 | `presentations` | objeto[] | No | ≤ 50; mismos campos, `is_base` debe ser `false`; códigos sin repetir (tampoco con la base) |
-| `identifiers` | objeto[] | No | ≤ 50, sin repetidos: `identifier_type` (`GTIN`, `EAN`, `UPC`, `BARCODE`, `OTHER`, `IUM`), `value` (≤ 200), `presentation_code` (código de una presentación) o `null` (queda en el producto), `is_primary` |
+| `identifiers` | objeto[] | No | ≤ 50, sin repetidos: `identifier_type` (`GTIN`, `EAN`, `UPC`, `BARCODE`, `OTHER`, `IUM`), `value` (≤ 100), `presentation_code` (código de una presentación) o `null` (queda en el producto), `is_primary` |
 
 Ejemplo de solicitud por nombre (valores ilustrativos):
 
