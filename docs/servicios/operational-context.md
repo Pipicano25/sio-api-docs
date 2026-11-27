@@ -1646,9 +1646,15 @@ existe se reutiliza (`FOUND`) y la que falta se crea (`CREATED`):
 | `account` | Ya hay una cuenta con ese `username`: **no se cambia su contraseña**; solo se le agregan los grupos que le falten | Se crea habilitada, con contraseña temporal y la acción obligatoria de cambiarla |
 | `application_user` | La persona ya es usuario activo de la empresa | Se crea con `display_name` y `reference_email` |
 
-No es atómico: cada pieza queda guardada en su servicio en cuanto se crea. Si un paso falla, la respuesta de
-error trae en `failed_step` el paso que falló y en `onboarding` el resultado de cada pieza (`CREATED`, `FOUND`,
-`FAILED`, `NOT_STARTED`); al corregir la causa se repite **la misma solicitud** y continúa desde donde quedó.
+Es todo o nada (Constitución D29). Antes de escribir se revisa que la cuenta existente sirva (no es una cuenta de
+servicio ni está deshabilitada). Si un servicio no responde, el paso se reintenta hasta tres veces; un rechazo por
+datos no se reintenta. Si un paso falla, se deshace en orden inverso lo que **esta solicitud** creó: la cuenta de
+Keycloak (o los grupos que se le agregaron a una cuenta existente), la persona, la empresa y la organización; lo que
+ya existía (`FOUND`) no se toca. La respuesta de error trae en `failed_step` el paso que falló, en `onboarding` el
+resultado de cada pieza (`ROLLED_BACK` para lo deshecho, `FAILED`, `NOT_STARTED`, `FOUND`) y en `rollback`
+`complete`, `undone` y `kept`. El mensaje termina en «no quedó ningún registro guardado» solo si es cierto; si
+deshacer también falló, nombra lo que quedó guardado (`kept`, con el motivo). Al corregir la causa se repite la
+misma solicitud y empieza desde cero.
 Si la empresa ya tiene otros usuarios activos y ninguno es esa persona, responde `409 COMPANY_EXISTS` sin crear
 nada: para agregar otro administrador se usan las operaciones de usuarios operativos.
 
@@ -1858,8 +1864,10 @@ Límites, porque la cuenta la crea la identidad técnica del servicio:
   está en el grupo `admin` o `superadmin`, o si trabaja en otra empresa y le faltan grupos (los grupos valen en
   todas sus empresas). En esos casos la registra un superadministrador.
 
-No es atómico: si un paso falla, la respuesta de error trae `failed_step` y `onboarding` con el resultado de
-cada pieza; al corregir la causa se repite **la misma solicitud** y continúa desde donde quedó.
+Es todo o nada (Constitución D29), igual que el alta de la empresa: se revisa la cuenta antes de escribir, las
+fallas pasajeras se reintentan y, si un paso falla, se deshace lo que esta solicitud creó (la cuenta o los grupos
+agregados, y la persona). El error trae `failed_step`, `onboarding` (con `ROLLED_BACK`) y `rollback`; si deshacer
+también falló, el mensaje dice qué quedó guardado.
 
 Parámetro de ruta: `company_id` ([company_id](../parametros/company-id.md)).
 
@@ -1966,8 +1974,11 @@ empleado también trabaja en otra empresa, porque el nombre y el correo de la cu
 lo hace un superadministrador. `verification_status`, el usuario de Keycloak (`username`) y el estado no se
 cambian aquí.
 
-No es atómico: si un paso falla, la respuesta de error trae `failed_step` y `employee_update` con el resultado de
-cada pieza (`UPDATED`, `UNCHANGED`, `FAILED`, `NOT_STARTED`); al corregir la causa se repite la misma solicitud.
+Es todo o nada (Constitución D29): la cuenta se revisa antes de escribir, las fallas pasajeras se reintentan hasta
+tres veces y, si un paso falla, la persona y la cuenta de Keycloak vuelven a sus valores anteriores. La respuesta de
+error trae `failed_step`, `employee_update` con el resultado de cada pieza (`ROLLED_BACK`, `UNCHANGED`, `FAILED`,
+`NOT_STARTED`) y `rollback` (`complete`, `undone`, `kept`); si deshacer también falló, el mensaje dice qué quedó
+cambiado.
 
 Parámetro de ruta: `application_user_id` ([application_user_id](../parametros/application-user-id.md)).
 

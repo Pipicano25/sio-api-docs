@@ -54,7 +54,7 @@ Global: cualquier usuario con el permiso ve todas las identidades, sin membresí
 - `PUT` es **parcial**: el cuerpo lleva solo los campos que cambian; un campo ausente no cambia; `null` borra un campo opcional y en uno obligatorio responde `422`. Cuerpo vacío `{}` o solo con `version` → `422`. Las validaciones (regla de identificación, unicidad, edades) se aplican sobre el registro combinado; si nada cambia, no se escribe ni sube la versión.
 - `version` (≥ 1) es **opcional** en `PUT` y en las acciones (`deactivate`, `reactivate`, `:set-primary`, `:close`, nuevo perfil de contacto): si se envía y no coincide → `409 PARTY_IDENTITY.VERSION_CONFLICT`; si no se envía, se aplica sobre lo vigente. Las acciones cuyo cuerpo solo era `{"version": n}` aceptan `{}` o ningún cuerpo. Excepciones: `POST /identification-type-rules/{rule_id}/versions` sigue exigiendo `version`, y `legal-representatives:set-primary` exige `current_primary_version` cuando ya existe un `PRIMARY` vigente.
 - Inactivar algo inactivo o reactivar algo activo → `409 INVALID_STATUS_TRANSITION`.
-- Sin borrado físico. Las asignaciones (sectores de organización, representantes) se **cierran** con `valid_to` y no se reabren.
+- Sin borrado físico. Las asignaciones (sectores de organización, representantes) se **cierran** con `valid_to` y no se reabren. Única excepción (Constitución D7 y D29): las operaciones 56 y 57 borran una persona u organización recién creada para deshacer un alta encadenada que falló.
 - Modelos con `extra="forbid"`: campos desconocidos → `422`; campos inmutables enviados → `422 IMMUTABLE_FIELD`.
 - Direcciones de los perfiles: `country_id`, `administrative_division_id`, `city_id` validados en Geography (`422 COUNTRY_NOT_FOUND`, `ADMINISTRATIVE_DIVISION_NOT_FOUND`, `CITY_NOT_FOUND`, `LOCATION_INACTIVE`, `GEOGRAPHY_INCOHERENT`, `GEOGRAPHY_PARENT_REQUIRED`).
 - `503 DEPENDENCY_UNAVAILABLE` con `dependency` (`database`, `geography`, `operational-context`).
@@ -127,6 +127,8 @@ curl -sS -X PUT 'https://sio-party-identity-dev.onrender.com/api/v1/person-ident
 | 53 | `PUT` | `/organization-legal-representatives/{representative_id}` | Modificar cargo o referencia | `organization_legal_representatives:update` | `WRITE` | [Ver](#53-put-organization-legal-representativesrepresentative_id) |
 | 54 | `POST` | `/organization-legal-representatives/{representative_id}:close` | Cerrar representación | `organization_legal_representatives:delete` | `WRITE` | [Ver](#54-post-organization-legal-representativesrepresentative_idclose) |
 | 55 | `POST` | `/person-identities:ensure` | Crear o completar la persona y su contacto | `person_identities:create`, `person_identities:read` y, si llega el perfil, `person_contact_profiles:create` | `WRITE` | [Ver](#55-post-person-identitiesensure) |
+| 56 | `DELETE` | `/person-identities/{person_identity_id}` | Descartar una persona recién creada (deshacer un alta) | `person_identities:create` | `WRITE` | [Ver](#56-delete-person-identitiesperson_identity_id) |
+| 57 | `DELETE` | `/organization-identities/{organization_identity_id}` | Descartar una organización recién creada (deshacer un alta) | `organization_identities:create` | `WRITE` | [Ver](#57-delete-organization-identitiesorganization_identity_id) |
 
 ## Validación de números de identificación
 
@@ -2345,6 +2347,69 @@ Ejemplo de respuesta `201` (valores ilustrativos):
 }
 ```
 
+### 56. `DELETE /person-identities/{person_identity_id}`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · borrado físico, solo para deshacer un alta |
+| URL | `https://sio-party-identity-dev.onrender.com/api/v1/person-identities/{person_identity_id}` |
+| Permiso | `perm:party-identity:person_identities:create` |
+
+Borra de la base de datos una persona que la misma cuenta acaba de crear. La usan los flujos encadenados de
+Operational Context (alta de empresa con administrador y registro de empleado) para deshacer lo creado cuando un paso
+posterior falla (Constitución D29); no es un borrado general. Solo se permite si se cumplen las cuatro condiciones;
+si no, responde `409 PARTY_IDENTITY.DISCARD_NOT_ALLOWED` con `reason`:
+
+| `reason` | Cuándo |
+|---|---|
+| `NOT_CREATOR` | La creó otra cuenta |
+| `TOO_OLD` | Se creó hace más de 15 minutos |
+| `MODIFIED` | Ya se modificó (`version` distinta de 1) |
+| `REFERENCED` | Tiene perfiles de contacto, es contacto de alguien o representante legal |
+
+Responde `204` sin cuerpo; `404 PARTY_IDENTITY.NOT_FOUND` si no existe. La auditoría deja `DELETE_PERSON_IDENTITY`.
+
+Ejemplo de solicitud:
+
+```bash
+curl -sS -X DELETE "https://sio-party-identity-dev.onrender.com/api/v1/person-identities/$PERSON_IDENTITY_ID" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+Respuesta `409` (ejemplo):
+
+```json
+{
+  "type": "https://sio/errors/party-identity/discard-not-allowed",
+  "title": "No se puede descartar",
+  "status": 409,
+  "detail": "Solo se descarta una identidad recién creada por quien la descarta, sin cambios ni registros que la usen.",
+  "instance": "/api/v1/person-identities/7d1f3a2b-4c5e-4f60-8a9b-1c2d3e4f5a6b",
+  "code": "PARTY_IDENTITY.DISCARD_NOT_ALLOWED",
+  "trace_id": "3f9a1c2d4b5e6f708192a3b4c5d6e7f8",
+  "reason": "MODIFIED"
+}
+```
+
+### 57. `DELETE /organization-identities/{organization_identity_id}`
+
+| | |
+|---|---|
+| Clasificación | `WRITE` · borrado físico, solo para deshacer un alta |
+| URL | `https://sio-party-identity-dev.onrender.com/api/v1/organization-identities/{organization_identity_id}` |
+| Permiso | `perm:party-identity:organization_identities:create` |
+
+Igual que la operación 56, para una organización. La usa el alta de empresa con administrador para deshacer la
+organización que creó. `REFERENCED` aplica si tiene perfiles de contacto, personas de contacto, sectores económicos o
+representantes legales. Responde `204`; la auditoría deja `DELETE_ORGANIZATION_IDENTITY`.
+
+Ejemplo de solicitud:
+
+```bash
+curl -sS -X DELETE "https://sio-party-identity-dev.onrender.com/api/v1/organization-identities/$ORGANIZATION_IDENTITY_ID" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
 ## Errores frecuentes
 
 | Respuesta | Causa | Qué hacer |
@@ -2372,8 +2437,8 @@ Ejemplo de respuesta `201` (valores ilustrativos):
 
 | Verificación | Resultado |
 |---|---|
-| Operaciones en el OpenAPI desplegado | 54 (la 55 llega con el próximo despliegue) |
-| Operaciones documentadas | 55 |
+| Operaciones en el OpenAPI desplegado | 54 (la 55, la 56 y la 57 llegan con el próximo despliegue) |
+| Operaciones documentadas | 57 |
 | Permisos contrastados con el código | Sí (`api/person_identities.py`, `organization_identities.py`, `identification_type_rules.py`, `contact_profiles.py`, `contact_persons.py`, `business_sectors.py`, `legal_representatives.py`) |
 | Esquemas contrastados | Sí (OpenAPI desplegado; `application/exceptions.py`; `application/identification_rules.py`) |
 | Verificado | `valid_from` omitido en sectores económicos y representantes legales toma la fecha y hora actuales del servicio |

@@ -284,7 +284,7 @@ Ejemplo de `422` por número inválido:
   "type": "https://sio/errors/party-identity/invalid-identification-number",
   "title": "Número de identificación inválido",
   "status": 422,
-  "detail": "El número de identificación no cumple ninguna regla activa para la sigla indicada. Cédula de ciudadanía: de 6 a 10 dígitos.",
+  "detail": "La cédula de ciudadanía (CC) enviada no es válida: tiene 9 dígitos. Debe tener de 3 a 8 dígitos (antigua) o 10 dígitos (moderna o digital), solo números, sin puntos ni espacios.",
   "instance": "/api/v1/person-identities",
   "code": "PARTY_IDENTITY.INVALID_IDENTIFICATION_NUMBER",
   "trace_id": "9f8e7d6c5b4a39281716151413121110"
